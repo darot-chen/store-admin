@@ -13,64 +13,87 @@ export const getMenuItems = () :MenuOption[] => {
   return [
     {
       type: 'divider',
-      key: 'divider-1'
+      key: 'divider'
     },
     {
       label: () => h(
         RouterLink,
         {
-          to: "/"
+          to: "dashboard"
         },
         { default: () => "Dashboard" },
       ),
-      key: "go-back-dashboard",
+      key: "dashboard",
       icon: renderIcon(GridIcon)
     },
     {
-      label: () => h(
-        RouterLink,
-        {
-          to: "/"
-        },
-        { default: () => "Products" },
-      ),
+      label: "Products",
       children: [
         {
-          label: "Add Product",
+          label: () => h(
+            RouterLink,
+            {
+              to: "products"
+            },
+            { default: () => "Products List" },
+          ),
+          key: 'products'
         },
         {
-          label: "Product List",
+          label: () => h(
+            RouterLink,
+            {
+              to: "new"
+            },
+            { default: () => "Add Product" },
+          ),
+          key: 'add-product'
         },
         {
-          label: "Category",
+          label: () => h(
+            RouterLink,
+            {
+              to: "products"
+            },
+            { default: () => "Category" },
+          ),
+          key: 'category'
+
         },
         {
-          label: "Brand",
+          label: () => h(
+            RouterLink,
+            {
+              to: "products"
+            },
+            { default: () => "Brand" },
+          ),
+          key: 'brand'
         },
       ],
-      key: "go-back-home",
+      key: "products",
       icon: renderIcon(ProductsIcon)
     },
     {
       label: () => h(
         RouterLink,
         {
-          to: "/"
+          to: "/order"
         },
         { default: () => "Order" },
       ),
-      key: "go-back-home",
+      key: "order",
       icon: renderIcon(CartIcon)
     },
     {
       label: () => h(
         RouterLink,
         {
-          to: "/"
+          to: "/customers"
         },
         { default: () => "Customer" },
       ),
-      key: "go-back-home",
+      key: "users",
       icon: renderIcon(CustomerIcon)
     },
   ];

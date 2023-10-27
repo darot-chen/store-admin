@@ -1,7 +1,7 @@
 <template>
   <div class="branding-container">
     <NSpace>
-      <img style="margin-right: 2px" :width="collapsed ? '80' : '50'"
+      <img style="margin-right: 2px" :width="store.isCollapse ? '60' : '40'"
         src="https://img.freepik.com/premium-vector/fast-shopping-logo-design-template-illustration-vector_382322-300.jpg"
         alt="Logo">
     </NSpace>
@@ -21,12 +21,13 @@ const store = useAppConfigStore();
 
 <style scoped>
 .branding-container {
-  height: 60px;
+  height: 30px;
   display: flex;
   justify-content: left;
   align-items: center;
   white-space: nowrap;
-  padding: 10px;
+  margin-top: 10px;
+  padding: 2px 10px;
   transition: all 0.2s ease-in-out;
 }
 </style>
