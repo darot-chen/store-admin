@@ -4,9 +4,11 @@
       <SideBarMenu />
       <NLayout>
         <HeaderMenu />
-        <NLayoutContent content-style="padding: 14px; min-height: calc(100vh - 110px)">
-          <slot />
-        </NLayoutContent>
+        <NMessageProvider>
+          <NLayoutContent content-style="padding: 14px; min-height: calc(100vh - 110px)">
+            <slot />
+          </NLayoutContent>
+        </NMessageProvider>
       </NLayout>
 
     </NLayout>
@@ -14,7 +16,7 @@
 </template>
 
 <script setup>
-import { NLayout, NLayoutContent } from 'naive-ui';
+import { NLayout, NLayoutContent, NMessageProvider } from 'naive-ui';
 </script>
 
 <style scoped></style>

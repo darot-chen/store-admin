@@ -1,7 +1,7 @@
 <template>
   <NLayoutHeader bordered>
     <div class="nav-bar">
-      <NInput v-model:value="value" placeholder="Search">
+      <NInput v-model:value="query" placeholder="Search">
         <template #prefix>
           <NIcon>
             <SearchOutline />
@@ -15,6 +15,8 @@
 <script setup lang="ts">
 import { NLayoutHeader, NInput, NIcon } from "naive-ui";
 import { SearchOutline } from "@vicons/ionicons5";
+
+const query = ref('');
 
 </script>
 

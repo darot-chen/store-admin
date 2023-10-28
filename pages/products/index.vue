@@ -2,9 +2,9 @@
   <h1>Products List</h1>
   <NGrid :x-gap="12" :y-gap="12" :cols="4">
     <NGridItem v-for="product in products" class="product-card">
-      <NCard :title="product.title">
+      <NCard :title="product.title ?? ''">
         <template #cover>
-          <img :src="product.image" alt="Product Image">
+          <img :src="product.image ?? ''" alt="Product Image">
         </template>
         <div>
           <NSpace class="product-description">
