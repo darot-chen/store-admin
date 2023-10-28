@@ -1,6 +1,6 @@
 <template>
   <NSpace vertical>
-    <NLayout has-sider>
+    <NLayout position="absolute" has-sider>
       <SideBarMenu />
       <NLayout>
         <HeaderMenu />

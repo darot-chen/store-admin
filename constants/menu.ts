@@ -33,7 +33,7 @@ export const getMenuItems = () :MenuOption[] => {
           label: () => h(
             RouterLink,
             {
-              to: "products"
+              to: "/products"
             },
             { default: () => "Products List" },
           ),
@@ -43,7 +43,7 @@ export const getMenuItems = () :MenuOption[] => {
           label: () => h(
             RouterLink,
             {
-              to: "new"
+              to: "/products/new"
             },
             { default: () => "Add Product" },
           ),
@@ -53,7 +53,7 @@ export const getMenuItems = () :MenuOption[] => {
           label: () => h(
             RouterLink,
             {
-              to: "products"
+              to: "/products"
             },
             { default: () => "Category" },
           ),
@@ -64,7 +64,7 @@ export const getMenuItems = () :MenuOption[] => {
           label: () => h(
             RouterLink,
             {
-              to: "products"
+              to: "/products"
             },
             { default: () => "Brand" },
           ),
