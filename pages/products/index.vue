@@ -11,7 +11,9 @@
             {{ product.price }}
           </NSpace>
           <NSpace vertical>
-            <NButton>Edit</NButton>
+            <NuxtLink :to="`/products/${product.id}/edit`">
+              <NButton>Edit</NButton>
+            </NuxtLink>
             <NButton>Delete</NButton>
           </NSpace>
         </div>
@@ -24,7 +26,7 @@
 <script setup lang="ts">
 import { NGrid, NGridItem, NCard, NButton } from 'naive-ui';
 import type { Product } from '~/interfaces/product_interface';
-const { pending, data: products } = await useFetch<Product[]>("https://fakestoreapi.com/products");
+const { data: products } = await useFetch<Product[]>("https://fakestoreapi.com/products");
 </script>
 
 <style scoped>
