@@ -20,17 +20,23 @@
   </div>
 </template>
 <script setup lang="ts">
+import useUserStore from "~/stores/userStore";
+
 definePageMeta({
   layout: "chat",
   title: "home",
   keepalive: true,
 });
 const route = useRoute();
+const userStore = useUserStore();
 onMounted(() => {
   const at = route.query.at?.toString();
   if (!at) return;
   const token = atob(at);
   setToken(token);
+  setTimeout(() => {
+    userStore.me();
+  }, 1000);
 });
 
 const chats = ref([
