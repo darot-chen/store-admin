@@ -41,6 +41,7 @@ const useUserStore = defineStore("useUserStore", {
     },
 
     username: ({ data }: { data: UserState }) => {
+      alert(JSON.stringify(data));
       const name = data.username?.split("-");
       if (!name) {
         return data.username;
