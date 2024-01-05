@@ -15,6 +15,7 @@
         :content="chat.content"
         :type="chat.type"
       />
+      <input :value="route.query.at?.toString()" type="text" />
     </div>
   </div>
 </template>
@@ -27,7 +28,6 @@ definePageMeta({
 const route = useRoute();
 onMounted(() => {
   const at = route.query.at?.toString();
-  alert(at);
   if (!at) return;
   const token = atob(at);
   setToken(token);
