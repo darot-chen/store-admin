@@ -27,6 +27,7 @@ definePageMeta({
 const route = useRoute();
 onMounted(() => {
   const at = route.query.at?.toString();
+  alert(at);
   if (!at) return;
   const token = atob(at);
   setToken(token);
