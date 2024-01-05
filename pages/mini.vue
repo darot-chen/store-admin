@@ -15,7 +15,6 @@
         :content="chat.content"
         :type="chat.type"
       />
-      <input :value="route.query.at?.toString()" type="text" />
     </div>
   </div>
 </template>
