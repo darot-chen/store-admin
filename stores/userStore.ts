@@ -41,7 +41,11 @@ const useUserStore = defineStore("useUserStore", {
     },
 
     username: ({ data }: { data: UserState }) => {
-      return data.nickname || data.username || data.phoneNumber;
+      const name = data.username?.split("-");
+      if (!name) {
+        return data.username;
+      }
+      return name[name.length - 1];
     },
   },
 
@@ -131,7 +135,7 @@ const useUserStore = defineStore("useUserStore", {
       }
 
       if (data.value) {
-        this.setInfo(data.value.data);
+        this.setInfo(data.value);
       }
     },
 

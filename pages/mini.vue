@@ -24,6 +24,13 @@ definePageMeta({
   title: "home",
   keepalive: true,
 });
+const route = useRoute();
+onMounted(() => {
+  const at = route.query.at?.toString();
+  if (!at) return;
+  const token = atob(at);
+  setToken(token);
+});
 
 const chats = ref([
   {

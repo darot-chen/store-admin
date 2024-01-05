@@ -13,7 +13,7 @@
       </div>
       <div>
         <div class="flex text-sm text-[#494E55]">
-          <span>百顺支付已押15000U</span>
+          <span>{{ userStore.username }}</span>
           <img src="/img/icons/star-wing.svg" alt="" />
           <img src="/img/icons/star-wing.svg" alt="" />
         </div>
@@ -29,4 +29,7 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import useUserStore from "~/stores/userStore";
+const userStore = useUserStore();
+</script>
