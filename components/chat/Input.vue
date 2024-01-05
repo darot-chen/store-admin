@@ -6,7 +6,7 @@
       <button
         class="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-white shadow-[0px_2px_4px_0px_rgba(177,171,167,0.15)]"
       >
-        <img src="img/icons/plus.svg" alt="add" />
+        <img src="/img/icons/plus.svg" alt="add" />
       </button>
       <div class="relative flex-1">
         <input
@@ -15,7 +15,7 @@
         />
         <img
           class="absolute bottom-0 right-2 top-0 m-auto"
-          src="img/icons/send.svg"
+          src="/img/icons/send.svg"
           alt=""
         />
       </div>
