@@ -49,6 +49,9 @@ export default defineNuxtConfig({
         {
           src: "https://telegram.org/js/telegram-web-app.js",
         },
+        {
+          src: "https://telegram.org/js/games.js",
+        },
       ],
       link: [
         {
