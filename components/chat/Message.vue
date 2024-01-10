@@ -12,7 +12,7 @@
           {{ content }}
         </p>
         <div v-if="type === 'image'">
-          <img :src="content" alt="photo" />
+          <img :src="`${content}`" alt="photo" />
         </div>
       </div>
     </div>
@@ -23,6 +23,6 @@
 defineProps<{
   isSender: boolean;
   content: string;
-  type: "text" | "image";
+  type: string;
 }>();
 </script>

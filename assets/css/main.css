@@ -4,7 +4,9 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #__nuxt {
+html,
+body,
+#__nuxt {
   width: 100%;
   height: 100%;
 }
@@ -22,6 +24,10 @@ html, body, #__nuxt {
 
 .custom-input .van-field__body input {
   padding-left: 40px;
+}
+
+.safe-area-padding-bottom {
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
 }
 
 .custom-input .van-field {

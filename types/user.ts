@@ -9,6 +9,18 @@ export type UserState = {
   creditAmount?: number;
 };
 
+export type User = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+  type: string;
+  name: string;
+  username: string;
+  rating_score: number;
+  rating_count: number;
+};
+
 export type LoginPayload = {
   username: string;
   password: string;

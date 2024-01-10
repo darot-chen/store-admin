@@ -1,0 +1,15 @@
+<template>
+  <div class="mx-auto flex h-full max-w-lg flex-col">
+    <slot name="header">
+      <LayoutChatRoomHeader />
+    </slot>
+    <main class="bg-red mt-[60px] flex h-full w-full flex-col" data-scroll>
+      <slot />
+    </main>
+    <slot name="footer">
+      <LayoutFooter />
+    </slot>
+  </div>
+</template>
+
+<script setup lang="ts"></script>
