@@ -6,7 +6,7 @@
     <div
       class="absolute bottom-0 top-[50px] z-10 w-full overflow-auto pb-[60px]"
     >
-      window.TelegramGameProxy.InitParams: {{ initData }}
+      window.TelegramGameProxy.initParams: {{ initData }}
     </div>
   </div>
 </template>
@@ -19,6 +19,6 @@ definePageMeta({
 const initData = ref("");
 
 onMounted(() => {
-  initData.value = JSON.stringify((window as any).TelegramGameProxy.InitParams);
+  initData.value = JSON.stringify((window as any).TelegramGameProxy.initParams);
 });
 </script>
