@@ -1,1 +1,9 @@
-{}
+{
+  "loading": "Loading",
+  "attach_file_must_be": "Attached file must be {value} MB",
+  "total_fund": "Total Fund",
+  "available_fund": "Available Fund",
+  "join_chat": "Join Chat",
+  "joined_the_chat": "joined the chat",
+  "left_the_chat": "left the chat"
+}

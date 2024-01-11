@@ -1,4 +1,5 @@
 import { User } from "./user";
+import { Admin } from "./admin";
 
 export type Chat = {
   id: number;
@@ -8,5 +9,6 @@ export type Chat = {
   user_id: number;
   type: string;
   message: string;
-  user: User;
+  user: User | null;
+  admin: Admin | null;
 };

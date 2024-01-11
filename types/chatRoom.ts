@@ -1,3 +1,5 @@
+import { Business } from "./business";
+
 export type ChatRoom = {
   id: number;
   created_at: string;
@@ -6,6 +8,7 @@ export type ChatRoom = {
   business_id: number;
   type: string;
   closed_at: string;
+  business: Business;
 };
 
 export type CursorChatRoomPayload = {

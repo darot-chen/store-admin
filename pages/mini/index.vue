@@ -1,28 +1,41 @@
 <template>
   <div>
     <div
-      class="flex max-h-[100vh] flex-col gap-y-[10px] overflow-scroll"
+      class="flex max-h-[100vh] flex-col gap-y-[10px] overflow-scroll px-2 sm:px-0"
       @scroll="handleScroll"
     >
       <div
+        v-if="loading"
+        class="absolute"
+        style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
+      >
+        <div
+          class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+        ></div>
+      </div>
+      <div
         v-for="room in chatRooms"
+        v-else
         :key="room.id"
         class="flex max-h-[200px] cursor-pointer justify-between rounded-md bg-slate-400 p-5"
         @click="navigateTo(`/mini/chat/${room.id}`)"
       >
         <div class="flex gap-x-[10px]">
-          <img
+          <!-- <img
             class="h-[50px] w-[50px] rounded"
             src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
             alt=""
-          />
+          /> -->
           <div class="flex flex-col">
-            <span class="text-sm">{{ userStore.username }}</span>
-            <span class="text-sm">Hi</span>
+            <span class="text-base font-bold">{{ room.business.title }} </span>
+            <span class="text-sm">{{ room.business.description }}</span>
           </div>
         </div>
-        <div>
-          <span>10:00pm</span>
+        <div class="flex flex-col text-xs">
+          <span>{{ $t("total_fund") }} {{ room.business.total_fund }}</span>
+          <span>
+            {{ $t("available_fund") }} {{ room.business.available_fund }}
+          </span>
         </div>
       </div>
     </div>
@@ -44,7 +57,11 @@ const userStore = useUserStore();
 const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
+const loading = ref<boolean>(false);
+const firstLoad = ref<boolean>(false);
+
 onMounted(() => {
+  firstLoad.value = true;
   const at = route.query.at?.toString();
   let token: string | null | undefined;
   if (at) {
@@ -61,6 +78,11 @@ onMounted(() => {
 });
 
 const fetchChatRooms = async () => {
+  if (firstLoad.value) {
+    loading.value = true;
+    firstLoad.value = false;
+  }
+
   const { data } = await API_CHAT_ROOM.GET_PUBLIC_ROOM.execute({
     last: lastItemId.value,
     limit: 10,
@@ -71,6 +93,8 @@ const fetchChatRooms = async () => {
     lastItemId.value = data.value.results[data.value.results.length - 1].id;
     loadMore.value = data.value.meta.has_next;
   }
+
+  loading.value = false;
 };
 
 const handleScroll = (event: Event) => {
@@ -91,60 +115,4 @@ watch(userStore, () => {
     fetchChatRooms();
   }
 });
-
-// const chats = ref([
-//   {
-//     id: 1,
-//     content:
-//       "需方已接受交易条款，订单：BS000001已进入担保系统。如果在担保过程中需要帮助，请联系客服。",
-//     type: "text",
-//     from: 1,
-//     to: 2,
-//   },
-//   {
-//     id: 2,
-//     content: "+19999",
-//     type: "text",
-//     from: 1,
-//     to: 2,
-//   },
-//   {
-//     id: 3,
-//     content: "打到我这个卡号 \n 陈志伟 中国银行 \n 000 000000 00684",
-//     type: "text",
-//     from: 2,
-//     to: 1,
-//   },
-//   {
-//     id: 4,
-//     content:
-//       "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg",
-//     type: "image",
-//     from: 1,
-//     to: 2,
-//   },
-//   {
-//     id: 5,
-//     content: "继续打",
-//     type: "text",
-//     from: 2,
-//     to: 1,
-//   },
-//   {
-//     id: 6,
-//     content:
-//       "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg",
-//     type: "image",
-//     from: 2,
-//     to: 1,
-//   },
-//   {
-//     id: 7,
-//     content:
-//       "https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg",
-//     type: "image",
-//     from: 1,
-//     to: 2,
-//   },
-// ]);
 </script>

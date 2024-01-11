@@ -3,29 +3,74 @@
     style="display: block; overflow: auto; height: calc(100vh - 130px)"
     @scroll="onScroll"
   >
-    <div ref="chatListDiv" class="flex flex-col">
-      <div v-if="hasMore" class="flex justify-center">Loading</div>
-      <ChatMessage
-        v-for="chat in chats"
-        :key="chat.id"
-        :is-sender="chat.user_id === userStore.userInfo.id"
-        :content="chat.message"
-        :type="chat.type"
+    <!-- <div class="absolute bottom-0 top-0 z-0">
+      <img
+        class="opacity-5"
+        src="/img/chat-bg.jpeg"
+        alt=""
+        style="height: calc(100vh - 130px)"
       />
-      <ChatInput
-        :message="messagePayload.message"
-        @input="onTyping"
-        @submit="onSubmitChat"
+    </div> -->
+    <div
+      class="pointer-events-none fixed left-0 right-0 top-0 z-0 mx-auto max-w-lg"
+      style="height: calc(100vh - 130px)"
+    >
+      <img
+        class="h-full w-full object-cover opacity-5"
+        src="/img/chat-bg.jpeg"
+        alt="chat-bg"
+        style="object-position: center; object-fit: cover"
       />
     </div>
-    <div ref="bottomEl" />
+    <div
+      v-if="loading"
+      class="absolute"
+      style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
+    >
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+      ></div>
+    </div>
+    <div v-else>
+      <div v-if="hasJoined" ref="chatListDiv" class="flex flex-col">
+        <div v-show="fetchingMoreChat" class="flex justify-center">
+          {{ t("loading") }}
+        </div>
+        <ChatMessage
+          v-for="chat in chats"
+          :key="chat.id"
+          :is-sender="chat.user_id === userStore.userInfo.id"
+          :content="chat.message"
+          :type="chat.type"
+          :user="chat.user"
+          :admin="chat.admin"
+          :created-at="chat.created_at"
+        />
+        <ChatInput
+          :message="messagePayload.message"
+          @input="onTyping"
+          @submit="onSubmitChat"
+          @attach-file="onAttachFile"
+        />
+        <div ref="bottomEl" />
+      </div>
+      <div
+        v-else
+        class="fixed bottom-2 left-0 right-0 mx-auto max-w-lg cursor-pointer rounded-full border-[1px] border-[#D7DBEE] bg-[#FE863F] p-3 text-center text-white"
+        @click="onJoinChat"
+      >
+        {{ t("join_chat") }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import useUserStore from "~/stores/userStore";
 import { API_CHAT } from "~/api/apiChat";
+import { API_CHAT_ROOM } from "~/api/apiChatRoom";
 import { Chat } from "~/types/chat";
+import { showToast } from "vant";
 
 definePageMeta({
   layout: "chat",
@@ -35,12 +80,14 @@ definePageMeta({
 const route = useRoute();
 const userStore = useUserStore();
 const { $evOn, $evOff } = useNuxtApp();
+const { t } = useI18n();
 
 const chats = ref<Chat[]>([]);
 const bottomEl = ref<HTMLDivElement | null>(null);
 const chatListDiv = ref<HTMLDivElement | null>(null);
-const first = ref<boolean>(true);
+const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
+const loading = ref<boolean>(false);
 
 const messagePayload = ref<{
   type: "text";
@@ -53,12 +100,13 @@ const messagePayload = ref<{
 const lastItemId = ref<number>(0);
 const roomID = +route.params.id;
 const hasMore = ref<boolean>(false);
+const hasJoined = ref<boolean>(false);
 
 function scrollToBottom() {
   if (bottomEl.value) {
-    if (first.value) {
+    if (firstLoad.value) {
       bottomEl.value.scrollIntoView();
-      first.value = false;
+      firstLoad.value = false;
     } else {
       bottomEl.value.scrollIntoView({ behavior: "smooth" });
     }
@@ -76,6 +124,60 @@ const addChatAndSort = (newChat: Chat) => {
 
 const onTyping = (value: string) => {
   messagePayload.value.message = value;
+};
+
+async function onAttachFile(file: File) {
+  if (!file || !roomID) return;
+
+  sleepScrollToBottom();
+
+  if (file.type === "video/mp4") {
+    if (file.size > 10 * 1024 * 1024) {
+      showToast({
+        message: t(`attach_file_must_be`, {
+          value: "10",
+        }),
+        position: "top",
+      });
+    }
+    const { error } = await API_CHAT.ADD_VIDEO_CHAT.execute(roomID, file);
+    if (error.value) {
+      showToast({
+        message: error.value?.data.message,
+        position: "top",
+      });
+    }
+  } else {
+    if (file.size > 2 * 1024 * 1024) {
+      showToast({
+        message: t(`attach_file_must_be`, {
+          value: "2",
+        }),
+        position: "top",
+      });
+    }
+
+    const { error } = await API_CHAT.ADD_IMAGE_CHAT.execute(roomID, file);
+    if (error.value) {
+      showToast({
+        message: error.value?.data.message,
+        position: "top",
+      });
+    }
+  }
+}
+
+const onJoinChat = async () => {
+  const { error } = await API_CHAT_ROOM.JOIN_PUBLIC_ROOM.execute(roomID);
+  if (!error.value) {
+    hasJoined.value = true;
+    return;
+  }
+
+  showToast({
+    message: error.value?.data.message,
+    position: "top",
+  });
 };
 
 const onSubmitChat = async () => {
@@ -102,7 +204,7 @@ const fetchMoreChats = async () => {
     chats.value = [...data.value.results, ...chats.value];
 
     if (data.value.meta.has_next) {
-      lastItemId.value = data.value.results[0].id; // Update last item fetched
+      lastItemId.value = data.value.results[0].id;
       hasMore.value = true;
     } else {
       hasMore.value = false;
@@ -112,10 +214,15 @@ const fetchMoreChats = async () => {
 };
 
 const fetchChats = async () => {
-  const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
+  loading.value = true;
+  const { data, error } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
     last: lastItemId.value,
     limit: 15,
   });
+
+  error.value?.data.message === "Forbidden"
+    ? (hasJoined.value = false)
+    : (hasJoined.value = true);
 
   if (data.value?.results?.length) {
     chats.value = data.value.results.reverse();
@@ -125,6 +232,7 @@ const fetchChats = async () => {
     }
   }
 
+  loading.value = false;
   sleepScrollToBottom();
 };
 
@@ -161,3 +269,10 @@ onUnmounted(() => {
   $evOff("new_chat_received");
 });
 </script>
+
+<style scoped>
+.background-image {
+  background-image: url("/img/chat-bg.jpeg");
+  background-repeat: no-repeat;
+}
+</style>

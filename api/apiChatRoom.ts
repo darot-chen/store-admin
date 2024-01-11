@@ -1,5 +1,5 @@
 import { useApiFetch } from "~/composables/useAPIFetch";
-import { HTTPMethod } from "~/types/base";
+import { APIMeta, HTTPMethod } from "~/types/base";
 import { ChatRoom, CursorChatRoomPayload } from "~/types/chatRoom";
 import { CursorResponse } from "~/types/pagination";
 
@@ -19,6 +19,16 @@ export const API_CHAT_ROOM = {
           key: "chatRoom/Public",
         }
       );
+    },
+  },
+  JOIN_PUBLIC_ROOM: {
+    path: (roomID: number) => `/chat-rooms/${roomID}/join`,
+    method: HTTPMethod.POST,
+    execute(roomID: number) {
+      return useApiFetch<APIMeta>(this.path(roomID), {
+        method: this.method,
+        key: "joinPublicRoom",
+      });
     },
   },
 } as const;
