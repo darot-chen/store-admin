@@ -19,8 +19,7 @@ export type PaginationPayload = {
 };
 
 export type CursorPayload = {
-  cursor?: string;
-  limit?: number;
+  has_next: boolean;
 };
 
 export type PaginationResponse<T> = APIMeta<T> & {

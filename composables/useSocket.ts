@@ -133,3 +133,23 @@ export function useSocket(
     close,
   };
 }
+
+export function getWebSocketUrl() {
+  let protocol = "ws";
+  const { locale } = useI18n();
+
+  const config = useRuntimeConfig();
+  if (config.public.baseApi.includes("https")) {
+    protocol = "wss";
+  }
+
+  const url = config.public.baseApi
+    .replace("https://", "")
+    .replace("http://", "");
+
+  const token = getToken();
+  const encoded = btoa(token || "");
+  if (!encoded) return;
+
+  return `${protocol}://${url}/ws?at=${encoded}&lang=${locale.value}`;
+}

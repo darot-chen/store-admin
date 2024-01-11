@@ -31,3 +31,11 @@ export const truncateMidString = (str: string, left = 6, right = 6) => {
     str.length
   )}`;
 };
+
+export const sleep = (ms: number): Promise<{ timeout: boolean }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ timeout: true });
+    }, ms);
+  });
+};

@@ -19,7 +19,7 @@ export type CursorPaginationMeta = {
 export type APIMeta<T = any> = {
   code: number;
   message: string;
-  data: T;
+  results: T;
   meta: CursorPaginationMeta;
 };
 

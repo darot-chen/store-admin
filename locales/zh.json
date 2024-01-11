@@ -1,1 +1,9 @@
-{}
+{
+  "loading": "加载中",
+  "attach_file_must_be": "附件文件必须是 {value} MB",
+  "total_fund": "资金总额",
+  "available_fund": "可用资金",
+  "join_chat": "加入聊天",
+  "joined_the_chat": "加入聊天",
+  "left_the_chat": "离开聊天室"
+}

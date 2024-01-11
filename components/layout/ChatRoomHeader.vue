@@ -7,12 +7,6 @@
       class="fixed z-10 flex w-full items-center gap-2 bg-white px-2 py-2"
       style="max-width: 32rem; left: auto; z-index: 100"
     >
-      <img
-        class="cursor-pointer"
-        src="/img/icons/back.svg"
-        alt="back"
-        @click="navigateTo('/mini')"
-      />
       <div class="h-[30px] w-[30px] rounded-full border border-[#E3E3E3] p-0.5">
         <img src="/img/icons/chat-icon.svg" alt="chat-icon" />
       </div>
