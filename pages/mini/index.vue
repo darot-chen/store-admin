@@ -5,6 +5,16 @@
       @scroll="handleScroll"
     >
       <div
+        class="text-primary cursor-pointer rounded border bg-[#FE863F] p-2 text-center"
+        @click="handleChangeRoomType"
+      >
+        {{
+          roomType === "public"
+            ? $t("switch_to_private")
+            : $t("switch_to_public")
+        }}
+      </div>
+      <div
         v-if="loading"
         class="absolute"
         style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
@@ -54,6 +64,8 @@ definePageMeta({
 const route = useRoute();
 const userStore = useUserStore();
 
+const roomType = ref<string>("public");
+
 const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
@@ -83,7 +95,7 @@ const fetchChatRooms = async () => {
     firstLoad.value = false;
   }
 
-  const { data } = await API_CHAT_ROOM.GET_PUBLIC_ROOM.execute({
+  const { data } = await API_CHAT_ROOM.GET_PUBLIC_ROOM.execute(roomType.value, {
     last: lastItemId.value,
     limit: 10,
   });
@@ -95,6 +107,12 @@ const fetchChatRooms = async () => {
   }
 
   loading.value = false;
+};
+
+const handleChangeRoomType = () => {
+  roomType.value === "public"
+    ? (roomType.value = "private")
+    : (roomType.value = "public");
 };
 
 const handleScroll = (event: Event) => {
@@ -109,6 +127,13 @@ const handleScroll = (event: Event) => {
     }
   }, 300);
 };
+
+watch(roomType, () => {
+  chatRooms.value = [];
+  lastItemId.value = 0;
+  loadMore.value = true;
+  fetchChatRooms();
+});
 
 watch(userStore, () => {
   if (userStore.username) {

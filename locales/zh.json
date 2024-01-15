@@ -5,5 +5,7 @@
   "available_fund": "可用资金",
   "join_chat": "加入聊天",
   "joined_the_chat": "加入聊天",
-  "left_the_chat": "离开聊天室"
+  "left_the_chat": "离开聊天室",
+  "switch_to_private": "切换到私人",
+  "switch_to_public": "切换到公共"
 }

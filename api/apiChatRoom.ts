@@ -5,15 +5,15 @@ import { CursorResponse } from "~/types/pagination";
 
 export const API_CHAT_ROOM = {
   GET_PUBLIC_ROOM: {
-    path: (last?: number, limit?: number) =>
-      `/chat-rooms?type=public${last ? `&last=${last}` : ""}${
+    path: (type: string, last?: number, limit?: number) =>
+      `/chat-rooms?type=${type}${last ? `&last=${last}` : ""}${
         limit ? `&limit=${limit}` : ""
       }`,
     method: HTTPMethod.GET,
     body: (value: CursorChatRoomPayload) => value,
-    execute(body: CursorChatRoomPayload) {
+    execute(type: string, body: CursorChatRoomPayload) {
       return useApiFetch<CursorResponse<ChatRoom[]>>(
-        this.path(body?.last, body.limit),
+        this.path(type, body?.last, body.limit),
         {
           method: this.method,
           key: "chatRoom/Public",
