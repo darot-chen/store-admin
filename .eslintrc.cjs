@@ -26,6 +26,7 @@ module.exports = {
     "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off",
+    "vue/html-indent": "off",
     "vue/component-name-in-template-casing": [
       "error",
       "PascalCase",
