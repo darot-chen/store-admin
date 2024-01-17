@@ -12,11 +12,7 @@
           class="hidden"
           @change="onFileChange"
         />
-        <img
-          src="/img/icons/plus.svg"
-          alt="add"
-          @click="onDebounceAttachFile"
-        />
+        <img src="/icons/plus.svg" alt="add" @click="onDebounceAttachFile" />
       </button>
       <form class="relative flex-1" @submit="onSubmit">
         <input
@@ -27,7 +23,7 @@
         />
         <img
           class="absolute bottom-0 right-2 top-0 m-auto cursor-pointer"
-          src="/img/icons/send.svg"
+          src="/icons/send.svg"
           alt=""
           @click="onDebounceSubmit"
         />

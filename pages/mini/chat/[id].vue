@@ -1,8 +1,5 @@
 <template>
-  <div
-    style="display: block; overflow: auto; height: calc(100vh - 130px)"
-    @scroll="onScroll"
-  >
+  <div class="bg-image" @scroll="onScroll">
     <!-- <div class="absolute bottom-0 top-0 z-0">
       <img
         class="opacity-5"
@@ -12,24 +9,13 @@
       />
     </div> -->
     <div
-      class="pointer-events-none fixed left-0 right-0 top-0 z-0 mx-auto max-w-lg"
-      style="height: calc(100vh - 130px)"
-    >
-      <img
-        class="h-full w-full object-cover opacity-5"
-        src="/img/chat-bg.jpeg"
-        alt="chat-bg"
-        style="object-position: center; object-fit: cover"
-      />
-    </div>
-    <div
       v-if="loading"
       class="absolute"
       style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
     >
       <div
         class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
-      ></div>
+      />
     </div>
     <div v-else>
       <div v-if="hasJoined" ref="chatListDiv" class="flex flex-col">
@@ -54,13 +40,14 @@
         />
         <div ref="bottomEl" />
       </div>
-      <div
+
+      <button
         v-else
         class="fixed bottom-2 left-0 right-0 mx-auto max-w-lg cursor-pointer rounded-full border-[1px] border-[#D7DBEE] bg-[#FE863F] p-3 text-center text-white"
         @click="onJoinChat"
       >
         {{ t("join_chat") }}
-      </div>
+      </button>
     </div>
   </div>
 </template>
@@ -271,8 +258,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.background-image {
+.bg-image {
+  display: block;
+  overflow: auto;
+  height: 100%;
   background-image: url("/img/chat-bg.jpeg");
   background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: overlay;
 }
 </style>

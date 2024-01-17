@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint --ext \".ts,.vue\" --ignore-path .gitignore .",
-    "lint:fix": "yarn lint --fix",
+    "lint:fix": "yarn lint --fix && prettier --write --list-different",
     "test": "vitest"
   },
   "devDependencies": {
