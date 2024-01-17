@@ -19,7 +19,7 @@ const route = useRoute();
 const router = useRouter();
 const loading = ref<boolean>(false);
 
-onMounted(() => {
+onMounted(async () => {
   const at = route.query.at?.toString();
   let token: string | null | undefined;
   if (at) {
@@ -29,9 +29,9 @@ onMounted(() => {
   } else {
     token = getToken();
   }
-  setTimeout(() => {
+  setTimeout(async () => {
     if (token) {
-      userStore.me();
+      await userStore.me();
     }
 
     router.replace({
