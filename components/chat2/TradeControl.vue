@@ -65,7 +65,7 @@ defineProps<{
   orderNumber: string;
 }>();
 
-const showMore = ref(true);
+const showMore = ref(false);
 
 function onShowMore() {
   showMore.value = !showMore.value;

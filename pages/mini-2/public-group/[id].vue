@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "chat2",
+  layout: "chat",
   title: "公群 50002 房间 1",
 });
 

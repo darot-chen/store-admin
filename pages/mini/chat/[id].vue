@@ -1,80 +1,60 @@
 <template>
-  <div class="bg-image" @scroll="onScroll">
-    <!-- <div class="absolute bottom-0 top-0 z-0">
-      <img
-        class="opacity-5"
-        src="/img/chat-bg.jpeg"
-        alt=""
-        style="height: calc(100vh - 130px)"
-      />
-    </div> -->
+  <div class="relative flex h-full flex-col">
+    <Chat2TradeControl :total="500000" order-number="BS0000001" />
     <div
-      v-if="loading"
-      class="absolute"
-      style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
+      ref="chatListDiv"
+      class="my-[0.18rem] flex h-full flex-col gap-[1rem] overflow-auto px-[0.5rem] py-[0.2rem]"
+      @scroll="onScroll"
     >
-      <div
-        class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
-      />
-    </div>
-    <div v-else>
-      <div v-if="hasJoined" ref="chatListDiv" class="flex flex-col">
-        <div v-show="fetchingMoreChat" class="flex justify-center">
-          {{ t("loading") }}
-        </div>
-        <ChatMessage
-          v-for="chat in chats"
-          :key="chat.id"
-          :is-sender="chat.user_id === userStore.userInfo.id"
-          :content="chat.message"
-          :type="chat.type"
-          :user="chat.user"
-          :admin="chat.admin"
-          :created-at="chat.created_at"
-        />
-        <ChatInput
-          :message="messagePayload.message"
-          @input="onTyping"
-          @submit="onSubmitChat"
-          @attach-file="onAttachFile"
-        />
-        <div ref="bottomEl" />
+      <div v-show="fetchingMoreChat" class="flex justify-center">
+        {{ $t("loading") }}
       </div>
-
-      <button
-        v-else
-        class="fixed bottom-2 left-0 right-0 mx-auto max-w-lg cursor-pointer rounded-full border-[1px] border-[#D7DBEE] bg-[#FE863F] p-3 text-center text-white"
-        @click="onJoinChat"
-      >
-        {{ t("join_chat") }}
-      </button>
+      <UiChatBubble
+        v-for="(c, i) in chats"
+        :key="i"
+        :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
+        :text="c.message"
+        :timestamp="c.created_at"
+        :show-profile="true"
+        :type="
+          c.type === 'action'
+            ? 'action'
+            : c.user_id === userStore.userInfo.id
+            ? 'outgoing'
+            : 'incoming'
+        "
+      />
+      <div ref="bottomEl" />
     </div>
+    <Chat2Input
+      v-if="hasJoined"
+      v-model="messagePayload.message"
+      @submit="onSubmit"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import useUserStore from "~/stores/userStore";
 import { API_CHAT } from "~/api/apiChat";
-import { API_CHAT_ROOM } from "~/api/apiChatRoom";
 import { Chat } from "~/types/chat";
-import { showToast } from "vant";
+import useUserStore from "~/stores/userStore";
 
-definePageMeta({
-  layout: "chat",
-  title: "home",
-  keepalive: true,
-});
-const route = useRoute();
-const userStore = useUserStore();
 const { $evOn, $evOff } = useNuxtApp();
-const { t } = useI18n();
+const route = useRoute();
 
-const chats = ref<Chat[]>([]);
+const userStore = useUserStore();
+
+const roomID = +route.params.id;
+
 const bottomEl = ref<HTMLDivElement | null>(null);
-const chatListDiv = ref<HTMLDivElement | null>(null);
+const loading = ref<boolean>(false);
+const chats = ref<Chat[]>([]);
+const hasJoined = ref<boolean>(false);
+const lastItemId = ref<number>(0);
+const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
-const loading = ref<boolean>(false);
+const chatListDiv = ref<HTMLDivElement | null>(null);
 
 const messagePayload = ref<{
   type: "text";
@@ -84,123 +64,7 @@ const messagePayload = ref<{
   message: "",
 });
 
-const lastItemId = ref<number>(0);
-const roomID = +route.params.id;
-const hasMore = ref<boolean>(false);
-const hasJoined = ref<boolean>(false);
-
-function scrollToBottom() {
-  if (bottomEl.value) {
-    if (firstLoad.value) {
-      bottomEl.value.scrollIntoView();
-      firstLoad.value = false;
-    } else {
-      bottomEl.value.scrollIntoView({ behavior: "smooth" });
-    }
-  }
-}
-
-const addChatAndSort = (newChat: Chat) => {
-  chats.value = [newChat, ...chats.value];
-  chats.value = chats.value.sort((a, b) => {
-    return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf();
-  });
-
-  sleepScrollToBottom();
-};
-
-const onTyping = (value: string) => {
-  messagePayload.value.message = value;
-};
-
-async function onAttachFile(file: File) {
-  if (!file || !roomID) return;
-
-  sleepScrollToBottom();
-
-  if (file.type === "video/mp4") {
-    if (file.size > 10 * 1024 * 1024) {
-      showToast({
-        message: t(`attach_file_must_be`, {
-          value: "10",
-        }),
-        position: "top",
-      });
-    }
-    const { error } = await API_CHAT.ADD_VIDEO_CHAT.execute(roomID, file);
-    if (error.value) {
-      showToast({
-        message: error.value?.data.message,
-        position: "top",
-      });
-    }
-  } else {
-    if (file.size > 2 * 1024 * 1024) {
-      showToast({
-        message: t(`attach_file_must_be`, {
-          value: "2",
-        }),
-        position: "top",
-      });
-    }
-
-    const { error } = await API_CHAT.ADD_IMAGE_CHAT.execute(roomID, file);
-    if (error.value) {
-      showToast({
-        message: error.value?.data.message,
-        position: "top",
-      });
-    }
-  }
-}
-
-const onJoinChat = async () => {
-  const { error } = await API_CHAT_ROOM.JOIN_PUBLIC_ROOM.execute(roomID);
-  if (!error.value) {
-    hasJoined.value = true;
-    return;
-  }
-
-  showToast({
-    message: error.value?.data.message,
-    position: "top",
-  });
-};
-
-const onSubmitChat = async () => {
-  if (messagePayload.value.message.trim() === "") return;
-
-  await API_CHAT.ADD_TEXT_CHAT.execute(
-    roomID,
-    messagePayload.value.message.trim()
-  );
-
-  messagePayload.value.message = "";
-  sleepScrollToBottom();
-};
-
-const fetchMoreChats = async () => {
-  if (!hasMore.value) return;
-  fetchingMoreChat.value = true;
-  const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
-    last: lastItemId.value,
-    limit: 15,
-  });
-  if (data.value?.results?.length) {
-    data.value.results.reverse();
-    chats.value = [...data.value.results, ...chats.value];
-
-    if (data.value.meta.has_next) {
-      lastItemId.value = data.value.results[0].id;
-      hasMore.value = true;
-    } else {
-      hasMore.value = false;
-    }
-  }
-  fetchingMoreChat.value = false;
-};
-
-const fetchChats = async () => {
+async function fetchChats() {
   loading.value = true;
   const { data, error } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
     last: lastItemId.value,
@@ -221,33 +85,83 @@ const fetchChats = async () => {
 
   loading.value = false;
   sleepScrollToBottom();
-};
+}
 
 async function sleepScrollToBottom() {
   await sleep(20);
   scrollToBottom();
 }
 
-const onScroll = (event: Event) => {
-  const target = event.target as HTMLElement;
-  const { scrollTop, scrollHeight, clientHeight } = target;
-  const list = chatListDiv.value;
-  setTimeout(() => {
-    if (scrollTop === 0 && scrollHeight !== clientHeight) {
-      const oldHeight = list!.scrollHeight;
-      fetchMoreChats();
-      nextTick(() => {
-        target.scrollTop = list!.scrollHeight - oldHeight;
-      });
+function scrollToBottom() {
+  if (bottomEl.value) {
+    if (firstLoad.value) {
+      bottomEl.value.scrollIntoView();
+      firstLoad.value = false;
+    } else {
+      bottomEl.value.scrollIntoView({ behavior: "smooth" });
     }
-  }, 300);
-};
+  }
+}
+
+function addChatAndSort(newChat: Chat) {
+  chats.value = [newChat, ...chats.value];
+  chats.value = chats.value.sort((a, b) => {
+    return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf();
+  });
+
+  sleepScrollToBottom();
+}
+
+async function fetchMoreChats() {
+  if (!hasMore.value) return;
+  fetchingMoreChat.value = true;
+  const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
+    last: lastItemId.value,
+    limit: 15,
+  });
+  if (data.value?.results?.length) {
+    chats.value = [...data.value.results.reverse(), ...chats.value];
+
+    if (data.value.meta.has_next) {
+      lastItemId.value = data.value.results[0].id;
+      hasMore.value = true;
+    } else {
+      hasMore.value = false;
+    }
+  }
+  fetchingMoreChat.value = false;
+}
+
+async function onScroll(e: Event) {
+  const target = e.target as HTMLDivElement;
+  const list = chatListDiv.value;
+
+  if (target.scrollTop === 0 && target.scrollHeight !== target.clientHeight) {
+    const oldHeight = list!.scrollHeight;
+    await fetchMoreChats();
+    nextTick(() => {
+      target.scrollTop = list!.scrollHeight - oldHeight;
+    });
+  }
+}
+
+async function onSubmit() {
+  if (messagePayload.value.message.trim() === "") return;
+
+  await API_CHAT.ADD_TEXT_CHAT.execute(
+    roomID,
+    messagePayload.value.message.trim()
+  );
+
+  messagePayload.value.message = "";
+  sleepScrollToBottom();
+}
 
 onMounted(() => {
   fetchChats();
 
   $evOn("new_chat_received", (d: any) => {
-    if (d.chat_room_id !== +route.params.id) return;
+    if (d.chat_room_id !== roomID) return;
     addChatAndSort(d);
   });
 });
@@ -255,16 +169,9 @@ onMounted(() => {
 onUnmounted(() => {
   $evOff("new_chat_received");
 });
-</script>
 
-<style scoped>
-.bg-image {
-  display: block;
-  overflow: auto;
-  height: 100%;
-  background-image: url("/img/chat-bg.jpeg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-blend-mode: overlay;
-}
-</style>
+definePageMeta({
+  layout: "chat",
+  title: "公群 50002 房间 1",
+});
+</script>

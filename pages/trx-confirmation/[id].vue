@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: "chat2",
+  layout: "chat",
   title: "transaction confirmation",
 });
 </script>

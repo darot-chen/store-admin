@@ -1,11 +1,19 @@
 <template>
   <div
-    :v-if="type === 'incoming'"
+    v-if="type !== 'action'"
     class="relative inline-flex flex-col justify-end"
   >
-    <div class="flex w-full items-end">
+    <div
+      :class="[
+        'flex w-full items-end',
+        type === 'incoming' ? 'justify-start' : 'justify-end',
+      ]"
+    >
       <div class="inline-flex items-end">
-        <div v-if="showProfile || profile" :class="!profile && 'bg-avatar'">
+        <div
+          v-if="(showProfile || profile) && type === 'incoming'"
+          :class="!profile && 'bg-avatar'"
+        >
           <img
             v-if="profile"
             class="w-[2.375rem] rounded-full"
@@ -14,18 +22,34 @@
           <p v-else>{{ name.charAt(0) }}</p>
         </div>
         <img
+          v-if="type === 'incoming'"
           class="h-[0.625rem] w-[0.375rem]"
           src="/icons/chat-tail-incoming.svg"
           alt="mini-2"
         />
       </div>
-      <div class="incoming-layout">
+      <div
+        :class="[type === 'incoming' ? 'incoming-layout' : 'outgoing-layout']"
+      >
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <p class="incoming-name px-[0.38rem]">{{ name }}</p>
-          <div class="incoming-content px-[0.38rem]">
+          <p v-if="type === 'incoming'" class="incoming-name px-[0.38rem]">
+            {{ name }}
+          </p>
+          <div
+            :class="[
+              'px-[0.38rem]',
+              type === 'incoming' ? 'incoming-content' : 'outgoing-content',
+            ]"
+          >
             <p class="whitespace-pre-wrap break-all">{{ text }}</p>
           </div>
-          <p class="incoming-timestamp">{{ timestamp }}</p>
+          <p
+            :class="[
+              type === 'incoming' ? 'incoming-timestamp' : 'outgoing-timestamp',
+            ]"
+          >
+            {{ formatDate(timestamp) }}
+          </p>
         </div>
       </div>
     </div>
@@ -40,20 +64,8 @@
       <UiButton title="确认" @click="onConfirm" />
     </div>
   </div>
-  <div
-    :v-else-if="type === 'outgoing'"
-    class="relative inline-flex flex-col justify-end"
-  >
-    <div class="flex w-full flex-row-reverse items-end">
-      <div class="outgoing-layout">
-        <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <div class="outgoing-content pb-[0.38rem] pt-[0.76rem]">
-            <p class="whitespace-pre-wrap break-all">{{ text }}</p>
-          </div>
-          <p class="outgoing-timestamp">{{ timestamp }}</p>
-        </div>
-      </div>
-    </div>
+  <div v-else>
+    <UiTag :title="`${name} has joined the chat`" />
   </div>
 </template>
 
@@ -61,7 +73,7 @@
 import { showDialog } from "vant";
 
 defineProps<{
-  type: "incoming" | "outgoing";
+  type: "incoming" | "outgoing" | "action";
   text: string;
   profile?: string;
   timestamp: string;

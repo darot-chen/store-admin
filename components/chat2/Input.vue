@@ -18,8 +18,14 @@
           />
         </button>
       </div>
-      <div>
-        <input class="input" placeholder="Message" />
+      <div class="flex-1">
+        <input
+          class="input"
+          type="text"
+          :value="modelValue"
+          placeholder="Message"
+          @input="(e) => onInput(e)"
+        />
       </div>
       <div class="inline-flex items-center justify-end gap-[1.12rem]">
         <button>
@@ -29,26 +35,59 @@
             alt="emoji"
           />
         </button>
-        <button>
-          <img
-            class="h-[1.6875rem] w-[1.6875rem]"
-            src="/icons/mic.svg"
-            alt="emoji"
-          />
-        </button>
+        <transition name="pop">
+          <button v-show="!isInputFocused">
+            <img
+              class="h-[1.6875rem] w-[1.6875rem]"
+              src="/icons/mic.svg"
+              alt="emoji"
+            />
+          </button>
+        </transition>
+        <transition name="pop">
+          <button v-show="isInputFocused" @click="onSubmit">
+            <img
+              class="h-[1.6875rem] w-[1.6875rem]"
+              src="/icons/send.svg"
+              alt="emoji"
+            />
+          </button>
+        </transition>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps<{
+  modelValue: string;
+}>();
+
+const emits = defineEmits<{
+  (e: "update:modelValue", value: string): void;
+  (e: "submit"): void;
+}>();
+
+const isInputFocused = ref<boolean>(false);
+
+function onInput(e: Event) {
+  isInputFocused.value = true;
+  const target = e.target as HTMLInputElement;
+  emits("update:modelValue", target.value);
+}
+
+function onSubmit() {
+  isInputFocused.value = true;
+  emits("submit");
+  emits("update:modelValue", "");
+}
+</script>
 
 <style scoped>
 .input-container {
   display: flex;
   padding: 0.625rem 0.625rem;
   align-items: center;
-  flex-shrink: 0;
   gap: 0.5rem;
   justify-content: space-between;
   box-shadow: 0px -0.668px 2.004px 0px rgba(0, 0, 0, 0.13);
@@ -65,10 +104,25 @@
   padding: 0.31rem 0.5rem;
   display: inline-flex;
   align-items: center;
-  background: var(--Blue-Main-Color, #50a7ea);
+  background: #50a7ea;
   color: #fff;
   font-size: 0.875rem;
   font-style: normal;
   line-height: 1.125rem;
+}
+
+.pop-enter-active {
+  transition: all 0.3s;
+}
+
+.pop-enter-from {
+  opacity: 0;
+  transform: translateY(1rem);
+  position: absolute;
+}
+
+.pop-enter-to {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
