@@ -6,7 +6,7 @@ import { CursorResponse } from "~/types/pagination";
 export const API_CHAT_ROOM = {
   GET_PUBLIC_ROOM: {
     path: (type: string, last?: number, limit?: number) =>
-      `/chat-rooms/${type}${last ? `last=${last}` : ""}${
+      `/chat-rooms/${type}${last ? `?last=${last}` : ""}${
         limit ? `?limit=${limit}` : ""
       }`,
     method: HTTPMethod.GET,

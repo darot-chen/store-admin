@@ -1,8 +1,11 @@
 <template>
-  <Suspense v-if="loading" />
+  <div v-if="loading" class="flex h-screen items-center justify-center">
+    <div
+      class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+    />
+  </div>
   <NuxtLayout v-else>
     <NuxtPage
-      v-if="!loading"
       :page-key="(route: any) => route.path"
       :keepalive="$route.meta.keepalive"
     />
@@ -17,9 +20,9 @@ const local = getLocaleCookie();
 const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
-const loading = ref<boolean>(false);
+const loading = ref<boolean>(true);
 
-onMounted(async () => {
+onMounted(() => {
   const at = route.query.at?.toString();
   let token: string | null | undefined;
   if (at) {
