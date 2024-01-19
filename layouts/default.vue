@@ -1,5 +1,7 @@
 <template>
-  <div class="fulls-screen mx-auto flex max-w-lg flex-col">
+  <div
+    class="fulls-screen safe-area-padding-bottom mx-auto flex max-w-lg flex-col"
+  >
     <slot name="header">
       <Head>
         <Title>{{ $t($route.meta.title || "") }}</Title>

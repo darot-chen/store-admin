@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-auto flex h-full max-w-lg flex-col">
+  <div class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col">
     <slot name="header">
       <LayoutChatRoomHeader />
     </slot>

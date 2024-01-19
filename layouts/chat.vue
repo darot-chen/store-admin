@@ -1,5 +1,7 @@
 <template>
-  <div class="mx-auto mb-16 flex h-full w-full max-w-lg flex-col">
+  <div
+    class="safe-area-padding-bottom mx-auto mb-16 flex h-full w-full max-w-lg flex-col"
+  >
     <slot name="header">
       <div class="fixed z-10 w-full max-w-lg bg-white py-[1.06rem]">
         <div class="flex w-full items-center justify-between gap-2 px-2">

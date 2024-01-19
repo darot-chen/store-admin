@@ -1,5 +1,7 @@
 <template>
-  <div class="mx-auto mb-16 flex h-full max-w-lg flex-col">
+  <div
+    class="safe-area-padding-bottom mx-auto mb-16 flex h-full max-w-lg flex-col"
+  >
     <slot name="header">
       <LayoutHeader />
     </slot>
