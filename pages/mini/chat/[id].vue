@@ -1,5 +1,5 @@
 <template>
-  <div class="relative flex h-full flex-col">
+  <div v-if="hasJoined" class="relative flex h-full flex-col">
     <Chat2TradeControl :total="500000" order-number="BS0000001" />
     <div
       ref="chatListDiv"
@@ -32,12 +32,23 @@
       @submit="onSubmit"
     />
   </div>
+  <div v-else class="relative flex h-full flex-col px-5 pb-4">
+    <div class="flex h-full flex-col items-center justify-end">
+      <button
+        class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
+        @click="onJoinChat"
+      >
+        Join Chat
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { API_CHAT } from "~/api/apiChat";
 import { Chat } from "~/types/chat";
 import useUserStore from "~/stores/userStore";
+import { API_CHAT_ROOM } from "~/api/apiChatRoom";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -64,27 +75,34 @@ const messagePayload = ref<{
   message: "",
 });
 
+async function onJoinChat() {
+  await API_CHAT_ROOM.JOIN_PUBLIC_ROOM.execute(roomID);
+  hasJoined.value = true;
+  fetchChats();
+}
+
 async function fetchChats() {
   loading.value = true;
-  const { data, error } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
-    last: lastItemId.value,
-    limit: 15,
-  });
+  const { data: chatDetail } = await API_CHAT.GET_CHAT_DETAIL.execute(roomID);
+  hasJoined.value = chatDetail.value?.is_a_member ?? false;
 
-  error.value?.data.message === "Forbidden"
-    ? (hasJoined.value = false)
-    : (hasJoined.value = true);
+  if (chatDetail.value?.is_a_member) {
+    const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
+      last: lastItemId.value,
+      limit: 15,
+    });
 
-  if (data.value?.results?.length) {
-    chats.value = data.value.results.reverse();
-    if (data.value.meta.has_next) {
-      lastItemId.value = data.value.results[0].id;
-      hasMore.value = data.value.meta.has_next;
+    if (data.value?.results?.length) {
+      chats.value = data.value.results.reverse();
+      if (data.value.meta.has_next) {
+        lastItemId.value = data.value.results[0].id;
+        hasMore.value = data.value.meta.has_next;
+      }
     }
-  }
 
-  loading.value = false;
-  sleepScrollToBottom();
+    loading.value = false;
+    sleepScrollToBottom();
+  }
 }
 
 async function sleepScrollToBottom() {
