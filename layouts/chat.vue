@@ -63,7 +63,7 @@ useHead({
 });
 
 const { open, close } = useSocket(socketUrl || "", {
-  autoConnect: true,
+  autoReconnect: true,
   onMessage(_, event) {
     handleOnMessage(event);
   },
