@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white">
-    <div class="input-container">
+    <form class="input-container" @submit.prevent="onSubmit">
       <div class="inline-flex items-center gap-[0.5rem]">
         <button class="menu-btn">
           <img
@@ -45,7 +45,7 @@
           </button>
         </transition>
         <transition name="pop">
-          <button v-show="isInputFocused" @click="onSubmit">
+          <button v-show="isInputFocused">
             <img
               class="h-[1.6875rem] w-[1.6875rem]"
               src="/icons/send.svg"
@@ -54,12 +54,12 @@
           </button>
         </transition>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   modelValue: string;
 }>();
 
@@ -81,6 +81,15 @@ function onSubmit() {
   emits("submit");
   emits("update:modelValue", "");
 }
+
+watch(
+  () => props.modelValue,
+  (v) => {
+    if (v === "") {
+      isInputFocused.value = false;
+    }
+  }
+);
 </script>
 
 <style scoped>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasJoined" class="relative flex h-full flex-col">
+  <div v-if="hasJoined && !loading" class="relative flex h-full flex-col">
     <Chat2TradeControl :total="500000" order-number="BS0000001" />
     <div
       ref="chatListDiv"
@@ -32,7 +32,10 @@
       @submit="onSubmit"
     />
   </div>
-  <div v-else class="relative flex h-full flex-col px-5 pb-4">
+  <div
+    v-else-if="!hasJoined && !loading"
+    class="relative flex h-full flex-col px-5 pb-4"
+  >
     <div class="flex h-full flex-col items-center justify-end">
       <button
         class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
@@ -42,16 +45,23 @@
       </button>
     </div>
   </div>
+  <div v-else-if="loading" class="flex h-screen items-center justify-center">
+    <div
+      class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { API_CHAT } from "~/api/apiChat";
-import { Chat } from "~/types/chat";
+import { Chat, ChatDetail } from "~/types/chat";
 import useUserStore from "~/stores/userStore";
 import { API_CHAT_ROOM } from "~/api/apiChatRoom";
+import usePageStore from "~/stores/pageStore";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
+const pageStore = usePageStore();
 
 const userStore = useUserStore();
 
@@ -66,6 +76,7 @@ const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatListDiv = ref<HTMLDivElement | null>(null);
+const detail = ref<ChatDetail>();
 
 const messagePayload = ref<{
   type: "text";
@@ -81,10 +92,15 @@ async function onJoinChat() {
   fetchChats();
 }
 
+const { data: chatDetail } = await API_CHAT.GET_CHAT_DETAIL.execute(roomID);
+detail.value = chatDetail.value ?? undefined;
+
 async function fetchChats() {
   loading.value = true;
   const { data: chatDetail } = await API_CHAT.GET_CHAT_DETAIL.execute(roomID);
   hasJoined.value = chatDetail.value?.is_a_member ?? false;
+  detail.value = chatDetail.value ?? undefined;
+  pageStore.setTitle(chatDetail.value?.business.title ?? "");
 
   if (chatDetail.value?.is_a_member) {
     const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
@@ -100,9 +116,9 @@ async function fetchChats() {
       }
     }
 
-    loading.value = false;
     sleepScrollToBottom();
   }
+  loading.value = false;
 }
 
 async function sleepScrollToBottom() {
@@ -188,8 +204,11 @@ onUnmounted(() => {
   $evOff("new_chat_received");
 });
 
+useHead({
+  title: detail.value?.business.title ?? "",
+});
+
 definePageMeta({
   layout: "chat",
-  title: "公群 50002 房间 1",
 });
 </script>

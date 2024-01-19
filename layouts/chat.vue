@@ -20,7 +20,7 @@
           </div>
 
           <p class="line-clamp-1 max-w-[50%] basis-2/4 text-center">
-            {{ t(route.meta.title || "") }}
+            {{ pageStore.title }}
           </p>
 
           <div class="inline-flex basis-1/4 justify-end">
@@ -51,18 +51,19 @@
 
 <script setup lang="ts">
 import { SOCKET_EVENT } from "~/constants/socket";
+import usePageStore from "~/stores/pageStore";
 import { SocketMessageData } from "~/types/base";
 import { Chat } from "~/types/chat";
 
-const { t } = useI18n();
-const route = useRoute();
 const socketUrl = getWebSocketUrl();
+const pageStore = usePageStore();
 
 useHead({
-  title: t(route.meta.title || ""),
+  title: pageStore.title,
 });
 
 const { open, close } = useSocket(socketUrl || "", {
+  autoConnect: true,
   onMessage(_, event) {
     handleOnMessage(event);
   },
