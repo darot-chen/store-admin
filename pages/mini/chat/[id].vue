@@ -19,7 +19,7 @@
         :type="
           c.type === 'action'
             ? 'action'
-            : c.user_id === userStore.userInfo.id
+            : c.user_id === authStore.user?.id
             ? 'outgoing'
             : 'incoming'
         "
@@ -55,16 +55,16 @@
 <script setup lang="ts">
 import { API_CHAT } from "~/api/apiChat";
 import { Chat, ChatDetail } from "~/types/chat";
-import useUserStore from "~/stores/userStore";
 import { API_CHAT_ROOM } from "~/api/apiChatRoom";
-import usePageStore from "~/stores/pageStore";
+import { useAuthStore } from "~/stores/auth";
+import usePageStore from "~/stores/page";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
 const pageStore = usePageStore();
+const authStore = useAuthStore();
 
-const userStore = useUserStore();
-
+console.log(authStore.user);
 const roomID = +route.params.id;
 
 const bottomEl = ref<HTMLDivElement | null>(null);

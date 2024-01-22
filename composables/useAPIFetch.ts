@@ -1,10 +1,9 @@
 import { showToast } from "vant";
-import useUserStore from "~/stores/userStore";
 
 export type useFetchType = typeof useFetch;
 
 const modifyHeader = (headers = new Headers()) => {
-  const token = getToken();
+  const token = storage.getAccessToken();
 
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
@@ -18,12 +17,10 @@ const notShowingErrCode = [-505, -807, -808, -809, -813];
 const useApiFetchUnified: useFetchType = (path, options = {}) => {
   const { $i18n } = useNuxtApp();
   const { t } = $i18n;
-  const userStore = useUserStore();
   const router = useRouter();
   return useFetch(path, {
     onResponseError({ response }) {
       if (response._data.code === -5) {
-        userStore.logout();
         router.replace("/login");
       }
 

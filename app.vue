@@ -13,16 +13,17 @@
 </template>
 
 <script setup lang="ts">
-import useUserStore from "./stores/userStore";
 import { SOCKET_EVENT } from "~/constants/socket";
 import { SocketMessageData } from "~/types/base";
 import { Chat } from "~/types/chat";
+import { useAuthStore } from "./stores/auth";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
 const local = getLocaleCookie();
-const userStore = useUserStore();
+const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
+
 const loading = ref<boolean>(true);
 const socketUrl = getWebSocketUrl();
 
@@ -47,27 +48,27 @@ function handleOnMessage(data: SocketMessageData<unknown>) {
 setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
-onMounted(() => {
+onMounted(async () => {
+  loading.value = true;
   const at = route.query.at?.toString();
-  let token: string | null | undefined;
+  let token = null;
   if (at) {
-    loading.value = true;
     token = atob(at);
-    setToken(token);
+    storage.setAccessToken(token);
   } else {
-    token = getToken();
+    token = storage.getAccessToken();
   }
-  setTimeout(async () => {
-    if (token) {
-      await userStore.me();
-    }
 
-    open(getWebSocketUrl());
+  if (token) {
+    await authStore.getUser();
+  }
 
-    router.replace({
-      query: {},
-    });
-  }, 1000);
+  open(getWebSocketUrl());
+
+  router.replace({
+    query: {},
+  });
+
   loading.value = false;
 });
 

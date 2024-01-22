@@ -12,7 +12,7 @@
       </div>
       <div>
         <div class="flex text-sm text-[#494E55]">
-          <span>{{ userStore.username }}</span>
+          <span>{{ authStore.user?.username }}</span>
           <img src="/icons/star-wing.svg" alt="" />
           <img src="/icons/star-wing.svg" alt="" />
         </div>
@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import useUserStore from "~/stores/userStore";
-const userStore = useUserStore();
+import { useAuthStore } from "~/stores/auth";
+
+const authStore = useAuthStore();
 </script>

@@ -93,8 +93,8 @@ export default defineNuxtConfig({
   telemetry: false,
   runtimeConfig: {
     public: {
-      baseApi: "",
-      baseWs: "",
+      baseApi: "https://dev-bs-api.ss.hd1.fun",
+      baseWs: "https://dev-bs-api.ss.hd1.fun",
     },
   },
 });

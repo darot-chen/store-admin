@@ -14,7 +14,7 @@ export function getWebSocketUrl() {
     .replace("https://", "")
     .replace("http://", "");
 
-  const token = getToken();
+  const token = storage.getAccessToken();
   const encoded = btoa(token || "");
   if (!encoded) return;
 

@@ -52,8 +52,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import useUserStore from "~/stores/userStore";
 import { API_CHAT_ROOM } from "~/api/apiChatRoom";
+import { useAuthStore } from "~/stores/auth";
 import { ChatRoom } from "~/types/chatRoom";
 
 definePageMeta({
@@ -62,7 +62,7 @@ definePageMeta({
   keepalive: true,
 });
 const route = useRoute();
-const userStore = useUserStore();
+const authStore = useAuthStore();
 
 const roomType = ref<string>("public");
 
@@ -78,13 +78,13 @@ onMounted(() => {
   let token: string | null | undefined;
   if (at) {
     token = atob(at);
-    setToken(token);
+    storage.setAccessToken(token);
   } else {
-    token = getToken();
+    token = storage.getAccessToken();
   }
   setTimeout(() => {
     if (token) {
-      userStore.me();
+      authStore.getUser();
     }
   }, 1000);
 });
@@ -135,8 +135,8 @@ watch(roomType, () => {
   fetchChatRooms();
 });
 
-watch(userStore, () => {
-  if (userStore.username) {
+watch(authStore, () => {
+  if (authStore.user) {
     fetchChatRooms();
   }
 });

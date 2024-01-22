@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import usePageStore from "~/stores/pageStore";
+import usePageStore from "~/stores/page";
 
 const pageStore = usePageStore();
 
@@ -68,3 +68,4 @@ useHead({
   background-size: cover;
 }
 </style>
+~/stores/page

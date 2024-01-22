@@ -21,7 +21,7 @@ export const API_CHAT_ROOM = {
       );
     },
   },
-  JOIN_PUBLIC_ROOM: {
+  JOIN_PUBLIC_ROOM: { 
     path: (roomID: number) => `/chat-rooms/${roomID}/join`,
     method: HTTPMethod.POST,
     execute(roomID: number) {
