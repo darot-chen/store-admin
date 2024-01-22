@@ -167,14 +167,16 @@ async function fetchMoreChats() {
 }
 
 async function onScroll(e: Event) {
+  if (!chatListDiv.value) return;
+
   const target = e.target as HTMLDivElement;
   const list = chatListDiv.value;
 
   if (target.scrollTop === 0 && target.scrollHeight !== target.clientHeight) {
-    const oldHeight = list!.scrollHeight;
+    const oldHeight = list.scrollHeight;
     await fetchMoreChats();
     nextTick(() => {
-      target.scrollTop = list!.scrollHeight - oldHeight;
+      target.scrollTop = list.scrollHeight - oldHeight;
     });
   }
 }
