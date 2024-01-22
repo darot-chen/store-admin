@@ -1,54 +1,52 @@
 <template>
-  <div v-if="hasJoined && !loading" class="relative flex h-full flex-col">
-    <ChatTradeControl :total="500000" order-number="BS0000001" />
-    <div
-      ref="chatListDiv"
-      class="my-[0.18rem] flex h-full flex-col gap-[1rem] overflow-auto px-[0.5rem] py-[0.2rem]"
-      @scroll="onScroll"
-    >
-      <div v-show="fetchingMoreChat" class="flex justify-center">
-        {{ $t("loading") }}
-      </div>
-      <UiChatBubble
-        v-for="(c, i) in chats"
-        :key="i"
-        :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
-        :text="c.message"
-        :timestamp="c.created_at"
-        :show-profile="true"
-        :type="
-          c.type === 'action'
-            ? 'action'
-            : c.user_id === authStore.user?.id
-            ? 'outgoing'
-            : 'incoming'
-        "
-      />
-      <div ref="bottomEl" />
-    </div>
-    <ChatInput
-      v-if="hasJoined"
-      v-model="messagePayload.message"
-      @submit="onSubmit"
-    />
-  </div>
-  <div
-    v-else-if="!hasJoined && !loading"
-    class="relative flex h-full flex-col px-5 pb-4"
-  >
-    <div class="flex h-full flex-col items-center justify-end">
-      <button
-        class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
-        @click="onJoinChat"
-      >
-        Join Chat
-      </button>
-    </div>
-  </div>
-  <div v-else-if="loading" class="flex h-screen items-center justify-center">
+  <div v-if="loading" class="flex h-screen items-center justify-center">
     <div
       class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
     />
+  </div>
+  <div v-else>
+    <div v-if="hasJoined && !loading" class="relative flex h-full flex-col">
+      <ChatTradeControl :total="500000" order-number="BS0000001" />
+      <div
+        ref="chatListDiv"
+        class="my-[0.18rem] flex h-full flex-col gap-[1rem] overflow-auto px-[0.5rem] py-[0.2rem]"
+        @scroll="onScroll"
+      >
+        <div v-show="fetchingMoreChat" class="flex justify-center">
+          {{ $t("loading") }}
+        </div>
+        <UiChatBubble
+          v-for="(c, i) in chats"
+          :key="i"
+          :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
+          :text="c.message"
+          :timestamp="c.created_at"
+          :show-profile="true"
+          :type="
+            c.type === 'action'
+              ? 'action'
+              : c.user_id === authStore.user?.id
+              ? 'outgoing'
+              : 'incoming'
+          "
+        />
+        <div ref="bottomEl" />
+      </div>
+      <ChatInput v-model="messagePayload.message" @submit="onSubmit" />
+    </div>
+    <div
+      v-else-if="!hasJoined && !loading"
+      class="relative flex h-full flex-col px-5 pb-4"
+    >
+      <div class="flex h-full flex-col items-center justify-end">
+        <button
+          class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
+          @click="onJoinChat"
+        >
+          Join Chat
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +62,6 @@ const route = useRoute();
 const pageStore = usePageStore();
 const authStore = useAuthStore();
 
-console.log(authStore.user);
 const roomID = +route.params.id;
 
 const bottomEl = ref<HTMLDivElement | null>(null);
