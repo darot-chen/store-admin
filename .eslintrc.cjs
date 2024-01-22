@@ -17,7 +17,6 @@ module.exports = {
     "plugin:prettier/recommended",
     "plugin:vue/vue3-recommended",
   ],
-  plugins: ["eslint-plugin-vitest"],
   rules: {
     "vue/html-self-closing": "off",
     "import/order": "off",
