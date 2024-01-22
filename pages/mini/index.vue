@@ -6,7 +6,7 @@
     >
       <div
         class="text-primary cursor-pointer rounded border bg-[#FE863F] p-2 text-center"
-        @click="handleChangeRoomType"
+        @click="onChangeType"
       >
         {{
           roomType === "public"
@@ -52,8 +52,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { API_CHAT_ROOM } from "~/api/apiChatRoom";
-import { useAuthStore } from "~/stores/auth";
+import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 
 definePageMeta({
@@ -61,8 +60,6 @@ definePageMeta({
   title: "home",
   keepalive: true,
 });
-const route = useRoute();
-const authStore = useAuthStore();
 
 const roomType = ref<string>("public");
 
@@ -73,47 +70,39 @@ const loading = ref<boolean>(false);
 const firstLoad = ref<boolean>(false);
 
 onMounted(() => {
-  firstLoad.value = true;
-  const at = route.query.at?.toString();
-  let token: string | null | undefined;
-  if (at) {
-    token = atob(at);
-    storage.setAccessToken(token);
-  } else {
-    token = storage.getAccessToken();
-  }
-  setTimeout(() => {
-    if (token) {
-      authStore.getUser();
-    }
-  }, 1000);
+  fetchChatRooms();
 });
 
-const fetchChatRooms = async () => {
+async function fetchChatRooms(isChangeType?: boolean) {
   if (firstLoad.value) {
     loading.value = true;
     firstLoad.value = false;
   }
 
-  const { data } = await API_CHAT_ROOM.GET_PUBLIC_ROOM.execute(roomType.value, {
+  if (isChangeType) {
+    chatRooms.value = [];
+    lastItemId.value = 0;
+  }
+
+  const res = await getPublicChatRoom(roomType.value, {
     last: lastItemId.value,
     limit: 10,
   });
 
-  if (data.value?.results?.length) {
-    chatRooms.value.push(...data.value.results);
-    lastItemId.value = data.value.results[data.value.results.length - 1].id;
-    loadMore.value = data.value.meta.has_next;
-  }
+  chatRooms.value.push(...res.results);
+  lastItemId.value = res.results[res.results.length - 1].id;
+  loadMore.value = res.meta.has_next;
 
   loading.value = false;
-};
+}
 
-const handleChangeRoomType = () => {
+function onChangeType() {
   roomType.value === "public"
     ? (roomType.value = "private")
     : (roomType.value = "public");
-};
+
+  fetchChatRooms(true);
+}
 
 const handleScroll = (event: Event) => {
   const target = event.target as HTMLElement; // Type casting to HTMLElement
@@ -127,17 +116,4 @@ const handleScroll = (event: Event) => {
     }
   }, 300);
 };
-
-watch(roomType, () => {
-  chatRooms.value = [];
-  lastItemId.value = 0;
-  loadMore.value = true;
-  fetchChatRooms();
-});
-
-watch(authStore, () => {
-  if (authStore.user) {
-    fetchChatRooms();
-  }
-});
 </script>

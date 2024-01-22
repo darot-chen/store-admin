@@ -53,11 +53,15 @@
 </template>
 
 <script setup lang="ts">
-import { API_CHAT } from "~/api/apiChat";
 import { Chat, ChatDetail } from "~/types/chat";
-import { API_CHAT_ROOM } from "~/api/apiChatRoom";
 import { useAuthStore } from "~/stores/auth";
 import usePageStore from "~/stores/page";
+import {
+  getChat,
+  getChatDetail,
+  joinPublicChatRoom,
+  addChat,
+} from "~/api/chat";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -75,7 +79,7 @@ const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatListDiv = ref<HTMLDivElement | null>(null);
-const detail = ref<ChatDetail>();
+const chatDetail = ref<ChatDetail>();
 
 const messagePayload = ref<{
   type: "text";
@@ -99,7 +103,7 @@ onUnmounted(() => {
 });
 
 useHead({
-  title: detail.value?.business.title ?? "",
+  title: chatDetail.value?.business.title ?? "",
 });
 
 definePageMeta({
@@ -107,29 +111,31 @@ definePageMeta({
 });
 
 async function onJoinChat() {
-  await API_CHAT_ROOM.JOIN_PUBLIC_ROOM.execute(roomID);
+  await joinPublicChatRoom(roomID);
   hasJoined.value = true;
   fetchChats();
 }
 
 async function fetchChats() {
   loading.value = true;
-  const { data: chatDetail } = await API_CHAT.GET_CHAT_DETAIL.execute(roomID);
-  hasJoined.value = chatDetail.value?.is_a_member ?? false;
-  detail.value = chatDetail.value ?? undefined;
-  pageStore.setTitle(chatDetail.value?.business.title ?? "");
+  const detail = await getChatDetail(roomID);
+
+  hasJoined.value = detail.is_a_member ?? false;
+  chatDetail.value = detail ?? undefined;
+  pageStore.setTitle(detail?.business.title ?? "");
 
   if (chatDetail.value?.is_a_member) {
-    const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
+    const chatRes = await getChat(roomID, {
       last: lastItemId.value,
       limit: 15,
     });
 
-    if (data.value?.results?.length) {
-      chats.value = data.value.results.reverse();
-      if (data.value.meta.has_next) {
-        lastItemId.value = data.value.results[0].id;
-        hasMore.value = data.value.meta.has_next;
+    if (chatRes.results?.length) {
+      chats.value = chatRes.results.reverse();
+
+      if (chatRes.meta.has_next) {
+        lastItemId.value = chatRes.results[0].id;
+        hasMore.value = chatRes.meta.has_next;
       }
     }
 
@@ -166,15 +172,15 @@ function addChatAndSort(newChat: Chat) {
 async function fetchMoreChats() {
   if (!hasMore.value) return;
   fetchingMoreChat.value = true;
-  const { data } = await API_CHAT.GET_CHAT_MSG.execute(roomID, {
+  const chatRes = await getChat(roomID, {
     last: lastItemId.value,
     limit: 15,
   });
-  if (data.value?.results?.length) {
-    chats.value = [...data.value.results.reverse(), ...chats.value];
+  if (chatRes.results?.length) {
+    chats.value = [...chatRes.results.reverse(), ...chats.value];
 
-    if (data.value.meta.has_next) {
-      lastItemId.value = data.value.results[0].id;
+    if (chatRes.meta.has_next) {
+      lastItemId.value = chatRes.results[0].id;
       hasMore.value = true;
     } else {
       hasMore.value = false;
@@ -201,10 +207,7 @@ async function onScroll(e: Event) {
 async function onSubmit() {
   if (messagePayload.value.message.trim() === "") return;
 
-  await API_CHAT.ADD_TEXT_CHAT.execute(
-    roomID,
-    messagePayload.value.message.trim()
-  );
+  await addChat(roomID, messagePayload.value.message.trim());
 
   messagePayload.value.message = "";
   sleepScrollToBottom();
