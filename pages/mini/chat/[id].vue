@@ -83,14 +83,32 @@ const messagePayload = ref<{
   message: "",
 });
 
+onMounted(() => {
+  fetchChats();
+
+  $evOn("new_chat_received", (d: any) => {
+    if (d.chat_room_id !== roomID) return;
+    addChatAndSort(d);
+  });
+});
+
+onUnmounted(() => {
+  $evOff("new_chat_received");
+});
+
+useHead({
+  title: detail.value?.business.title ?? "",
+});
+
+definePageMeta({
+  layout: "chat",
+});
+
 async function onJoinChat() {
   await API_CHAT_ROOM.JOIN_PUBLIC_ROOM.execute(roomID);
   hasJoined.value = true;
   fetchChats();
 }
-
-const { data: chatDetail } = await API_CHAT.GET_CHAT_DETAIL.execute(roomID);
-detail.value = chatDetail.value ?? undefined;
 
 async function fetchChats() {
   loading.value = true;
@@ -189,25 +207,4 @@ async function onSubmit() {
   messagePayload.value.message = "";
   sleepScrollToBottom();
 }
-
-onMounted(() => {
-  fetchChats();
-
-  $evOn("new_chat_received", (d: any) => {
-    if (d.chat_room_id !== roomID) return;
-    addChatAndSort(d);
-  });
-});
-
-onUnmounted(() => {
-  $evOff("new_chat_received");
-});
-
-useHead({
-  title: detail.value?.business.title ?? "",
-});
-
-definePageMeta({
-  layout: "chat",
-});
 </script>
