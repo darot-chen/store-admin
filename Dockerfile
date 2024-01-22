@@ -1,15 +1,16 @@
-FROM node:16.17-alpine
+FROM node:18.15.0 AS builder
 
-WORKDIR /app
+WORKDIR /builder
 
-COPY package.json yarn.lock ./
-
-RUN yarn install --frozen-lockfile
+ARG NUXT_PUBLIC_ENV
+ARG NUXT_PUBLIC_API_URL
+ARG NUXT_PUBLIC_APP_NAME
+ARG NUXT_PUBLIC_BUCKET_URL
 
 COPY . .
+RUN yarn install
+RUN yarn generate
 
-RUN yarn build
-
-EXPOSE 3000
-
-CMD [ "yarn", "start" ]
+FROM nginx:alpine as production
+COPY --from=builder ./builder/.output/public /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
