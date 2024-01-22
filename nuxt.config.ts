@@ -8,13 +8,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: [
-    "@pinia/nuxt",
-    "@nuxtjs/i18n",
-    "nuxt-icons",
-    "nuxt-icon",
-    "@vueuse/nuxt",
-  ],
+  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vueuse/nuxt"],
   pinia: {
     autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
   },

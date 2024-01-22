@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { API_CHAT_ROOM } from "~/api/apiChatRoom";
 import { useAuthStore } from "~/stores/auth";
-import { ChatRoom } from "~/types/chatRoom";
+import type { ChatRoom } from "~/types/chatRoom";
 
 definePageMeta({
   layout: "room",
