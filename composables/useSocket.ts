@@ -1,3 +1,4 @@
+import { get } from "http";
 import { Ref, ref } from "vue";
 import { SocketMessageData } from "~/types/base";
 
@@ -16,7 +17,7 @@ type Websocket = {
   status: Ref<"connecting" | "open" | "closing" | "closed">;
   data: Ref<any>;
   send: (data: any) => void;
-  open: () => void;
+  open: (val?: string) => void;
   close: (code?: number, reason?: string) => void;
 };
 
@@ -35,8 +36,8 @@ export function useSocket(
 
   let Url = typeof url === "string" ? url : url.value;
 
-  const connect = () => {
-    socket.value = new WebSocket(Url);
+  const connect = (urlVal?: string) => {
+    socket.value = new WebSocket(urlVal || Url);
     const ws = socket.value;
 
     ws.onopen = (ev) => {
@@ -88,12 +89,13 @@ export function useSocket(
     }
   };
 
-  const open = () => {
+  const open = (urlVal?: string) => {
     if (status?.value === "closed" || status?.value === "closing") {
       socket.value = undefined;
       status.value = "connecting";
     }
-    connect();
+
+    connect(urlVal);
   };
 
   const close = (code?: number, reason?: string) => {
@@ -132,24 +134,4 @@ export function useSocket(
     open,
     close,
   };
-}
-
-export function getWebSocketUrl() {
-  let protocol = "ws";
-  const { locale } = useI18n();
-
-  const config = useRuntimeConfig();
-  if (config.public.baseApi.includes("https")) {
-    protocol = "wss";
-  }
-
-  const url = config.public.baseApi
-    .replace("https://", "")
-    .replace("http://", "");
-
-  const token = getToken();
-  const encoded = btoa(token || "");
-  if (!encoded) return;
-
-  return `${protocol}://${url}/ws?at=${encoded}&lang=${locale.value}`;
 }

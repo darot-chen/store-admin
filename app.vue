@@ -14,6 +14,9 @@
 
 <script setup lang="ts">
 import useUserStore from "./stores/userStore";
+import { SOCKET_EVENT } from "~/constants/socket";
+import { SocketMessageData } from "~/types/base";
+import { Chat } from "~/types/chat";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
 const local = getLocaleCookie();
@@ -21,6 +24,28 @@ const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const loading = ref<boolean>(true);
+const socketUrl = getWebSocketUrl();
+
+const { open, close } = useSocket(socketUrl || "", {
+  autoReconnect: true,
+  reconnectTimeout: 0,
+  onMessage(_, event) {
+    handleOnMessage(event);
+  },
+});
+
+const { $evEmit } = useNuxtApp();
+
+function handleOnMessage(data: SocketMessageData<unknown>) {
+  switch (data.event) {
+    case SOCKET_EVENT.NEW_CHAT_RECEIVED:
+      $evEmit("new_chat_received", data.data as SocketMessageData<Chat>);
+      break;
+  }
+}
+
+setLocaleCookie(local || "zh");
+setLocale(local || "zh");
 
 onMounted(() => {
   const at = route.query.at?.toString();
@@ -37,6 +62,8 @@ onMounted(() => {
       await userStore.me();
     }
 
+    open(getWebSocketUrl());
+
     router.replace({
       query: {},
     });
@@ -44,6 +71,7 @@ onMounted(() => {
   loading.value = false;
 });
 
-setLocaleCookie(local || "zh");
-setLocale(local || "zh");
+onUnmounted(() => {
+  close();
+});
 </script>

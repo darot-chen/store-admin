@@ -50,42 +50,12 @@
 </template>
 
 <script setup lang="ts">
-import { SOCKET_EVENT } from "~/constants/socket";
 import usePageStore from "~/stores/pageStore";
-import { SocketMessageData } from "~/types/base";
-import { Chat } from "~/types/chat";
 
-const socketUrl = getWebSocketUrl();
 const pageStore = usePageStore();
 
 useHead({
   title: pageStore.title,
-});
-
-const { open, close } = useSocket(socketUrl || "", {
-  autoReconnect: true,
-  reconnectTimeout: 0,
-  onMessage(_, event) {
-    handleOnMessage(event);
-  },
-});
-const { $evEmit, $evOff } = useNuxtApp();
-
-onMounted(() => {
-  open();
-});
-
-function handleOnMessage(data: SocketMessageData<unknown>) {
-  switch (data.event) {
-    case SOCKET_EVENT.NEW_CHAT_RECEIVED:
-      $evEmit("new_chat_received", data.data as SocketMessageData<Chat>);
-      break;
-  }
-}
-
-onUnmounted(() => {
-  $evOff("new_chat_received");
-  close();
 });
 </script>
 

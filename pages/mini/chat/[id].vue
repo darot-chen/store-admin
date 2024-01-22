@@ -1,6 +1,6 @@
 <template>
   <div v-if="hasJoined && !loading" class="relative flex h-full flex-col">
-    <Chat2TradeControl :total="500000" order-number="BS0000001" />
+    <ChatTradeControl :total="500000" order-number="BS0000001" />
     <div
       ref="chatListDiv"
       class="my-[0.18rem] flex h-full flex-col gap-[1rem] overflow-auto px-[0.5rem] py-[0.2rem]"
@@ -26,7 +26,7 @@
       />
       <div ref="bottomEl" />
     </div>
-    <Chat2Input
+    <ChatInput
       v-if="hasJoined"
       v-model="messagePayload.message"
       @submit="onSubmit"
