@@ -6,14 +6,14 @@
         style="max-width: 32rem; left: auto; z-index: 100"
       >
         <div class="flex w-full items-center justify-between gap-2 px-2">
-          <div class="inline-flex items-center gap-2">
+          <NuxtLink to="/" class="inline-flex items-center gap-2">
             <img
               src="/icons/chat-icon.svg"
               alt="chat-icon"
               class="h-[30px] w-[30px] rounded-full border border-[#E3E3E3] p-0.5"
             />
             <p class="line-clamp-1 font-bold">{{ authStore.user?.name }}</p>
-          </div>
+          </NuxtLink>
 
           <div class="flex items-center gap-2">
             <div class="flex text-sm text-[#494E55]">

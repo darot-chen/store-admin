@@ -22,7 +22,7 @@
         v-for="room in chatRooms"
         :key="room.id"
         class="flex max-h-[200px] cursor-pointer flex-col justify-between rounded-md border bg-slate-200 p-5 shadow-xl"
-        :href="`/room/chat/${room.id}`"
+        :to="`/room/chat/${room.id}`"
       >
         <div class="flex flex-col">
           <div>
