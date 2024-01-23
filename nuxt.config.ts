@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vueuse/nuxt"],
   pinia: {
-    autoImports: ["defineStore", ["defineStore", "definePiniaStore"]],
+    storesDirs: ["./stores/**"],
   },
   i18n: {
     locales: [
