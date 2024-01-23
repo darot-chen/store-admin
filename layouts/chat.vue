@@ -1,14 +1,14 @@
 <template>
   <div
-    class="safe-area-padding-bottom mx-auto mb-16 flex h-full w-full max-w-lg flex-col"
+    class="safe-area-padding-bottom mx-auto mb-16 flex h-screen w-full max-w-lg flex-col"
   >
     <slot name="header">
-      <div class="fixed z-10 w-full max-w-lg bg-white py-[1.06rem]">
+      <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
         <div class="flex w-full items-center justify-between gap-2 px-2">
           <div class="basis-1/4">
             <button
               class="flex items-center gap-2 text-[#007AFF]"
-              @click="navigateTo('/mini')"
+              @click="navigateTo('/mini', { replace: true })"
             >
               <img
                 class="h-[1.125rem] w-[0.5625rem]"
@@ -36,10 +36,7 @@
       </div>
     </slot>
 
-    <main
-      class="bg-app mt-[3.619rem] flex h-full w-full max-w-lg flex-col"
-      data-scroll
-    >
+    <main class="bg-app flex w-full max-w-lg flex-col">
       <slot />
     </main>
 
@@ -66,6 +63,6 @@ useHead({
   height: 100%;
   background: url("/img/chat-bg.png") no-repeat center center;
   background-size: cover;
+  max-height: calc(100vh - 3.623rem);
 }
 </style>
-~/stores/page

@@ -4,19 +4,21 @@
       class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
     />
   </div>
-  <NuxtLayout v-else>
-    <NuxtPage
-      :page-key="(route: any) => route.path"
-      :keepalive="$route.meta.keepalive"
-    />
-  </NuxtLayout>
+  <div v-else>
+    <NuxtLayout>
+      <NuxtPage
+        :page-key="(route: any) => route.path"
+        :keepalive="$route.meta.keepalive"
+      />
+    </NuxtLayout>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { SOCKET_EVENT } from "~/constants/socket";
-import { SocketMessageData } from "~/types/base";
-import { Chat } from "~/types/chat";
 import { useAuthStore } from "./stores/auth";
+import type { SocketMessageData } from "./types/base";
+import type { Chat } from "./types/chat";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
 const local = getLocaleCookie();

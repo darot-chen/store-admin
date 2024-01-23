@@ -28,14 +28,9 @@
         v-else
         :key="room.id"
         class="flex max-h-[200px] cursor-pointer justify-between rounded-md bg-slate-400 p-5"
-        @click="navigateTo(`/mini/chat/${room.id}`)"
+        @click="$router.push(`/mini/chat/${room.id}`)"
       >
         <div class="flex gap-x-[10px]">
-          <!-- <img
-            class="h-[50px] w-[50px] rounded"
-            src="https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg"
-            alt=""
-          /> -->
           <div class="flex flex-col">
             <span class="text-base font-bold">{{ room.business.title }} </span>
             <span class="text-sm">{{ room.business.description }}</span>
@@ -56,9 +51,7 @@ import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 
 definePageMeta({
-  layout: "room",
   title: "home",
-  keepalive: true,
 });
 
 const roomType = ref<string>("public");
