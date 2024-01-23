@@ -5,7 +5,7 @@ WORKDIR /builder
 ARG NUXT_PUBLIC_BASE_API
 
 COPY . .
-RUN yarn install && yarn cache clean
+RUN yarn install
 RUN yarn generate
 
 FROM nginx:alpine as production
