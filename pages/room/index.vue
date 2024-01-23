@@ -28,7 +28,7 @@
         v-else
         :key="room.id"
         class="flex max-h-[200px] cursor-pointer justify-between rounded-md bg-slate-400 p-5"
-        @click="$router.push(`/mini/chat/${room.id}`)"
+        @click="navigateTo(`/room/chat/${room.id}`)"
       >
         <div class="flex gap-x-[10px]">
           <div class="flex flex-col">

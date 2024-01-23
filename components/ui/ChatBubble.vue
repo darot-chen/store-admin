@@ -86,18 +86,14 @@ function onConfirm() {
   showDialog({
     title: "发送成功",
     message: "等待对方点击确认。",
-  }).then(() => {
-    navigateTo("/mini-2/chat/1");
-  });
+  }).then(() => {});
 }
 
 function onCancel() {
   showDialog({
     title: "发送成功",
     message: "等待对方点击确认。",
-  }).then(() => {
-    navigateTo("/mini-2/chat/1");
-  });
+  }).then(() => {});
 }
 </script>
 

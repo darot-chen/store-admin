@@ -8,7 +8,7 @@
           <div class="basis-1/4">
             <button
               class="flex items-center gap-2 text-[#007AFF]"
-              @click="navigateTo('/mini', { replace: true })"
+              @click="navigateTo('/room')"
             >
               <img
                 class="h-[1.125rem] w-[0.5625rem]"
