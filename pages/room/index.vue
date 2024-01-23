@@ -1,58 +1,52 @@
 <template>
-  <div>
+  <div class="flex h-full flex-col gap-5 px-2" @scroll="handleScroll">
+    <button
+      class="rounded bg-[#50a7ea] p-2 text-center font-bold text-[#0d2744] shadow-md hover:bg-[#87c1f2] focus:bg-[#87c1f2]"
+      @click="onChangeType"
+    >
+      {{
+        roomType === "public" ? $t("switch_to_private") : $t("switch_to_public")
+      }}
+    </button>
     <div
-      class="flex max-h-[100vh] flex-col gap-y-[10px] overflow-scroll px-2 sm:px-0"
-      @scroll="handleScroll"
+      v-if="loading"
+      class="absolute"
+      style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
     >
       <div
-        class="text-primary cursor-pointer rounded border bg-[#FE863F] p-2 text-center"
-        @click="onChangeType"
-      >
-        {{
-          roomType === "public"
-            ? $t("switch_to_private")
-            : $t("switch_to_public")
-        }}
-      </div>
-      <div
-        v-if="loading"
-        class="absolute"
-        style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
-      >
-        <div
-          class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
-        ></div>
-      </div>
-      <div
+        class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+      />
+    </div>
+    <div v-else>
+      <NuxtLink
         v-for="room in chatRooms"
-        v-else
         :key="room.id"
-        class="flex max-h-[200px] cursor-pointer justify-between rounded-md bg-slate-400 p-5"
-        @click="navigateTo(`/room/chat/${room.id}`)"
+        class="flex max-h-[200px] cursor-pointer flex-col justify-between rounded-md border bg-slate-200 p-5 shadow-xl"
+        :href="`/room/chat/${room.id}`"
       >
-        <div class="flex gap-x-[10px]">
-          <div class="flex flex-col">
-            <span class="text-base font-bold">{{ room.business.title }} </span>
-            <span class="text-sm">{{ room.business.description }}</span>
+        <div class="flex flex-col">
+          <div>
+            <h1 class="line-clamp-1 text-lg font-bold">
+              {{ room.business.title }}
+            </h1>
+            <p class="line-clamp-3 text-sm">
+              {{ room.business.description }}
+            </p>
           </div>
         </div>
-        <div class="flex flex-col text-xs">
+        <div class="mt-4 flex justify-end gap-4 text-xs italic">
           <span>{{ $t("total_fund") }} {{ room.business.total_fund }}</span>
           <span>
             {{ $t("available_fund") }} {{ room.business.available_fund }}
           </span>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";
-
-definePageMeta({
-  title: "home",
-});
 
 const roomType = ref<string>("public");
 

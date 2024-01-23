@@ -27,7 +27,7 @@
         </div>
       </div>
     </div>
-    <main class="bg-red mt-5 flex h-full w-full flex-col">
+    <main class="app mt-2 flex flex-col">
       <slot />
     </main>
     <slot name="footer">
@@ -45,3 +45,13 @@ useHead({
   title: t(route.meta.title || ""),
 });
 </script>
+
+<style scoped lang="css">
+.app {
+  height: 100%;
+  max-height: calc(100vh - 3.623rem);
+  display: block;
+  overflow: auto;
+  height: 100%;
+}
+</style>
