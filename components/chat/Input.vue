@@ -20,6 +20,7 @@
       </div>
       <div class="flex-1">
         <input
+          ref="input"
           autofocus
           class="input"
           type="text"
@@ -67,6 +68,7 @@
 
 <script setup lang="ts">
 const fileInput = ref<HTMLInputElement | null>(null);
+const input = ref<HTMLInputElement | null>(null);
 
 const props = defineProps<{
   modelValue: string;
@@ -91,6 +93,7 @@ function onAttachFile() {
 
 const debounceSubmit = useDebounceFn(() => {
   onSubmit();
+  input.value?.focus();
 }, 100);
 
 const debounceAttachFile = useDebounceFn(() => {
