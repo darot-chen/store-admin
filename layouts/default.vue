@@ -1,17 +1,15 @@
 <template>
-  <div
-    class="fulls-screen safe-area-padding-bottom mx-auto flex max-w-lg flex-col"
-  >
+  <div class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col">
     <slot name="header">
-      <Head>
-        <Title>{{ $t($route.meta.title || "") }}</Title>
-      </Head>
+      <LayoutChatRoomHeader />
     </slot>
-    <main class="w-full bg-[#F5F8FE]" data-scroll>
+    <main class="bg-red mt-[60px] flex h-full w-full flex-col">
       <slot />
     </main>
     <slot name="footer">
-      <!-- <MFooter /> -->
+      <LayoutFooter />
     </slot>
   </div>
 </template>
+
+<script setup lang="ts"></script>

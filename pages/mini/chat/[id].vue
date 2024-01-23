@@ -1,17 +1,18 @@
 <template>
-  <div v-if="hasJoined && !loading" class="relative flex h-full flex-col">
-    <ChatTradeControl :total="500000" order-number="BS0000001" />
+  <div v-if="hasJoined && !loading" class="flex h-full flex-col">
+    <div class="sticky top-0 z-10 w-full">
+      <ChatTradeControl :total="500000" order-number="BS0000001" />
+    </div>
     <div
-      ref="chatListDiv"
-      class="my-[0.18rem] flex h-full flex-col gap-[1rem] overflow-auto px-[0.5rem] py-[0.2rem]"
-      @scroll="onScroll"
+      class="px-[0.5rem my-[0.18rem] flex flex-grow flex-col gap-[1rem] overflow-auto"
     >
       <div v-show="fetchingMoreChat" class="flex justify-center">
         {{ $t("loading") }}
       </div>
+      <UiObserver @intersect="fetchMoreChats" />
       <UiChatBubble
-        v-for="(c, i) in chats"
-        :key="i"
+        v-for="c in chats"
+        :key="c.id"
         :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
         :text="c.message"
         :timestamp="c.created_at"
@@ -20,17 +21,19 @@
           c.type === 'action'
             ? 'action'
             : c.user_id === authStore.user?.id
-            ? 'outgoing'
-            : 'incoming'
+              ? 'outgoing'
+              : 'incoming'
         "
       />
       <div ref="bottomEl" />
     </div>
-    <ChatInput
-      v-if="hasJoined"
-      v-model="messagePayload.message"
-      @submit="onSubmit"
-    />
+    <div class="sticky bottom-0 w-full">
+      <ChatInput
+        v-if="hasJoined"
+        v-model="messagePayload.message"
+        @submit="onSubmit"
+      />
+    </div>
   </div>
   <div
     v-else-if="!hasJoined && !loading"
@@ -53,7 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import { Chat, ChatDetail } from "~/types/chat";
 import { useAuthStore } from "~/stores/auth";
 import usePageStore from "~/stores/page";
 import {
@@ -62,6 +64,7 @@ import {
   joinPublicChatRoom,
   addChat,
 } from "~/api/chat";
+import type { Chat, ChatDetail } from "~/types/chat";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -78,7 +81,6 @@ const lastItemId = ref<number>(0);
 const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
-const chatListDiv = ref<HTMLDivElement | null>(null);
 const chatDetail = ref<ChatDetail>();
 
 const messagePayload = ref<{
@@ -170,7 +172,7 @@ function addChatAndSort(newChat: Chat) {
 }
 
 async function fetchMoreChats() {
-  if (!hasMore.value) return;
+  if (!hasMore.value || firstLoad.value) return;
   fetchingMoreChat.value = true;
   const chatRes = await getChat(roomID, {
     last: lastItemId.value,
@@ -187,21 +189,6 @@ async function fetchMoreChats() {
     }
   }
   fetchingMoreChat.value = false;
-}
-
-async function onScroll(e: Event) {
-  if (!chatListDiv.value) return;
-
-  const target = e.target as HTMLDivElement;
-  const list = chatListDiv.value;
-
-  if (target.scrollTop === 0 && target.scrollHeight !== target.clientHeight) {
-    const oldHeight = list.scrollHeight;
-    await fetchMoreChats();
-    nextTick(() => {
-      target.scrollTop = list.scrollHeight - oldHeight;
-    });
-  }
 }
 
 async function onSubmit() {

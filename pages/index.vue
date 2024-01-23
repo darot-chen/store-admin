@@ -3,7 +3,6 @@
 </template>
 <script setup lang="ts">
 definePageMeta({
-  layout: "mobile",
   title: "home",
   keepalive: true,
 });
