@@ -222,15 +222,14 @@ async function fetchMoreChats() {
   if (chatRes.results?.length) {
     chats.value.unshift(...chatRes.results.reverse());
 
-    const newScrollHeight = chatContainer.value?.scrollHeight;
-
-    if (newScrollHeight !== undefined) {
-      const newScrollTop = newScrollHeight - prevScrollHeight + prevScrollTop;
-
-      chatContainer.value?.scrollTo({
-        top: newScrollTop,
-      });
-    }
+    nextTick(() => {
+      if (chatContainer.value?.scrollHeight) {
+        chatContainer.value?.scrollTo({
+          top:
+            chatContainer.value.scrollHeight - prevScrollHeight + prevScrollTop,
+        });
+      }
+    });
 
     if (chatRes.meta.has_next) {
       lastItemId.value = chatRes.results[0].id;
