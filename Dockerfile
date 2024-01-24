@@ -3,6 +3,7 @@ FROM node:18.15.0 AS builder
 WORKDIR /builder
 
 ARG NUXT_PUBLIC_BASE_API
+ARG NUXT_PUBLIC_S3
 
 COPY . .
 RUN yarn install
