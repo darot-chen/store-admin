@@ -1,4 +1,4 @@
-import { Business } from "./business";
+import type { Business } from "./business";
 
 export type ChatRoom = {
   id: number;

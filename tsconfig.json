@@ -2,7 +2,7 @@
   // https://nuxt.com/docs/guide/concepts/typescript
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "types": ["@nuxt/types", "@nuxtjs/i18n", "@pinia/nuxt"]
+    "types": ["@nuxt/types", "@nuxtjs/i18n", "@pinia/nuxt"],
   },
-  "allowJs": true
+  "allowJs": true,
 }

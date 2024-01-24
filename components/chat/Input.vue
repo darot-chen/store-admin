@@ -22,14 +22,24 @@
         />
       </div>
       <div class="inline-flex items-center justify-end gap-[1.12rem]">
-        <button type="button" @click="debounceAttachFile">
-          <Icon name="PaperClip" color="#868686" size="27" />
-        </button>
-        <transition name="pop">
-          <button v-show="!isInputFocused">
-            <Icon name="Mic" color="#868686" size="27" />
+        <div
+          v-if="!loading"
+          class="inline-flex items-center justify-end gap-[1.12rem]"
+        >
+          <button type="button" @click="debounceAttachFile">
+            <Icon name="PaperClip" color="#868686" size="27" />
           </button>
-        </transition>
+          <transition name="pop">
+            <button v-show="!isInputFocused">
+              <Icon name="Mic" color="#868686" size="27" />
+            </button>
+          </transition>
+        </div>
+        <div v-else class="flex items-center justify-center">
+          <div
+            class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500"
+          />
+        </div>
         <transition name="pop">
           <button v-show="isInputFocused" type="submit">
             <Icon name="Send" color="#50a7ea" size="27" />
@@ -53,6 +63,7 @@ const input = ref<HTMLInputElement | null>(null);
 
 const props = defineProps<{
   modelValue: string;
+  loading?: boolean;
 }>();
 
 const emits = defineEmits<{
@@ -90,6 +101,7 @@ const debounceAttachFile = useDebounceFn(() => {
 }, 100);
 
 function onSubmit() {
+  if (props.loading) return;
   isInputFocused.value = true;
   emits("submit");
   emits("update:modelValue", "");

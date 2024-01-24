@@ -1,4 +1,4 @@
-import { APIMeta } from "./base";
+import type { APIMeta } from "./base";
 
 export type PaginationMeta = {
   page: number;

@@ -14,7 +14,7 @@
       style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
     >
       <div
-        class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+        class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
       />
     </div>
     <div v-else>

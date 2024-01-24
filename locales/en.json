@@ -9,5 +9,6 @@
   "switch_to_private": "Switch To Private",
   "switch_to_public": "Switch To Public",
   "go_to_room": "Go to chat room",
-  "back": "Back"
+  "back": "Back",
+  "has_joined_the_chat": "has joined the chat"
 }

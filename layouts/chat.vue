@@ -31,10 +31,6 @@
     <main class="bg-app flex w-full max-w-lg flex-col">
       <slot />
     </main>
-
-    <slot name="footer">
-      <LayoutFooter />
-    </slot>
   </div>
 </template>
 

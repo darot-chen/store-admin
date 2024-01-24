@@ -15,9 +15,6 @@
     <main class="app mt-2 flex flex-col">
       <slot />
     </main>
-    <slot name="footer">
-      <LayoutFooter />
-    </slot>
   </div>
 </template>
 

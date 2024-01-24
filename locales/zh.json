@@ -9,5 +9,6 @@
   "switch_to_private": "切换到私人",
   "switch_to_public": "切换到公共",
   "go_to_room": "进入聊天室",
-  "back": "后退"
+  "back": "后退",
+  "has_joined_the_chat": "已加入聊天"
 }

@@ -1,15 +1,21 @@
 <template>
-  <div v-if="type !== 'action'" class="inline-flex flex-col justify-end">
+  <div
+    v-if="type !== ChatType.Action"
+    class="mx-1 inline-flex flex-col justify-end"
+  >
     <div
       :class="[
         'flex w-full items-end',
-        type === 'incoming' ? 'justify-start' : 'justify-end',
+        chatType === 'incoming' ? 'justify-start' : 'justify-end',
       ]"
     >
       <div class="inline-flex items-end">
         <div
-          v-if="(showProfile || profile) && type === 'incoming'"
+          v-if="(showProfile || profile) && chatType === 'incoming'"
           :class="!profile && 'bg-avatar'"
+          :style="{
+            backgroundColor: generateColor(name),
+          }"
         >
           <img
             v-if="profile"
@@ -19,30 +25,60 @@
           <p v-else>{{ name.charAt(0) }}</p>
         </div>
         <Icon
-          v-if="type === 'incoming'"
+          v-if="chatType === 'incoming'"
           name="ChatTail"
           color="#ffff"
           size="10"
         />
       </div>
       <div
-        :class="[type === 'incoming' ? 'incoming-layout' : 'outgoing-layout']"
+        :class="[
+          chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
+        ]"
       >
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <p v-if="type === 'incoming'" class="incoming-name px-[0.38rem]">
+          <p
+            v-if="chatType === 'incoming'"
+            class="incoming-name px-[0.38rem]"
+            :style="{ color: generateColor(name) }"
+          >
             {{ name }}
           </p>
           <div
             :class="[
               'px-[0.38rem]',
-              type === 'incoming' ? 'incoming-content' : 'outgoing-content',
+              chatType === 'incoming' ? 'incoming-content' : 'outgoing-content',
             ]"
           >
-            <p class="whitespace-pre-wrap break-all">{{ text }}</p>
+            <p
+              v-if="type === ChatType.Text"
+              class="whitespace-pre-wrap break-all"
+            >
+              {{ text }}
+            </p>
+            <NuxtImg
+              v-else-if="type === ChatType.Image"
+              :placeholder="[200, 20]"
+              width="200"
+              height="400"
+              provider="s3"
+              :src="text"
+              @click="onPreview(text, 'image')"
+            />
+            <video
+              v-else-if="type === ChatType.Video"
+              style="max-width: 200px; max-height: 400px"
+              controls
+              @play="onPreview(text, 'video')"
+            >
+              <source :src="getS3Url(text)" />
+            </video>
           </div>
           <p
             :class="[
-              type === 'incoming' ? 'incoming-timestamp' : 'outgoing-timestamp',
+              chatType === 'incoming'
+                ? 'incoming-timestamp'
+                : 'outgoing-timestamp',
             ]"
           >
             {{ formatDate(timestamp) }}
@@ -62,15 +98,33 @@
     </div>
   </div>
   <div v-else>
-    <UiTag :title="`${name} has joined the chat`" />
+    <UiTag :title="`${name} ${$t('has_joined_the_chat')}`" />
   </div>
+
+  <VanImagePreview
+    v-model:show="showPreview"
+    :images="images"
+    :close-on-click-image="false"
+    closeable
+  >
+    <template #image="{ src }">
+      <video class="mx-auto h-full w-full px-4" controls>
+        <source :src="src" />
+      </video>
+    </template>
+  </VanImagePreview>
 </template>
 
 <script setup lang="ts">
-import { showDialog } from "vant";
+import { showDialog, showImagePreview } from "vant";
+import { ChatType } from "~/types/chat";
+
+const showPreview = ref(false);
+const images = ref<string[]>([]);
 
 defineProps<{
-  type: "incoming" | "outgoing" | "action";
+  chatType: "incoming" | "outgoing";
+  type: ChatType;
   text: string;
   profile?: string;
   timestamp: string;
@@ -92,6 +146,18 @@ function onCancel() {
     message: "等待对方点击确认。",
   }).then(() => {});
 }
+
+function onPreview(v: string, type: "image" | "video") {
+  if (type === "image") {
+    showImagePreview({
+      images: [getS3Url(v)],
+      closeable: true,
+    });
+  } else if (type === "video") {
+    showPreview.value = true;
+    images.value = [getS3Url(v)];
+  }
+}
 </script>
 
 <style scoped>
@@ -109,7 +175,6 @@ function onCancel() {
   display: block;
   line-clamp: 1;
   overflow: hidden;
-  color: #35c47c;
   padding-top: 0.75rem;
   leading-trim: both;
   text-edge: cap;
@@ -159,7 +224,6 @@ function onCancel() {
 }
 
 .bg-avatar {
-  background: linear-gradient(180deg, #a0da85 0%, #5bcc74 100%);
   width: 2.375rem;
   height: 2.375rem;
   border-radius: 100%;

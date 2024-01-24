@@ -1,7 +1,7 @@
 <template>
   <div v-if="loading" class="flex h-screen items-center justify-center">
     <div
-      class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+      class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
     />
   </div>
   <div v-else>

@@ -1,6 +1,13 @@
-import { Admin } from "./admin";
-import { Business } from "./business";
-import { User } from "./user";
+import type { Admin } from "./admin";
+import type { Business } from "./business";
+import type { User } from "./user";
+
+export enum ChatType {
+  Image = "image",
+  Video = "video",
+  Action = "action",
+  Text = "text",
+}
 
 export type Chat = {
   id: number;
@@ -8,7 +15,7 @@ export type Chat = {
   chat_room_id: number;
   admin_id?: number;
   user_id: number;
-  type: string;
+  type: ChatType;
   message: string;
   user: User | null;
   admin: Admin | null;

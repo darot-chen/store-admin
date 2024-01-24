@@ -10,7 +10,6 @@
         {{ $t("loading") }}
       </div>
       <UiObserver @intersect="fetchMoreChats" />
-      <!-- <UiChatBubble /> -->
       <UiChatBubble
         v-for="c in chats"
         :key="c.id"
@@ -18,13 +17,8 @@
         :text="c.message"
         :timestamp="c.created_at"
         :show-profile="true"
-        :type="
-          c.type === 'action'
-            ? 'action'
-            : c.user_id === authStore.user?.id
-              ? 'outgoing'
-              : 'incoming'
-        "
+        :type="c.type"
+        :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
       />
       <div ref="bottomEl" />
     </div>
@@ -32,6 +26,7 @@
       <ChatInput
         v-if="hasJoined"
         v-model="messagePayload.message"
+        :loading="isUploading"
         @submit="onSubmit"
         @attach-file="onAttachFile"
       />
@@ -52,7 +47,7 @@
   </div>
   <div v-else-if="loading" class="flex h-screen items-center justify-center">
     <div
-      class="h-10 w-10 animate-spin rounded-full border-b-2 border-gray-900"
+      class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
     />
   </div>
 </template>
@@ -68,7 +63,7 @@ import {
   uploadVideo,
   addChat,
 } from "~/api/chat";
-import type { Chat, ChatDetail } from "~/types/chat";
+import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 
 const { $evOn, $evOff } = useNuxtApp();
@@ -131,7 +126,7 @@ async function onAttachFile(file: File) {
     user: null,
     admin: null,
     message: previewUrl,
-    type: "image",
+    type: ChatType.Image,
     user_id: authStore.user?.id || 0,
   });
 

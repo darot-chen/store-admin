@@ -7,7 +7,21 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vueuse/nuxt", "nuxt-icon"],
+  modules: [
+    "@pinia/nuxt",
+    "@nuxtjs/i18n",
+    "@vueuse/nuxt",
+    "nuxt-icon",
+    "@nuxt/image",
+  ],
+  image: {
+    providers: {
+      myProvider: {
+        name: "s3",
+        provider: "~/providers/s3.ts",
+      },
+    },
+  },
   pinia: {
     storesDirs: ["./stores/**"],
   },
@@ -87,7 +101,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseApi: "https://dev-bs-api.ss.hd1.fun",
-      baseWs: "https://dev-bs-api.ss.hd1.fun",
+      s3: "https://dev-baishun-public.s3.ap-southeast-1.amazonaws.com",
     },
   },
 });
