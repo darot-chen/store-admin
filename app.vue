@@ -1,17 +1,18 @@
 <template>
-  <div v-if="loading" class="flex h-screen items-center justify-center">
-    <div
-      class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
-    />
-  </div>
-  <div v-else>
-    <NuxtLayout>
-      <NuxtPage
-        :page-key="(route: any) => route.path"
-        :keepalive="$route.meta.keepalive"
+  <NuxtLayout v-if="loading">
+    <div class="flex h-screen items-center justify-center">
+      <div
+        class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
       />
-    </NuxtLayout>
-  </div>
+    </div>
+  </NuxtLayout>
+
+  <NuxtLayout v-else>
+    <NuxtPage
+      :page-key="(route: any) => route.path"
+      :keepalive="$route.meta.keepalive"
+    />
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">

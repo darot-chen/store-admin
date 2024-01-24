@@ -4,7 +4,8 @@
       <ChatTradeControl :total="500000" order-number="BS0000001" />
     </div>
     <div
-      class="px-[0.5rem my-[0.18rem] flex flex-grow flex-col gap-[1rem] overflow-auto"
+      ref="chatContainer"
+      class="px-[0.5rem mx-1 my-[0.18rem] flex flex-grow flex-col gap-[1rem] overflow-auto"
     >
       <div v-show="fetchingMoreChat" class="flex justify-center">
         {{ $t("loading") }}
@@ -63,7 +64,7 @@ import {
   uploadVideo,
   addChat,
 } from "~/api/chat";
-import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
+import { type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 
 const { $evOn, $evOff } = useNuxtApp();
@@ -74,6 +75,7 @@ const authStore = useAuthStore();
 const roomID = +route.params.id;
 
 const bottomEl = ref<HTMLDivElement | null>(null);
+const chatContainer = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
 const chats = ref<Chat[]>([]);
 const hasJoined = ref<boolean>(false);
@@ -82,7 +84,6 @@ const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
-const preview = ref<Chat[]>([]);
 const isUploading = ref<boolean>(false);
 const { t } = useI18n();
 
@@ -117,18 +118,6 @@ definePageMeta({
 
 async function onAttachFile(file: File) {
   isUploading.value = true;
-  const previewUrl = URL.createObjectURL(file);
-
-  preview.value.push({
-    id: 0,
-    created_at: "",
-    chat_room_id: 0,
-    user: null,
-    admin: null,
-    message: previewUrl,
-    type: ChatType.Image,
-    user_id: authStore.user?.id || 0,
-  });
 
   scrollToBottom();
 
@@ -158,7 +147,6 @@ async function onAttachFile(file: File) {
     showFailToast(e?.message);
   } finally {
     isUploading.value = false;
-    preview.value.pop();
   }
 }
 
@@ -223,12 +211,26 @@ function addChatAndSort(newChat: Chat) {
 async function fetchMoreChats() {
   if (!hasMore.value || firstLoad.value) return;
   fetchingMoreChat.value = true;
+
+  const prevScrollHeight = chatContainer.value?.scrollHeight ?? 0;
+  const prevScrollTop = chatContainer.value?.scrollTop ?? 0;
+
   const chatRes = await getChat(roomID, {
     last: lastItemId.value,
     limit: 15,
   });
   if (chatRes.results?.length) {
-    chats.value = [...chatRes.results.reverse(), ...chats.value];
+    chats.value.unshift(...chatRes.results.reverse());
+
+    const newScrollHeight = chatContainer.value?.scrollHeight;
+
+    if (newScrollHeight !== undefined) {
+      const newScrollTop = newScrollHeight - prevScrollHeight + prevScrollTop;
+
+      chatContainer.value?.scrollTo({
+        top: newScrollTop,
+      });
+    }
 
     if (chatRes.meta.has_next) {
       lastItemId.value = chatRes.results[0].id;

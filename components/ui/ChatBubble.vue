@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="type !== ChatType.Action"
-    class="mx-1 inline-flex flex-col justify-end"
-  >
+  <div v-if="type !== ChatType.Action" class="inline-flex flex-col justify-end">
     <div
       :class="[
         'flex w-full items-end',
