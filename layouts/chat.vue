@@ -10,12 +10,8 @@
               class="flex items-center gap-2 text-[#007AFF]"
               @click="navigateTo('/room')"
             >
-              <img
-                class="h-[1.125rem] w-[0.5625rem]"
-                src="/icons/blue-arrow-left.svg"
-                alt="back"
-              />
-              <p>Back</p>
+              <Icon name="Caret" color="#007AFF" size="15" class="rotate-90" />
+              <p>{{ $t("back") }}</p>
             </button>
           </div>
 
@@ -25,11 +21,7 @@
 
           <div class="inline-flex basis-1/4 justify-end">
             <button>
-              <img
-                src="/icons/blue-phone.svg"
-                class="w-[1.5rem]"
-                alt="customer-service"
-              />
+              <Icon name="Phone" color="#007AFF" size="24" />
             </button>
           </div>
         </div>
@@ -61,7 +53,7 @@ useHead({
   display: block;
   overflow: auto;
   height: 100%;
-  background: url("/img/chat-bg.png") no-repeat center center;
+  background: url("/images/chat-bg.png") no-repeat center center;
   background-size: cover;
   max-height: calc(100vh - 3.623rem);
 }

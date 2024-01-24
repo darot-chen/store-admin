@@ -1,10 +1,11 @@
 <template>
   <button class="container relative" @click="$emit('click')">
     <p>{{ title }}</p>
-    <img
-      src="/icons/arrow-right-top.svg"
-      alt="arrow-right"
-      class="absolute right-0 top-0 mr-[0.09rem] mt-[0.12rem] w-[0.75rem]"
+    <Icon
+      name="Caret"
+      color="#fff"
+      size="12"
+      class="absolute right-0 top-0 mr-[0.09rem] mt-[0.12rem]"
     />
   </button>
 </template>

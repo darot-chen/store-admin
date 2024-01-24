@@ -10,6 +10,7 @@
         {{ $t("loading") }}
       </div>
       <UiObserver @intersect="fetchMoreChats" />
+      <!-- <UiChatBubble /> -->
       <UiChatBubble
         v-for="c in chats"
         :key="c.id"
@@ -32,6 +33,7 @@
         v-if="hasJoined"
         v-model="messagePayload.message"
         @submit="onSubmit"
+        @attach-file="onAttachFile"
       />
     </div>
   </div>
@@ -44,7 +46,7 @@
         class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
         @click="onJoinChat"
       >
-        Join Chat
+        {{ $t("join_chat") }}
       </button>
     </div>
   </div>
@@ -62,9 +64,12 @@ import {
   getChat,
   getChatDetail,
   joinPublicChatRoom,
+  uploadImage,
+  uploadVideo,
   addChat,
 } from "~/api/chat";
 import type { Chat, ChatDetail } from "~/types/chat";
+import { showFailToast } from "vant";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -82,6 +87,9 @@ const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
+const preview = ref<Chat[]>([]);
+const isUploading = ref<boolean>(false);
+const { t } = useI18n();
 
 const messagePayload = ref<{
   type: "text";
@@ -112,9 +120,55 @@ definePageMeta({
   layout: "chat",
 });
 
+async function onAttachFile(file: File) {
+  isUploading.value = true;
+  const previewUrl = URL.createObjectURL(file);
+
+  preview.value.push({
+    id: 0,
+    created_at: "",
+    chat_room_id: 0,
+    user: null,
+    admin: null,
+    message: previewUrl,
+    type: "image",
+    user_id: authStore.user?.id || 0,
+  });
+
+  scrollToBottom();
+
+  try {
+    if (file.type === "video/mp4") {
+      if (file.size > 20 * 1024 * 1024) {
+        throw new Error(
+          t("attach_file_must_be_smaller_than", {
+            value: "10",
+          })
+        );
+      }
+
+      await uploadVideo(roomID, file);
+    } else {
+      if (file.size > 10 * 1024 * 1024) {
+        throw new Error(
+          t("attach_file_must_be_smaller_than", {
+            value: "10",
+          })
+        );
+      }
+
+      await uploadImage(roomID, file);
+    }
+  } catch (e: any) {
+    showFailToast(e?.message);
+  } finally {
+    isUploading.value = false;
+    preview.value.pop();
+  }
+}
+
 async function onJoinChat() {
   await joinPublicChatRoom(roomID);
-  hasJoined.value = true;
   fetchChats();
 }
 

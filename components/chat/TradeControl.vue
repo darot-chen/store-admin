@@ -49,9 +49,11 @@
       </div>
       <div>
         <button class="arrow" @click="onShowMore">
-          <img
-            src="/icons/arrow-down.svg"
-            :class="[showMore ? 'arrow-up' : 'arrow-down']"
+          <Icon
+            :class="[showMore ? 'arrow-up' : 'arrow-down', 'opacity-30']"
+            name="Caret"
+            color="#3C3C43"
+            size="11"
           />
         </button>
       </div>

@@ -8,5 +8,6 @@
   "left_the_chat": "离开聊天室",
   "switch_to_private": "切换到私人",
   "switch_to_public": "切换到公共",
-  "go_to_room": "进入聊天室"
+  "go_to_room": "进入聊天室",
+  "back": "后退"
 }

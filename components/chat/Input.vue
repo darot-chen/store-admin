@@ -3,19 +3,11 @@
     <form class="input-container" @submit.prevent="debounceSubmit">
       <div class="inline-flex items-center gap-[0.5rem]">
         <button class="menu-btn">
-          <img
-            class="h-[1.25rem] w-[1.25rem]"
-            src="/icons/hamburger.svg"
-            alt="menu"
-          />
+          <Icon name="Burger" color="#ffffff" size="20" />
           <p>Menu</p>
         </button>
         <button>
-          <img
-            class="h-[1.6875rem] w-[1.6875rem]"
-            src="/icons/smiley.svg"
-            alt="emoji"
-          />
+          <Icon name="Smiley" color="#8E959B" size="27" />
         </button>
       </div>
       <div class="flex-1">
@@ -31,28 +23,16 @@
       </div>
       <div class="inline-flex items-center justify-end gap-[1.12rem]">
         <button type="button" @click="debounceAttachFile">
-          <img
-            class="h-[1.6875rem] w-[1.6875rem]"
-            src="/icons/paper-clip.svg"
-            alt="paper-clip"
-          />
+          <Icon name="PaperClip" color="#868686" size="27" />
         </button>
         <transition name="pop">
           <button v-show="!isInputFocused">
-            <img
-              class="h-[1.6875rem] w-[1.6875rem]"
-              src="/icons/mic.svg"
-              alt="mic"
-            />
+            <Icon name="Mic" color="#868686" size="27" />
           </button>
         </transition>
         <transition name="pop">
           <button v-show="isInputFocused" type="submit">
-            <img
-              class="h-[1.6875rem] w-[1.6875rem]"
-              src="/icons/send.svg"
-              alt="send"
-            />
+            <Icon name="Send" color="#50a7ea" size="27" />
           </button>
         </transition>
       </div>
@@ -62,6 +42,7 @@
       type="file"
       accept="image/*,video/*"
       class="hidden"
+      @change="onFileChange"
     />
   </div>
 </template>
@@ -77,6 +58,7 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
   (e: "submit"): void;
+  (e: "attachFile", file: File): void;
 }>();
 
 const isInputFocused = ref<boolean>(false);
@@ -89,6 +71,13 @@ function onInput(e: Event) {
 
 function onAttachFile() {
   if (fileInput.value) fileInput.value.click();
+}
+
+function onFileChange(event: Event) {
+  const selectedFile = (event.target as HTMLInputElement).files?.[0];
+  if (selectedFile) {
+    emits("attachFile", selectedFile);
+  }
 }
 
 const debounceSubmit = useDebounceFn(() => {

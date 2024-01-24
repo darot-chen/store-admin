@@ -1,8 +1,8 @@
-import { APIMeta } from "~/types/base";
-import { Chat, ChatDetail } from "~/types/chat";
-import { ChatRoom } from "~/types/chatRoom";
-import { CursorResponse } from "~/types/pagination";
-import { Cursor } from "./../types/common";
+import type { APIMeta } from "~/types/base";
+import type { Chat, ChatDetail } from "~/types/chat";
+import type { ChatRoom } from "~/types/chatRoom";
+import type { Cursor } from "~/types/common";
+import type { CursorResponse } from "~/types/pagination";
 
 const url = "/chat-rooms";
 
@@ -53,23 +53,23 @@ export const addChat = async (roomID: number, message: string) => {
   return data;
 };
 
-export const addImageChat = async (roomID: number, file: File) => {
-  const payload = new FormData();
-  payload.append("image", file);
+export const uploadImage = async (roomID: number, file: File) => {
+  const formatData = new FormData();
+  formatData.append("image", file);
 
-  const { data } = await useAxiosInstance().post<Chat>(
+  const { data } = await useAxiosInstance().postForm<Chat>(
     `${url}/${roomID}/image`,
-    payload
+    formatData
   );
 
   return data;
 };
 
-export const addVideoChat = async (roomID: number, file: File) => {
+export const uploadVideo = async (roomID: number, file: File) => {
   const payload = new FormData();
   payload.append("video", file);
 
-  const { data } = await useAxiosInstance().post<Chat>(
+  const { data } = await useAxiosInstance().postForm<Chat>(
     `${url}/${roomID}/video`,
     payload
   );

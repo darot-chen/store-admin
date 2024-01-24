@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="type !== 'action'"
-    class="relative inline-flex flex-col justify-end"
-  >
+  <div v-if="type !== 'action'" class="inline-flex flex-col justify-end">
     <div
       :class="[
         'flex w-full items-end',
@@ -17,15 +14,15 @@
           <img
             v-if="profile"
             class="w-[2.375rem] rounded-full"
-            src="/img/bs-logo.png"
+            src="/images/bs-logo.png"
           />
           <p v-else>{{ name.charAt(0) }}</p>
         </div>
-        <img
+        <Icon
           v-if="type === 'incoming'"
-          class="h-[0.625rem] w-[0.375rem]"
-          src="/icons/chat-tail-incoming.svg"
-          alt="mini-2"
+          name="ChatTail"
+          color="#ffff"
+          size="10"
         />
       </div>
       <div

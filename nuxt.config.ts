@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  // devtools: true,
   ssr: false,
   css: ["~/assets/css/main.css"],
   postcss: {
@@ -8,7 +7,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vueuse/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/i18n", "@vueuse/nuxt", "nuxt-icon"],
   pinia: {
     storesDirs: ["./stores/**"],
   },
