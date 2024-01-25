@@ -8,10 +8,7 @@
   </NuxtLayout>
 
   <NuxtLayout v-else>
-    <NuxtPage
-      :page-key="(route: any) => route.path"
-      :keepalive="$route.meta.keepalive"
-    />
+    <NuxtPage :page-key="(route: any) => route.path" />
   </NuxtLayout>
 </template>
 

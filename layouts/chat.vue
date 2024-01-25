@@ -5,7 +5,7 @@
     <slot name="header">
       <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
         <div class="flex w-full items-center justify-between gap-2 px-2">
-          <div class="basis-1/4">
+          <div v-if="pageStore.showBackButton" class="basis-1/4">
             <button
               class="flex items-center gap-2 text-[#007AFF]"
               @click="navigateTo('/room')"
@@ -14,16 +14,13 @@
               <p>{{ $t("back") }}</p>
             </button>
           </div>
+          <div v-else class="basis-1/4" />
 
           <p class="line-clamp-1 max-w-[50%] basis-2/4 text-center">
             {{ pageStore.title }}
           </p>
 
-          <div class="inline-flex basis-1/4 justify-end">
-            <button>
-              <Icon name="Phone" color="#007AFF" size="24" />
-            </button>
-          </div>
+          <div class="basis-1/4" />
         </div>
       </div>
     </slot>
