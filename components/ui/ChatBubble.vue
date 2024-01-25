@@ -60,13 +60,13 @@
               height="400"
               provider="s3"
               :src="text"
-              @click="onPreview(text, 'image')"
+              class="rounded-lg"
+              @click="onPreview(text)"
             />
             <video
               v-else-if="type === ChatType.Video"
-              style="max-width: 200px; max-height: 400px"
+              class="max-h-[400] max-w-[200] rounded-lg"
               controls
-              @play="onPreview(text, 'video')"
             >
               <source :src="getS3Url(text)" />
             </video>
@@ -97,27 +97,11 @@
   <div v-else>
     <UiTag :title="`${name} ${$t('has_joined_the_chat')}`" />
   </div>
-
-  <VanImagePreview
-    v-model:show="showPreview"
-    :images="images"
-    :close-on-click-image="false"
-    closeable
-  >
-    <template #image="{ src }">
-      <video class="mx-auto h-full w-full px-4" controls>
-        <source :src="src" />
-      </video>
-    </template>
-  </VanImagePreview>
 </template>
 
 <script setup lang="ts">
 import { showDialog, showImagePreview } from "vant";
 import { ChatType } from "~/types/chat";
-
-const showPreview = ref(false);
-const images = ref<string[]>([]);
 
 defineProps<{
   chatType: "incoming" | "outgoing";
@@ -144,16 +128,11 @@ function onCancel() {
   }).then(() => {});
 }
 
-function onPreview(v: string, type: "image" | "video") {
-  if (type === "image") {
-    showImagePreview({
-      images: [getS3Url(v)],
-      closeable: true,
-    });
-  } else if (type === "video") {
-    showPreview.value = true;
-    images.value = [getS3Url(v)];
-  }
+function onPreview(v: string) {
+  showImagePreview({
+    images: [getS3Url(v)],
+    closeable: true,
+  });
 }
 </script>
 

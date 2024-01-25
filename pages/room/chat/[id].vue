@@ -4,7 +4,7 @@
       <ChatTradeControl :total="500000" order-number="BS0000001" />
     </div>
     <div
-      class="px-[0.5rem mx-1 my-[0.18rem] flex flex-grow flex-col gap-[1rem] overflow-auto"
+      class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-auto"
       @scroll="onScroll"
     >
       <div v-show="fetchingMoreChat" class="flex justify-center">

@@ -77,7 +77,6 @@ function onShowMore() {
 <style scoped>
 .container {
   display: flex;
-  width: 23.4375rem;
   padding: 0.625rem;
   flex-direction: column;
   width: 100%;
