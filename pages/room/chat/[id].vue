@@ -192,7 +192,7 @@ function scrollToBottom() {
       bottomEl.value.scrollIntoView();
       firstLoad.value = false;
     } else {
-      bottomEl.value.scrollIntoView({ behavior: "smooth" });
+      bottomEl.value.scrollIntoView();
     }
   }
 }
