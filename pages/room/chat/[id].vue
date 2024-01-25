@@ -4,13 +4,12 @@
       <ChatTradeControl :total="500000" order-number="BS0000001" />
     </div>
     <div
-      ref="chatContainer"
       class="px-[0.5rem mx-1 my-[0.18rem] flex flex-grow flex-col gap-[1rem] overflow-auto"
+      @scroll="onScroll"
     >
       <div v-show="fetchingMoreChat" class="flex justify-center">
         {{ $t("loading") }}
       </div>
-      <UiObserver @intersect="fetchMoreChats" />
       <UiChatBubble
         v-for="c in chats"
         :key="c.id"
@@ -75,7 +74,6 @@ const authStore = useAuthStore();
 const roomID = +route.params.id;
 
 const bottomEl = ref<HTMLDivElement | null>(null);
-const chatContainer = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
 const chats = ref<Chat[]>([]);
 const hasJoined = ref<boolean>(false);
@@ -208,28 +206,42 @@ function addChatAndSort(newChat: Chat) {
   sleepScrollToBottom();
 }
 
-async function fetchMoreChats() {
-  if (!hasMore.value || firstLoad.value) return;
-  fetchingMoreChat.value = true;
+async function onScroll(e: Event) {
+  const target = e.target as HTMLDivElement;
+  const scrollTop = target.scrollTop;
+  const prevScrollHeight = target.scrollHeight ?? 0;
+  const prevScrollTop = target.scrollTop ?? 0;
 
-  const prevScrollHeight = chatContainer.value?.scrollHeight ?? 0;
-  const prevScrollTop = chatContainer.value?.scrollTop ?? 0;
+  if (scrollTop === 0) {
+    await fetchMoreChats();
 
-  const chatRes = await getChat(roomID, {
-    last: lastItemId.value,
-    limit: 15,
-  });
-  if (chatRes.results?.length) {
-    chats.value.unshift(...chatRes.results.reverse());
+    if (target?.scrollHeight) {
+      const currentScrollHeight = target.scrollHeight ?? 0;
 
-    nextTick(() => {
-      if (chatContainer.value?.scrollHeight) {
-        chatContainer.value?.scrollTo({
-          top:
-            chatContainer.value.scrollHeight - prevScrollHeight + prevScrollTop,
+      requestAnimationFrame(async () => {
+        await nextTick(() => {
+          target.scrollTop =
+            currentScrollHeight - prevScrollHeight + prevScrollTop;
+
+          target.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            target.style.overflow = "scroll";
+          });
         });
-      }
+      });
+    }
+  }
+
+  async function fetchMoreChats() {
+    if (!hasMore.value || firstLoad.value) return;
+    fetchingMoreChat.value = true;
+
+    const chatRes = await getChat(roomID, {
+      last: lastItemId.value,
+      limit: 15,
     });
+
+    chats.value.unshift(...chatRes.results.reverse());
 
     if (chatRes.meta.has_next) {
       lastItemId.value = chatRes.results[0].id;
