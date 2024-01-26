@@ -53,8 +53,6 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
-import usePageStore from "~/stores/page";
 import {
   getChat,
   getChatDetail,
@@ -68,8 +66,8 @@ import { showFailToast } from "vant";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
-const pageStore = usePageStore();
 const authStore = useAuthStore();
+const pageStore = usePageStore();
 
 const roomID = +route.params.id;
 
@@ -103,11 +101,8 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  pageStore.$reset();
   $evOff("new_chat_received");
-});
-
-useHead({
-  title: chatDetail.value?.business.title ?? "",
 });
 
 definePageMeta({

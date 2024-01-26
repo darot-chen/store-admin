@@ -44,6 +44,7 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
 import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";

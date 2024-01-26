@@ -1,18 +1,22 @@
 <template>
   <div class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col">
-    <div>
-      <div
-        class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]"
-        style="max-width: 32rem; left: auto; z-index: 100"
-      >
-        <div class="px-2">
-          <NuxtLink to="/" class="inline-flex items-center gap-2">
-            <p class="line-clamp-1 font-bold">{{ authStore.user?.name }}</p>
-          </NuxtLink>
+    <slot name="header">
+      <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
+        <div class="flex justify-center px-2">
+          <div class="inline-flex items-center gap-2">
+            <p class="line-clamp-1 font-bold">
+              {{
+                $route.path === "/room" || $route.path === "/"
+                  ? authStore.user?.name
+                  : pageStore.title
+              }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-    <main class="app mt-2 flex flex-col">
+    </slot>
+
+    <main class="bg-app flex w-full max-w-lg flex-col">
       <slot />
     </main>
   </div>
@@ -20,20 +24,32 @@
 
 <script setup lang="ts">
 const authStore = useAuthStore();
-const { t } = useI18n();
+const pageStore = usePageStore();
 const route = useRoute();
 
-useHead({
-  title: t(route.meta.title || ""),
-});
+watch(
+  () => pageStore.title,
+  () => {
+    if (route.path === "/room" || route.path === "/") {
+      useHead({
+        title: authStore.user?.name,
+      });
+    } else {
+      useHead({
+        title: pageStore.title,
+      });
+    }
+  }
+);
 </script>
 
 <style scoped lang="css">
-.app {
-  height: 100%;
-  max-height: calc(100vh - 3.623rem);
+.bg-app {
   display: block;
   overflow: auto;
   height: 100%;
+  background-size: cover;
+  background: #edeef0;
+  max-height: calc(100vh - 3.623rem);
 }
 </style>

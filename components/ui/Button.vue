@@ -1,33 +1,36 @@
 <template>
-  <button class="container relative" @click="$emit('click')">
-    <p>{{ title }}</p>
+  <button
+    :class="[
+      'inline-flex w-full items-center justify-center gap-[0.44rem] rounded-[0.5rem]',
+      type === 'secondary' ? 'bg-[#D8EEFF]' : 'bg-[#50A7EA]',
+    ]"
+    @click="$emit('click')"
+  >
     <Icon
-      name="Caret"
-      color="#fff"
-      size="12"
-      class="absolute right-0 top-0 mr-[0.09rem] mt-[0.12rem]"
+      v-if="icon"
+      :name="icon"
+      :color="type === 'secondary' ? '#50A7EA' : '#fff'"
+      size="18"
     />
+    <p
+      :class="[
+        'semi-bold',
+        type === 'secondary' ? 'text-[#50A7EA]' : 'text-[#fff]',
+      ]"
+    >
+      {{ title }}
+    </p>
   </button>
 </template>
 
 <script setup lang="ts">
 defineProps<{
   title: string;
+  icon?: string;
+  type?: "primary" | "secondary";
 }>();
 
 defineEmits<{
   click: [];
 }>();
 </script>
-
-<style scoped lang="css">
-.container {
-  background-color: rgba(0, 0, 0, 0.2);
-  color: white;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  line-height: 1.125rem;
-  border-radius: 0.375rem;
-  padding: 0.69rem 3.44rem;
-}
-</style>

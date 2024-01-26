@@ -90,8 +90,8 @@
         showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
       ]"
     >
-      <UiButton title="取消" @click="onCancel" />
-      <UiButton title="确认" @click="onConfirm" />
+      <UiButtonLink title="取消" @click="onCancel" />
+      <UiButtonLink title="确认" @click="onConfirm" />
     </div>
   </div>
   <div v-else>

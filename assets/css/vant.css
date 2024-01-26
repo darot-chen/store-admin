@@ -1,0 +1,10 @@
+:root:root {
+  --van-cell-font-size: 17px;
+  --van-cell-group-inset-radius: 10px;
+  --van-cell-large-vertical-padding: 16px;
+  --van-cell-border-color: #dcdcdd;
+  --van-cell-text-color: #393939;
+  --van-cell-group-title-color: #3c3c4399;
+  --van-cell-group-inset-title-padding: 0px 32px 5px 32px;
+  --van-cell-value-color: #9b9b9b;
+}

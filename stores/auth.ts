@@ -1,9 +1,9 @@
 import { showFailToast } from "vant";
 import { getMe } from "~/api/user";
-import { User } from "~/types/user";
+import type { User } from "~/types/user";
 
 export const useAuthStore = defineStore({
-  id: "user",
+  id: "auth-store",
   state: () => ({
     user: undefined as User | undefined,
   }),

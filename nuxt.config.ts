@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   ssr: false,
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/main.css", "~/assets/css/vant.css"],
   postcss: {
     plugins: {
       tailwindcss: {},
