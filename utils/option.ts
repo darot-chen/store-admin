@@ -1,7 +1,10 @@
-import { currencies } from "~/constants/currencies";
+import { useCurrencyStore } from "./../stores/currency";
 
-export const getCurrencyByValue = (value: string) => {
-  const currency = currencies.find((currency) => currency.value === value);
+export const getCurrencyByValue = (value?: string) => {
+  const currencyStore = useCurrencyStore();
+  const currency = currencyStore.options.find(
+    (currency) => currency.value === value
+  );
 
   if (!currency) {
     return undefined;

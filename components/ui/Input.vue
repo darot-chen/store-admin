@@ -3,6 +3,7 @@
     <input
       class="max-w-1/3 text-end"
       :value="modelValue"
+      :type="type"
       @input="
         ($event) =>
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
@@ -16,16 +17,20 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   icon?: string;
-  modelValue: string;
+  modelValue?: string | number;
+  type?: "text" | "number";
 }>();
 
 const emits = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value: string | number): void;
 }>();
 
 function onReset() {
+  if (props.type === "number") {
+    return emits("update:modelValue", 0);
+  }
   emits("update:modelValue", "");
 }
 </script>

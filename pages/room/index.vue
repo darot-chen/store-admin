@@ -17,7 +17,7 @@
         class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
       />
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col gap-2">
       <NuxtLink
         v-for="room in chatRooms"
         :key="room.id"

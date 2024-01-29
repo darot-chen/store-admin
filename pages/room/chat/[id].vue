@@ -1,7 +1,11 @@
 <template>
   <div v-if="hasJoined && !loading" class="flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
-      <ChatTradeControl :total="500000" order-number="BS0000001" />
+      <ChatTradeControl
+        :total="500000"
+        order-number="BS0000001"
+        @create-order="navigateTo(`confirm/${roomID}`)"
+      />
     </div>
     <div
       class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-auto pt-2"

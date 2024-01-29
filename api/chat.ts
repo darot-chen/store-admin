@@ -1,5 +1,5 @@
 import type { APIMeta } from "~/types/base";
-import type { Chat, ChatDetail } from "~/types/chat";
+import type { Chat, ChatDetail, Member } from "~/types/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 import type { Cursor } from "~/types/common";
 import type { CursorResponse } from "~/types/pagination";
@@ -72,6 +72,14 @@ export const uploadVideo = async (roomID: number, file: File) => {
   const { data } = await useAxiosInstance().postForm<Chat>(
     `${url}/${roomID}/video`,
     payload
+  );
+
+  return data;
+};
+
+export const getChatRoomMembers = async (roomID: number) => {
+  const { data } = await useAxiosInstance().get<Member[]>(
+    `${url}/${roomID}/members`
   );
 
   return data;

@@ -30,6 +30,15 @@ export type ChatDetail = {
   business_id: number;
   type: string;
   closed_at: string;
-  business: Business;
+  business?: Business;
   is_a_member: boolean;
+};
+
+export type Member = {
+  id: number;
+  created_at: string;
+  chat_room_id: number;
+  admin_id: number | null;
+  user_id: number | null;
+  user: User;
 };

@@ -7,7 +7,9 @@
       </div>
       <div class="action">
         <button class="secondary-button">订单异常</button>
-        <button class="primary-button">完成交易</button>
+        <button class="primary-button" @click="$emit('createOrder')">
+          完成交易
+        </button>
       </div>
     </div>
     <Transition name="drop">
@@ -65,6 +67,10 @@
 defineProps<{
   total: number;
   orderNumber: string;
+}>();
+
+defineEmits<{
+  (e: "createOrder"): void;
 }>();
 
 const showMore = ref(false);
