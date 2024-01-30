@@ -1,8 +1,8 @@
 <template>
   <div
-    class="safe-area-padding-bottom mx-auto mb-16 flex h-screen w-full max-w-lg flex-col"
+    class="safe-area-padding-bottom mx-auto mb-16 flex h-screen w-full max-w-lg flex-col overflow-hidden"
   >
-    <slot name="header">
+    <div name="header">
       <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
         <div class="flex w-full items-center justify-between gap-2 px-2">
           <div class="basis-1/4">
@@ -24,7 +24,7 @@
           <div class="basis-1/4" />
         </div>
       </div>
-    </slot>
+    </div>
 
     <main class="bg-app flex w-full max-w-lg flex-col">
       <slot />

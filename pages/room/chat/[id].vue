@@ -2,6 +2,7 @@
   <div v-if="hasJoined && !loading" class="flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
+        v-if="showTradeControl"
         :total="500000"
         order-number="BS0000001"
         @create-order="navigateTo(`confirm/${roomID}`)"
@@ -67,6 +68,7 @@ import {
 } from "~/api/chat";
 import { type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
+import { ChatRoomType } from "~/types/chatRoom";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -85,6 +87,7 @@ const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
 const isUploading = ref<boolean>(false);
+const showTradeControl = ref<boolean>(false);
 const { t } = useI18n();
 
 const messagePayload = ref<{
@@ -158,7 +161,11 @@ async function fetchChats() {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  pageStore.setTitle(detail?.business.title ?? "");
+  pageStore.setTitle(detail?.business?.title ?? "");
+
+  showTradeControl.value =
+    detail.owner_id === authStore.user?.id &&
+    detail.type === ChatRoomType.PUBLIC;
 
   if (chatDetail.value?.is_a_member) {
     const chatRes = await getChat(roomID, {

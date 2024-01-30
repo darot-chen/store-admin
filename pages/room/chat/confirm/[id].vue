@@ -50,6 +50,7 @@
           <VanCell title="买入">
             <template #right-icon>
               <UiInput
+                required
                 :model-value="payload.quantity"
                 type="number"
                 :icon="getCurrencyByValue(payload.currency_id.toString())?.icon"
@@ -116,7 +117,8 @@
             <template #right-icon>
               <p class="font-semibold text-[#50A7EA]">
                 {{
-                  `${totalAmount.total_with_fee} ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label}`
+                  `${totalAmount.total_with_fee}
+                                                                ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label}`
                 }}
               </p>
             </template>
@@ -152,6 +154,7 @@
 </template>
 
 <script setup lang="ts">
+import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
 import { createOrder } from "~/api/order";
 import { useCurrencyStore } from "~/stores/currency";
@@ -171,7 +174,6 @@ onMounted(async () => {
   try {
     chatDetail.value = await getChatDetail(roomId);
     members.value = await getChatRoomMembers(roomId);
-
     currencyStore.getCurrencyOptions();
 
     buyers.value = members.value.map((member) => ({
@@ -236,7 +238,9 @@ function onBuyAmountChange(value: string | number) {
 async function onCreateOrder() {
   try {
     await createOrder(payload.value);
-  } catch (error) {}
+  } catch (error: any) {
+    showFailToast(error?.message ?? "");
+  }
 }
 </script>
 

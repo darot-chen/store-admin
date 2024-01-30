@@ -4,6 +4,7 @@
       class="max-w-1/3 text-end"
       :value="modelValue"
       :type="type"
+      :required="required"
       @input="
         ($event) =>
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
@@ -20,6 +21,7 @@
 const props = defineProps<{
   icon?: string;
   modelValue?: string | number;
+  required?: boolean;
   type?: "text" | "number";
 }>();
 
