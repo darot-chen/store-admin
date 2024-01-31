@@ -68,9 +68,9 @@ onMounted(async () => {
 
   open(getWebSocketUrl());
 
-  // router.replace({
-  //   query: {},
-  // });
+  router.replace({
+    query: {},
+  });
 
   loading.value = false;
 });
