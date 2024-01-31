@@ -51,29 +51,29 @@ function handleOnMessage(data: SocketMessageData<unknown>) {
 setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
-onMounted(async () => {
-  loading.value = true;
-  const at = route.query.at?.toString();
-  let token = null;
-  if (at) {
-    token = atob(at);
-    storage.setAccessToken(token);
-  } else {
-    token = storage.getAccessToken();
-  }
+// onMounted(async () => {
+//   loading.value = true;
+//   const at = route.query.at?.toString();
+//   let token = null;
+//   if (at) {
+//     token = atob(at);
+//     storage.setAccessToken(token);
+//   } else {
+//     token = storage.getAccessToken();
+//   }
 
-  if (token) {
-    await authStore.getUser();
-  }
+//   if (token) {
+//     await authStore.getUser();
+//   }
 
-  open(getWebSocketUrl());
+//   open(getWebSocketUrl());
 
-  router.replace({
-    query: {},
-  });
+//   router.replace({
+//     query: {},
+//   });
 
-  loading.value = false;
-});
+//   loading.value = false;
+// });
 
 onUnmounted(() => {
   close();
