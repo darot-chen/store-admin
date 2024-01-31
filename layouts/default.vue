@@ -25,22 +25,22 @@
 <script setup lang="ts">
 const authStore = useAuthStore();
 const pageStore = usePageStore();
-// const route = useRoute();
+const route = useRoute();
 
-// watch(
-//   () => pageStore.title,
-//   () => {
-//     if (route.path === "/room" || route.path === "/") {
-//       useHead({
-//         title: authStore.user?.name,
-//       });
-//     } else {
-//       useHead({
-//         title: pageStore.title,
-//       });
-//     }
-//   }
-// );
+watch(
+  () => pageStore.title,
+  () => {
+    if (route.path === "/room" || route.path === "/") {
+      useHead({
+        title: authStore.user?.name,
+      });
+    } else {
+      useHead({
+        title: pageStore.title,
+      });
+    }
+  }
+);
 </script>
 
 <style scoped lang="css">
