@@ -5,13 +5,21 @@
         <h2>交易总额 USDT</h2>
         <p>{{ total }}</p>
       </div>
-      <div class="action">
+      <div v-if="!showInit" class="action">
         <button class="secondary-button">订单异常</button>
-        <button class="primary-button" @click="$emit('createOrder')">
-          完成交易
+        <button class="primary-button" @click="$emit('confirmOrder')">
+          发起报备
         </button>
       </div>
+      <div v-else class="action">
+        <div class="primary-button">
+          <button class="primary-button" @click="$emit('createOrder')">
+            完成交易
+          </button>
+        </div>
+      </div>
     </div>
+
     <Transition name="drop">
       <div v-show="showMore" class="show-more">
         <div class="more-detail">
@@ -67,10 +75,12 @@
 defineProps<{
   total: number;
   orderNumber: string;
+  showInit?: boolean;
 }>();
 
 defineEmits<{
   (e: "createOrder"): void;
+  (e: "confirmOrder"): void;
 }>();
 
 const showMore = ref(false);

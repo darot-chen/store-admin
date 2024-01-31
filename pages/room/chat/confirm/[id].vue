@@ -117,8 +117,7 @@
             <template #right-icon>
               <p class="font-semibold text-[#50A7EA]">
                 {{
-                  `${totalAmount.total_with_fee}
-                                                                ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label}`
+                  `${totalAmount.total_with_fee} ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label}`
                 }}
               </p>
             </template>
@@ -169,6 +168,7 @@ const roomId = +route.params.id;
 const members = ref<Member[]>([]);
 const currencyStore = useCurrencyStore();
 const chatDetail = ref<ChatDetail>();
+const authStore = useAuthStore();
 
 onMounted(async () => {
   try {
@@ -176,12 +176,16 @@ onMounted(async () => {
     members.value = await getChatRoomMembers(roomId);
     currencyStore.getCurrencyOptions();
 
-    buyers.value = members.value.map((member) => ({
-      label: member.user.name,
-      value: member.id.toString(),
-    }));
+    buyers.value = members.value
+      .filter((member) => member.user_id !== authStore.user?.id)
+      .map((member) => {
+        return {
+          label: member.user.name,
+          value: member.user_id?.toString() ?? "",
+        };
+      });
 
-    payload.value.buyer_id = members.value[0].id;
+    payload.value.buyer_id = +buyers.value[0].value;
     payload.value.currency_id = chatDetail.value.business?.currency_id ?? 0;
   } catch (error) {
     router.back();
@@ -237,7 +241,8 @@ function onBuyAmountChange(value: string | number) {
 
 async function onCreateOrder() {
   try {
-    await createOrder(payload.value);
+    const res = await createOrder(payload.value);
+    navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
   }

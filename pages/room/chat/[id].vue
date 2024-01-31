@@ -3,9 +3,11 @@
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
+        :show-init="!chatDetail?.order?.buyer_confirmed_at"
         :total="500000"
         order-number="BS0000001"
         @create-order="navigateTo(`confirm/${roomID}`)"
+        @confirm-order="onConfirmPayment"
       />
     </div>
     <div
@@ -23,7 +25,11 @@
         :timestamp="c.created_at"
         :show-profile="true"
         :type="c.type"
+        :show-button="
+          !!showConfirmOrder && c.admin_id === null && c.user_id === null
+        "
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
+        @confirm="onConfirmOrder"
       />
       <div ref="bottomEl" />
     </div>
@@ -69,6 +75,8 @@ import {
 import { type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
+import { confirmOrder, confirmPayment } from "~/api/order";
+import { OrderStatus } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -87,8 +95,23 @@ const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
 const isUploading = ref<boolean>(false);
-const showTradeControl = ref<boolean>(false);
 const { t } = useI18n();
+
+const showConfirmOrder = computed(() => {
+  return (
+    chatDetail.value?.order?.id &&
+    chatDetail.value?.order?.buyer_id === authStore.user?.id &&
+    chatDetail.value?.order?.status === OrderStatus.CONFIRMING &&
+    chatDetail.value.order?.buyer_confirmed_at === null
+  );
+});
+
+const showTradeControl = computed(() => {
+  return (
+    chatDetail.value?.business?.owner_id === authStore.user?.id &&
+    chatDetail.value?.type === ChatRoomType.PRIVATE
+  );
+});
 
 const messagePayload = ref<{
   type: "text";
@@ -115,6 +138,29 @@ onUnmounted(() => {
 definePageMeta({
   layout: "chat",
 });
+
+async function onConfirmOrder() {
+  try {
+    await confirmOrder(chatDetail.value!.order.id, {
+      buyer_id: authStore.user!.id,
+      currency_id: chatDetail.value!.order.currency_id,
+      quantity: chatDetail.value!.order.quantity,
+      rate: chatDetail.value!.order.rate,
+    });
+    fetchChats();
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}
+
+async function onConfirmPayment() {
+  try {
+    await confirmPayment(chatDetail.value!.order.id);
+    fetchChats();
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}
 
 async function onAttachFile(file: File) {
   isUploading.value = true;
@@ -162,10 +208,6 @@ async function fetchChats() {
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
   pageStore.setTitle(detail?.business?.title ?? "");
-
-  showTradeControl.value =
-    detail.owner_id === authStore.user?.id &&
-    detail.type === ChatRoomType.PUBLIC;
 
   if (chatDetail.value?.is_a_member) {
     const chatRes = await getChat(roomID, {

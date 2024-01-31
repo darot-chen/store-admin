@@ -1,5 +1,7 @@
 import type { Admin } from "./admin";
 import type { Business } from "./business";
+import type { ChatRoomType } from "./chatRoom";
+import type { Order } from "./order";
 import type { User } from "./user";
 
 export enum ChatType {
@@ -28,10 +30,11 @@ export type ChatDetail = {
   deleted_at: string;
   owner_id: number;
   business_id: number;
-  type: string;
+  type: ChatRoomType;
   closed_at: string;
   business?: Business;
   is_a_member: boolean;
+  order: Order;
 };
 
 export type Member = {

@@ -2,10 +2,10 @@
   <button class="container relative" @click="$emit('click')">
     <p>{{ title }}</p>
     <Icon
-      name="Caret"
+      name="Arrow"
       color="#fff"
       size="12"
-      class="absolute right-0 top-0 mr-[0.09rem] mt-[0.12rem]"
+      class="rotate-diagonal absolute right-0 top-0 mr-[0.09rem] mt-[0.12rem]"
     />
   </button>
 </template>

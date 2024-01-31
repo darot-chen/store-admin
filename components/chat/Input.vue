@@ -13,7 +13,6 @@
       <div class="flex-1">
         <input
           ref="input"
-          autofocus
           class="input"
           type="text"
           :value="modelValue"

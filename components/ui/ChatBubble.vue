@@ -100,10 +100,10 @@
 </template>
 
 <script setup lang="ts">
-import { showDialog, showImagePreview } from "vant";
+import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { ChatType } from "~/types/chat";
 
-defineProps<{
+const props = defineProps<{
   chatType: "incoming" | "outgoing";
   type: ChatType;
   text: string;
@@ -114,11 +114,21 @@ defineProps<{
   showButton?: boolean;
 }>();
 
+const emit = defineEmits<{
+  (e: "confirm"): void;
+}>();
+
 function onConfirm() {
-  showDialog({
-    title: "发送成功",
-    message: "等待对方点击确认。",
-  }).then(() => {});
+  if (props.showButton) {
+    showConfirmDialog({
+      title: "确认",
+      message: "确认发送？",
+    })
+      .then(() => {
+        emit("confirm");
+      })
+      .catch(() => {});
+  }
 }
 
 function onCancel() {
