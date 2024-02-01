@@ -17,7 +17,7 @@ export default defineNuxtConfig({
   ],
   image: {
     providers: {
-      myProvider: {
+      s3: {
         name: "s3",
         provider: "~/providers/s3.ts",
       },
@@ -59,14 +59,6 @@ export default defineNuxtConfig({
         { name: "theme-color", content: "#ffff" },
         { name: "msapplication-TileColor", content: "#ffff" },
       ],
-      // script: [
-      //   {
-      //     src: "https://telegram.org/js/telegram-web-app.js",
-      //   },
-      //   {
-      //     src: "https://telegram.org/js/games.js",
-      //   },
-      // ],
       link: [
         {
           rel: "apple-touch-icon",
