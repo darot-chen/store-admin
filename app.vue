@@ -52,9 +52,9 @@ setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
 onMounted(async () => {
-  loading.value = true;
   const at = route.query.at?.toString();
   let token = null;
+
   if (at) {
     token = atob(at);
     storage.setAccessToken(token);
@@ -68,11 +68,13 @@ onMounted(async () => {
 
   open(getWebSocketUrl());
 
+  loading.value = false;
+
+  await sleep(10);
+
   router.replace({
     query: {},
   });
-
-  loading.value = false;
 });
 
 onUnmounted(() => {
