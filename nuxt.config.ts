@@ -59,14 +59,14 @@ export default defineNuxtConfig({
         { name: "theme-color", content: "#ffff" },
         { name: "msapplication-TileColor", content: "#ffff" },
       ],
-      script: [
-        {
-          src: "https://telegram.org/js/telegram-web-app.js",
-        },
-        {
-          src: "https://telegram.org/js/games.js",
-        },
-      ],
+      // script: [
+      //   {
+      //     src: "https://telegram.org/js/telegram-web-app.js",
+      //   },
+      //   {
+      //     src: "https://telegram.org/js/games.js",
+      //   },
+      // ],
       link: [
         {
           rel: "apple-touch-icon",
