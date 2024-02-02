@@ -1,6 +1,6 @@
 import mitt from "mitt";
-import { SocketMessageData } from "~/types/base";
-import { Chat } from "~/types/chat";
+import type { SocketMessageData } from "~/types/base";
+import type { Chat } from "~/types/chat";
 
 type SocketEvents = {
   new_chat_received: SocketMessageData<Chat>;

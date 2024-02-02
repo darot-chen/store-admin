@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-white">
+  <div ref="emojiInput" class="bg-white">
     <form class="input-container" @submit.prevent="debounceSubmit">
       <div class="inline-flex items-center gap-[0.5rem]">
         <button class="menu-btn">
           <Icon name="Burger" color="#ffffff" size="20" />
           <p>Menu</p>
         </button>
-        <button>
+        <button type="button" @click="onToggleEmoji">
           <Icon name="Smiley" color="#8E959B" size="27" />
         </button>
       </div>
@@ -46,6 +46,7 @@
         </transition>
       </div>
     </form>
+    <UiEmojiKeyboard v-if="isShowEmoji" @select="onSelectEmoji" />
     <input
       ref="fileInput"
       type="file"
@@ -57,7 +58,11 @@
 </template>
 
 <script setup lang="ts">
+import type { EmojiExt } from "vue3-emoji-picker";
+
 const fileInput = ref<HTMLInputElement | null>(null);
+const isShowEmoji = ref<boolean>(false);
+const emojiInput = ref<HTMLElement | null>();
 
 const props = defineProps<{
   modelValue: string;
@@ -71,6 +76,10 @@ const emits = defineEmits<{
 }>();
 
 const isInputFocused = ref<boolean>(false);
+
+useClickAway(emojiInput, () => {
+  isShowEmoji.value = false;
+});
 
 function onInput(e: Event) {
   isInputFocused.value = true;
@@ -96,6 +105,19 @@ const debounceSubmit = useDebounceFn(() => {
 const debounceAttachFile = useDebounceFn(() => {
   onAttachFile();
 }, 100);
+
+function onToggleEmoji() {
+  isShowEmoji.value = !isShowEmoji.value;
+}
+
+function onSelectEmoji(emoji: EmojiExt) {
+  const input = document.querySelector(".input") as HTMLInputElement;
+  isInputFocused.value = true;
+  if (input) {
+    input.value += emoji.i;
+    emits("update:modelValue", input.value);
+  }
+}
 
 function onSubmit() {
   if (props.loading) return;
