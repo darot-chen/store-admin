@@ -5,6 +5,7 @@
       :value="modelValue"
       :type="type"
       :required="required"
+      @focus="$emit('focus')"
       @input="
         ($event) =>
           $emit('update:modelValue', ($event.target as HTMLInputElement).value)
@@ -27,6 +28,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   (e: "update:modelValue", value: string | number): void;
+  (e: "focus"): void;
 }>();
 
 function onReset() {

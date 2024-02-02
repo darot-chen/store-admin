@@ -17,6 +17,7 @@
           type="text"
           :value="modelValue"
           placeholder="Message"
+          @focus="isShowEmoji = false"
           @input="(e) => onInput(e)"
         />
       </div>
