@@ -29,6 +29,7 @@
           !!showConfirmOrder && c.admin_id === null && c.user_id === null
         "
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
+        :detail="c.type === ChatType.Action ? chatDetail : undefined"
         @confirm="onConfirmOrder"
       />
       <div ref="bottomEl" />
@@ -72,7 +73,7 @@ import {
   uploadVideo,
   addChat,
 } from "~/api/chat";
-import { type Chat, type ChatDetail } from "~/types/chat";
+import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
 import { confirmOrder, confirmPayment } from "~/api/order";
@@ -124,9 +125,14 @@ const messagePayload = ref<{
 onMounted(() => {
   fetchChats();
 
-  $evOn("new_chat_received", (d: any) => {
-    if (d.chat_room_id !== roomID) return;
-    addChatAndSort(d);
+  $evOn("new_chat_received", async (d) => {
+    if (d.data.chat_room_id !== roomID) return;
+
+    if (d.data.type === ChatType.Action) {
+      chatDetail.value = await getChatDetail(roomID);
+    }
+
+    addChatAndSort(d.data);
   });
 });
 

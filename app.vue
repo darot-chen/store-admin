@@ -19,7 +19,6 @@
 import { SOCKET_EVENT } from "~/constants/socket";
 import { useAuthStore } from "./stores/auth";
 import type { SocketMessageData } from "./types/base";
-import type { Chat } from "./types/chat";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
 const local = getLocaleCookie();
@@ -40,10 +39,10 @@ const { open, close } = useSocket(socketUrl || "", {
 
 const { $evEmit } = useNuxtApp();
 
-function handleOnMessage(data: SocketMessageData<unknown>) {
+function handleOnMessage(data: SocketMessageData<any>) {
   switch (data.event) {
     case SOCKET_EVENT.NEW_CHAT_RECEIVED:
-      $evEmit("new_chat_received", data.data as SocketMessageData<Chat>);
+      $evEmit("new_chat_received", data);
       break;
   }
 }

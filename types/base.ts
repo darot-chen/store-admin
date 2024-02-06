@@ -38,8 +38,6 @@ export enum SocketType {
 }
 
 export type SocketMessageData<T = any> = {
-  type: SocketType;
-  channel: SocketChannel;
   event: string;
   data: T;
 };

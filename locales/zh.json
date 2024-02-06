@@ -10,5 +10,19 @@
   "switch_to_public": "切换到公共",
   "go_to_room": "进入聊天室",
   "back": "后退",
-  "has_joined_the_chat": "已加入聊天"
+  "has_joined_the_chat": "已加入聊天",
+  "order_message": {
+    "business_name": "企业名称: {name}",
+    "contact_person": "交易方对接人: {name}",
+    "amount": "交易金额: {value}",
+    "exchange_rate": "汇率: {value}",
+    "rate": "费率: {value}",
+    "total_amount_payable_by_the_demander": "需方应付款总额: {value}",
+    "total_amount_payable_by_supplier": "供方应付款总额: {value}",
+    "received_without_any_problem": "收到卡测试没问题结算多少：全部",
+    "remaining_settled_in_a_few_days": "第二阶段过几天结算剩下的尾款：无",
+    "settlement_end_date": "结算完日期：{date}",
+    "acceptance_standard": "验收标准：正常即可",
+    "kind_tips": "温馨提示：！为避免纠纷建议双方录制视频，快递运输7天时间内。加上后期另外结算时间为交易总时长"
+  }
 }

@@ -1,3 +1,5 @@
+import type { User } from "./user";
+
 export type Business = {
   id: number;
   created_at: string;
@@ -10,4 +12,5 @@ export type Business = {
   status: string;
   total_fund: number;
   available_fund: number;
+  owner: User;
 };

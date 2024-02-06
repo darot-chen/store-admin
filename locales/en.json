@@ -10,5 +10,19 @@
   "switch_to_public": "Switch To Public",
   "go_to_room": "Go to chat room",
   "back": "Back",
-  "has_joined_the_chat": "has joined the chat"
+  "has_joined_the_chat": "has joined the chat",
+  "order_message": {
+    "business_name": "Business Name: {name}",
+    "contact_person": "Contact Person: {name}",
+    "amount": "Amount of the transaction: {value}",
+    "exchange_rate": "Exchange Rate: {value}",
+    "rate": "Rate: {value}",
+    "total_amount_payable_by_the_demander": "Total amount payable by the demander: {value}",
+    "total_amount_payable_by_supplier": "Total amount payable by supplier: {value}",
+    "received_without_any_problem": "I received the card and tested it without any problem. How much was settled: All",
+    "remaining_settled_in_a_few_days": "The remaining balance will be settled in a few days in the second stage: None",
+    "settlement_end_date": "Settlement date: {date}",
+    "acceptance_standard": "Acceptance standard: normal",
+    "kind_tips": "t! In order to avoid disputes, it is recommended that both parties record a video and express delivery within 7 days. Including additional settlement time in the later period is the total transaction length"
+  }
 }

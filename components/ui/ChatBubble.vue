@@ -83,6 +83,18 @@
         </div>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <UiTag
+      v-if="text === CHAT_ACTIONS.JOIN"
+      :title="`${name} ${$t('has_joined_the_chat')}`"
+    />
+    <ChatSystemBubble
+      v-if="text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
+      :text="text"
+      :timestamp="timestamp"
+      :detail="detail"
+    />
     <div
       v-if="showButton"
       :class="[
@@ -94,14 +106,12 @@
       <UiButtonLink title="确认" @click="onConfirm" />
     </div>
   </div>
-  <div v-else>
-    <UiTag :title="`${name} ${$t('has_joined_the_chat')}`" />
-  </div>
 </template>
 
 <script setup lang="ts">
 import { showConfirmDialog, showDialog, showImagePreview } from "vant";
-import { ChatType } from "~/types/chat";
+import { CHAT_ACTIONS } from "~/constants/chat-actions";
+import { ChatType, type ChatDetail } from "~/types/chat";
 
 const props = defineProps<{
   chatType: "incoming" | "outgoing";
@@ -112,6 +122,7 @@ const props = defineProps<{
   name: string;
   showProfile?: boolean;
   showButton?: boolean;
+  detail?: ChatDetail;
 }>();
 
 const emit = defineEmits<{
