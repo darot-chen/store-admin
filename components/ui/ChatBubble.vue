@@ -47,10 +47,7 @@
               chatType === 'incoming' ? 'incoming-content' : 'outgoing-content',
             ]"
           >
-            <p
-              v-if="type === ChatType.Text"
-              class="whitespace-pre-wrap break-all"
-            >
+            <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
               {{ text }}
             </p>
             <NuxtImg

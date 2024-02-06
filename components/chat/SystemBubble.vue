@@ -12,7 +12,7 @@
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
           <p class="name px-[0.38rem]">Baishun</p>
           <div class="content px-[0.38rem]">
-            <div class="whitespace-pre-wrap break-all">
+            <div class="whitespace-pre-wrap">
               <p>
                 {{
                   $t("order_message.business_name", {
