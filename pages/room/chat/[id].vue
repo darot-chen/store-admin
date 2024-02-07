@@ -1,11 +1,10 @@
 <template>
-  <div v-if="hasJoined && !loading" class="flex h-full flex-col">
+  <div v-if="!loading" class="flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
         :show-init="!chatDetail?.order?.buyer_confirmed_at"
-        :total="500000"
-        order-number="BS0000001"
+        :detail="chatDetail"
         @create-order="navigateTo(`confirm/${roomID}`)"
         @confirm-order="onConfirmPayment"
       />
@@ -42,22 +41,22 @@
         @submit="onSubmit"
         @attach-file="onAttachFile"
       />
-    </div>
-  </div>
-  <div
-    v-else-if="!hasJoined && !loading"
-    class="relative flex h-full flex-col px-5 pb-4"
-  >
-    <div class="flex h-full flex-col items-center justify-end">
-      <button
-        class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
-        @click="onJoinChat"
+      <div
+        v-else-if="chatDetail?.type === ChatRoomType.PUBLIC"
+        class="relative flex h-full flex-col px-5 pb-4"
       >
-        {{ $t("join_chat") }}
-      </button>
+        <div class="flex h-full flex-col items-center justify-end">
+          <button
+            class="w-full rounded-full bg-[#50a7ea] p-[0.7rem] text-white shadow-xl"
+            @click="onJoinChat"
+          >
+            {{ $t("join_chat") }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <div v-else-if="loading" class="flex h-screen items-center justify-center">
+  <div v-else class="flex h-screen items-center justify-center">
     <div
       class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
     />
@@ -76,7 +75,7 @@ import {
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
-import { confirmOrder, confirmPayment } from "~/api/order";
+import { confirmPayment } from "~/api/order";
 import { OrderStatus } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
@@ -108,10 +107,7 @@ const showConfirmOrder = computed(() => {
 });
 
 const showTradeControl = computed(() => {
-  return (
-    chatDetail.value?.business?.owner_id === authStore.user?.id &&
-    chatDetail.value?.type === ChatRoomType.PRIVATE
-  );
+  return chatDetail.value?.type === ChatRoomType.PRIVATE;
 });
 
 const messagePayload = ref<{
@@ -145,19 +141,7 @@ definePageMeta({
   layout: "chat",
 });
 
-async function onConfirmOrder() {
-  try {
-    await confirmOrder(chatDetail.value!.order.id, {
-      buyer_id: authStore.user!.id,
-      currency_id: chatDetail.value!.order.currency_id,
-      quantity: chatDetail.value!.order.quantity,
-      rate: chatDetail.value!.order.rate,
-    });
-    fetchChats();
-  } catch (error: any) {
-    showFailToast(error?.message);
-  }
-}
+async function onConfirmOrder() {}
 
 async function onConfirmPayment() {
   try {
@@ -215,23 +199,22 @@ async function fetchChats() {
   chatDetail.value = detail ?? undefined;
   pageStore.setTitle(detail?.business?.title ?? "");
 
-  if (chatDetail.value?.is_a_member) {
-    const chatRes = await getChat(roomID, {
-      last: lastItemId.value,
-      limit: 15,
-    });
+  const chatRes = await getChat(roomID, {
+    last: lastItemId.value,
+    limit: 15,
+  });
 
-    if (chatRes.results?.length) {
-      chats.value = chatRes.results.reverse();
+  if (chatRes.results?.length) {
+    chats.value = chatRes.results.reverse();
 
-      if (chatRes.meta.has_next) {
-        lastItemId.value = chatRes.results[0].id;
-        hasMore.value = chatRes.meta.has_next;
-      }
+    if (chatRes.meta.has_next) {
+      lastItemId.value = chatRes.results[0].id;
+      hasMore.value = chatRes.meta.has_next;
     }
-
-    sleepScrollToBottom();
   }
+
+  sleepScrollToBottom();
+
   loading.value = false;
 }
 
