@@ -6,11 +6,9 @@
       :type="type"
       :required="required"
       @focus="$emit('focus')"
-      @input="
-        ($event) =>
-          $emit('update:modelValue', ($event.target as HTMLInputElement).value)
-      "
+      @input="onInput"
     />
+    <span v-if="isPercent">%</span>
     <img v-if="icon" :src="icon" :alt="icon" class="w-[18px] rounded-full" />
     <button class="inline-flex items-center justify-center" @click="onReset">
       <Icon name="X" color="#cccccc" />
@@ -24,12 +22,24 @@ const props = defineProps<{
   modelValue?: string | number;
   required?: boolean;
   type?: "text" | "number";
+  isPercent?: boolean;
 }>();
 
 const emits = defineEmits<{
   (e: "update:modelValue", value: string | number): void;
   (e: "focus"): void;
 }>();
+
+function onInput(event: Event) {
+  if (props.isPercent) {
+    const value = (event.target as HTMLInputElement).value;
+    if (+value <= 100) {
+      return emits("update:modelValue", value);
+    }
+  }
+
+  return emits("update:modelValue", (event.target as HTMLInputElement).value);
+}
 
 function onReset() {
   if (props.type === "number") {

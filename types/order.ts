@@ -6,14 +6,14 @@ export enum OrderStatus {
 }
 
 export type CreateOrder = {
+  chat_room_id: number;
   currency_id: number;
   buyer_id: number;
-  quantity: number;
-  rate: number;
-  chat_room_id: number;
-  remark?: string;
-  total_commission?: number;
-  service_fee?: number;
+  quantity_to_be_given: number;
+  exchange_rate: number;
+  handling_fee_percentage: number;
+  buyer_pay_commission: boolean;
+  other_expense: number;
 };
 
 export type ConfirmOrder = {

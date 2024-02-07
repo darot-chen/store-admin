@@ -35,23 +35,16 @@
       </div>
       <div>
         <VanCellGroup inset title="交易信息">
-          <VanCell title="交易内容">
+          <!-- <VanCell title="交易内容">
             <template #right-icon>
-              <UiInput
-                :model-value="payload?.remark"
-                @update:model-value="
-                  (value) => {
-                    payload.remark = value.toString();
-                  }
-                "
-              />
+              <UiInput />
             </template>
-          </VanCell>
+          </VanCell> -->
           <VanCell title="买入">
             <template #right-icon>
               <UiInput
                 required
-                :model-value="payload.quantity"
+                :model-value="payload.quantity_to_be_given"
                 type="number"
                 :icon="getCurrencyByValue(payload.currency_id.toString())?.icon"
                 @update:model-value="onBuyAmountChange"
@@ -72,9 +65,7 @@
           <VanCell title="担保金额">
             <template #right-icon>
               <UiInput
-                :model-value="
-                  chatDetail?.business?.available_fund?.toString() ?? ''
-                "
+                :model-value="0"
                 type="number"
                 :icon="
                   getCurrencyByValue(
@@ -84,40 +75,63 @@
               />
             </template>
           </VanCell>
-          <VanCell title="汇率" :value="`${payload.rate} %`" />
-          <VanCell title="费率" :value="`${payload.rate} %`" />
-          <VanCell title="佣金总额" :value="payload.total_commission" />
-          <VanCell title="平台佣金">
+          <VanCell title="汇率">
             <template #right-icon>
-              <UiDropdown model-value="需方付" :option="platforms" />
+              <UiInput
+                :model-value="payload.exchange_rate"
+                type="number"
+                @update:model-value="onRateChange"
+              />
             </template>
           </VanCell>
-          <VanCell title="其他费用">
+          <VanCell title="佣金总额">
             <template #right-icon>
-              <UiInput model-value="需方付" :option="platforms" />
+              <UiInput
+                is-percent
+                :model-value="payload.handling_fee_percentage"
+                type="number"
+                @update:model-value="onCommissionChange"
+              />
+            </template>
+          </VanCell>
+          <VanCell title="平台佣金">
+            <template #right-icon>
+              <UiDropdown
+                :model-value="payload.buyer_pay_commission.toString()"
+                :option="commissionPayOptions"
+                @update:model-value="
+                  (value) => {
+                    if (value === 'true') {
+                      payload.buyer_pay_commission = true;
+                    } else {
+                      payload.buyer_pay_commission = false;
+                    }
+                    calculateTotalAmount();
+                  }
+                "
+              />
             </template>
           </VanCell>
         </VanCellGroup>
       </div>
       <div>
         <VanCellGroup inset title="兑换后总额">
-          <VanCell title="兑换后总额" :value="totalAmount.rate" />
           <VanCell
-            title="费率"
+            title="兑换后总额"
             :value="totalAmount.total_amount_after_exchange"
           />
-          <VanCell title="佣金" :value="totalAmount.commission" />
           <VanCell
             class="!static"
-            title="其他费用"
-            :value="totalAmount.other_fee"
+            title="费率"
+            :value="totalAmount.commission"
           />
+
           <div class="dash" />
           <VanCell title="需方应付款总额">
             <template #right-icon>
               <p class="font-semibold text-[#50A7EA]">
                 {{
-                  `${totalAmount.total_with_fee} ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label}`
+                  `${totalAmount.amount_pay_by_buyer} ${getCurrencyByValue(chatDetail?.business?.currency_id.toString())?.label ?? ""}`
                 }}
               </p>
             </template>
@@ -126,7 +140,7 @@
             <template #right-icon>
               <p class="font-semibold text-[#50A7EA]">
                 {{
-                  `${totalAmount.total} ${getCurrencyByValue(payload.currency_id.toString())?.label}`
+                  `${totalAmount.amount_pay_by_seller} ${getCurrencyByValue(payload.currency_id.toString())?.label ?? ""}`
                 }}
               </p>
             </template>
@@ -194,49 +208,74 @@ onMounted(async () => {
 });
 
 const payload = ref<CreateOrder>({
+  chat_room_id: roomId,
   currency_id: 0,
   buyer_id: 0,
-  quantity: 0,
-  rate: 1,
-  chat_room_id: roomId,
-  remark: "",
-  total_commission: 0,
-  service_fee: 0,
+  quantity_to_be_given: 0,
+  exchange_rate: 0,
+  handling_fee_percentage: 0,
+  buyer_pay_commission: false,
+  other_expense: 0,
 });
 
 const totalAmount = ref({
   total_amount_after_exchange: 0,
-  rate: 0,
-  commission: "0",
-  other_fee: 0,
-  total_with_fee: 0,
-  total: 0,
+  commission: 0,
+  amount_pay_by_seller: 0,
+  amount_pay_by_buyer: 0,
 });
 
 const buyers = ref<Option[]>([]);
 
-const platforms = ref<Option[]>([
+const commissionPayOptions = ref<Option[]>([
   {
     label: "需方付",
-    value: "需方付",
+    value: "true",
+  },
+  {
+    label: "供方付",
+    value: "false",
   },
 ]);
 
-function onBuyAmountChange(value: string | number) {
-  payload.value.quantity = +value;
+function calculateTotalAmount() {
+  if (payload.value.buyer_pay_commission) {
+    totalAmount.value.amount_pay_by_seller = payload.value.quantity_to_be_given;
 
+    totalAmount.value.amount_pay_by_buyer =
+      totalAmount.value.total_amount_after_exchange +
+      payload.value.other_expense +
+      totalAmount.value.commission;
+  } else {
+    totalAmount.value.amount_pay_by_buyer = payload.value.quantity_to_be_given;
+
+    totalAmount.value.amount_pay_by_seller =
+      totalAmount.value.total_amount_after_exchange +
+      payload.value.other_expense +
+      totalAmount.value.commission;
+  }
+}
+
+function onRateChange(value: string | number) {
   totalAmount.value.total_amount_after_exchange =
-    payload.value.quantity -
-    (payload.value.quantity * payload.value.rate) / 100;
+    payload.value.quantity_to_be_given * +value;
+  calculateTotalAmount();
+  payload.value.exchange_rate = +value;
+}
 
-  totalAmount.value.rate =
-    payload.value.quantity +
-    (payload.value.quantity - totalAmount.value.total_amount_after_exchange);
+function onCommissionChange(value: string | number) {
+  totalAmount.value.commission =
+    (payload.value.quantity_to_be_given * +value) / 100;
+  calculateTotalAmount();
+  payload.value.handling_fee_percentage = +value;
+}
 
-  totalAmount.value.total = payload.value.quantity;
+function onBuyAmountChange(value: string | number) {
+  payload.value.quantity_to_be_given = +value;
 
-  totalAmount.value.total_with_fee =
-    totalAmount.value.total_amount_after_exchange + totalAmount.value.rate;
+  onCommissionChange(payload.value.handling_fee_percentage);
+  onRateChange(payload.value.exchange_rate);
+  calculateTotalAmount();
 }
 
 async function onCreateOrder() {

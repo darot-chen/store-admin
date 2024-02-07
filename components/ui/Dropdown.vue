@@ -43,13 +43,13 @@ const props = defineProps<{
   title?: string;
 }>();
 
-const emits = defineEmits<{
-  (e: "update:modelValue", value: string): void;
-}>();
-
 const selected = computed(() => {
   return props.option.find((item) => item.value === props.modelValue);
 });
+
+const emits = defineEmits<{
+  (e: "update:modelValue", value: string): void;
+}>();
 
 function onClick() {
   if (!props.disabled) {
