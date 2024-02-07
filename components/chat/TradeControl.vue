@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <div class="total">
         <h2>交易总额 USDT</h2>
-        <p>{{ total }}</p>
+        <p>{{ detail?.order?.quantity || 0 }}</p>
       </div>
       <div v-if="!showInit" class="action">
         <button class="secondary-button">订单异常</button>
@@ -11,7 +11,7 @@
           发起报备
         </button>
       </div>
-      <div v-else class="action">
+      <div v-else-if="showCreateOrder" class="action">
         <div class="primary-button">
           <button class="primary-button" @click="$emit('createOrder')">
             完成交易
@@ -54,8 +54,8 @@
     </Transition>
     <div class="flex items-center justify-between">
       <div class="detail">
-        <p>担保订单号：{{ orderNumber }}</p>
-        <p>担保金额: {{ total }}</p>
+        <p>担保订单号：{{ detail?.order?.id || "" }}</p>
+        <p>担保金额: {{ detail?.order?.quantity || 0 }}</p>
       </div>
       <div>
         <button class="arrow" @click="onShowMore">
@@ -72,11 +72,17 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-  total: number;
-  orderNumber: string;
+import type { ChatDetail } from "~/types/chat";
+
+const props = defineProps<{
   showInit?: boolean;
+  detail?: ChatDetail;
 }>();
+
+const authStore = useAuthStore();
+const showCreateOrder = computed(() => {
+  return authStore.user?.id === props.detail?.owner_id && props.showInit;
+});
 
 defineEmits<{
   (e: "createOrder"): void;
