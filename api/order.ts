@@ -1,5 +1,5 @@
 import type { APIMeta } from "~/types/base";
-import type { ConfirmOrder, CreateOrder, Order } from "~/types/order";
+import type { CreateOrder, Order } from "~/types/order";
 
 const url = "orders";
 
@@ -9,10 +9,9 @@ export const createOrder = async (payload: CreateOrder) => {
   return data;
 };
 
-export const confirmOrder = async (orderId: number, payload: ConfirmOrder) => {
+export const confirmOrder = async (orderId: number) => {
   const { data } = await useAxiosInstance().put<APIMeta>(
-    `${url}/${orderId}/confirm`,
-    payload
+    `${url}/${orderId}/confirm`
   );
 
   return data;

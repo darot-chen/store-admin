@@ -75,7 +75,7 @@ import {
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
-import { confirmPayment } from "~/api/order";
+import { confirmOrder, confirmPayment } from "~/api/order";
 import { OrderStatus } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
@@ -141,7 +141,14 @@ definePageMeta({
   layout: "chat",
 });
 
-async function onConfirmOrder() {}
+async function onConfirmOrder() {
+  try {
+    await confirmOrder(chatDetail.value!.order.id);
+    fetchChats();
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}
 
 async function onConfirmPayment() {
   try {
