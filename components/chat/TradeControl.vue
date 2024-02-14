@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <div class="total">
         <h2>交易总额 USDT</h2>
-        <p>{{ detail?.order?.quantity || 0 }}</p>
+        <p>{{ detail?.order?.quantity_to_be_given || 0 }}</p>
       </div>
       <div v-if="!showInit" class="action">
         <button class="secondary-button">订单异常</button>
@@ -26,36 +26,47 @@
           <div class="amount">
             <div class="label">
               <div class="currency">
-                <p>USDT</p>
+                <p>
+                  {{ detail?.order?.seller_currency?.code || "" }}
+                </p>
               </div>
               <p class="remaining-title">供方发货</p>
             </div>
-            <div class="remaining">0/500,000</div>
+            <div class="remaining">
+              {{
+                `${props.detail?.order?.quantity_given || 0}/${props.detail?.order?.quantity_to_be_given || 0}`
+              }}
+            </div>
           </div>
-          <div class="circle-progress-bar">
-            <div class="progress"></div>
-          </div>
+          <UiProgressBar :progress="computeBuyerCompletionPercentage" />
         </div>
         <div class="more-detail">
           <div class="amount">
             <div class="label">
               <div class="currency">
-                <p>USD</p>
+                <p>
+                  {{ detail?.order?.buyer_currency?.code || "" }}
+                </p>
               </div>
               <p class="remaining-title">需方发货</p>
             </div>
-            <div class="remaining">0/612,510</div>
+            <div class="remaining">
+              {{
+                `${props.detail?.order?.amount_paid || 0}/${computeSellerTotalAmount}`
+              }}
+            </div>
           </div>
-          <div class="circle-progress-bar">
-            <div class="progress"></div>
-          </div>
+          <UiProgressBar :progress="computeSellerCompletionPercentage" />
         </div>
       </div>
     </Transition>
     <div class="flex items-center justify-between">
       <div class="detail">
         <p>担保订单号：{{ detail?.order?.id || "" }}</p>
-        <p>担保金额: {{ detail?.order?.quantity || 0 }}</p>
+        <p>
+          担保金额: {{ detail?.order?.quantity_to_be_given || 0 }}
+          {{ detail?.order?.seller_currency?.code }}
+        </p>
       </div>
       <div>
         <button class="arrow" @click="onShowMore">
@@ -84,12 +95,38 @@ const showCreateOrder = computed(() => {
   return authStore.user?.id === props.detail?.owner_id && props.showInit;
 });
 
+const computeSellerTotalAmount = computed(() => {
+  const totalAmountWithRate =
+    (props.detail?.order?.quantity_to_be_given || 0) *
+    (props.detail?.order?.exchange_rate || 0);
+
+  const handlingFeePercentage =
+    props.detail?.order?.handling_fee_percentage || 0;
+
+  const handlingFee = (totalAmountWithRate * handlingFeePercentage) / 100;
+
+  return totalAmountWithRate + handlingFee;
+});
+
+const computeBuyerCompletionPercentage = computed(() => {
+  return (
+    (props.detail?.order?.amount_paid || 0) / computeSellerTotalAmount.value
+  );
+});
+
+const computeSellerCompletionPercentage = computed(() => {
+  return (
+    (props.detail?.order?.quantity_given || 0) /
+    (props.detail?.order?.quantity_to_be_given || 0)
+  );
+});
+
 defineEmits<{
   (e: "createOrder"): void;
   (e: "confirmOrder"): void;
 }>();
 
-const showMore = ref(false);
+const showMore = ref(true);
 
 function onShowMore() {
   showMore.value = !showMore.value;
@@ -256,15 +293,5 @@ function onShowMore() {
   font-style: normal;
   font-weight: 400;
   line-height: 130%;
-}
-
-.circle-progress-bar {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1.5px solid rgba(177, 221, 255, 1);
 }
 </style>

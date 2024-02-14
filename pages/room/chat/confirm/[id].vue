@@ -17,15 +17,29 @@
               />
             </template>
           </VanCell>
-          <VanCell title="交易类型">
+          <VanCell title="卖方货币">
             <template #right-icon>
               <UiDropdown
                 title="请选择交易类型"
-                :model-value="payload?.currency_id.toString() ?? ''"
+                :model-value="payload?.seller_currency_id.toString() ?? ''"
                 :option="currencyStore.options"
                 @update:model-value="
                   (value) => {
-                    payload.currency_id = +value;
+                    payload.seller_currency_id = +value;
+                  }
+                "
+              />
+            </template>
+          </VanCell>
+          <VanCell title="买方货币">
+            <template #right-icon>
+              <UiDropdown
+                title="请选择交易类型"
+                :model-value="payload?.buyer_currency_id.toString() ?? ''"
+                :option="currencyStore.options"
+                @update:model-value="
+                  (value) => {
+                    payload.buyer_currency_id = +value;
                   }
                 "
               />
@@ -46,7 +60,9 @@
                 required
                 :model-value="payload.quantity_to_be_given"
                 type="number"
-                :icon="getCurrencyByValue(payload.currency_id.toString())?.icon"
+                :icon="
+                  getCurrencyByValue(payload.buyer_currency_id.toString())?.icon
+                "
                 @update:model-value="onBuyAmountChange"
               />
             </template>
@@ -140,7 +156,7 @@
             <template #right-icon>
               <p class="font-semibold text-[#50A7EA]">
                 {{
-                  `${totalAmount.amount_pay_by_seller} ${getCurrencyByValue(payload.currency_id.toString())?.label ?? ""}`
+                  `${totalAmount.amount_pay_by_seller} ${getCurrencyByValue(payload.buyer_currency_id.toString())?.label ?? ""}`
                 }}
               </p>
             </template>
@@ -200,7 +216,8 @@ onMounted(async () => {
       });
 
     payload.value.buyer_id = +buyers.value[0].value;
-    payload.value.currency_id = chatDetail.value.business?.currency_id ?? 0;
+    payload.value.seller_currency_id =
+      chatDetail.value.business?.currency_id ?? 0;
   } catch (error) {
     router.back();
   }
@@ -209,7 +226,8 @@ onMounted(async () => {
 
 const payload = ref<CreateOrder>({
   chat_room_id: roomId,
-  currency_id: 0,
+  buyer_currency_id: 0,
+  seller_currency_id: 0,
   buyer_id: 0,
   quantity_to_be_given: 0,
   exchange_rate: 0,

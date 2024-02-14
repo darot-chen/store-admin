@@ -17,17 +17,17 @@ export const getPublicChatRoom = async (type: string, params: Cursor) => {
   return data;
 };
 
-export const joinPublicChatRoom = async (roomID: number) => {
+export const joinPublicChatRoom = async (roomId: number) => {
   const { data } = await useAxiosInstance().post<APIMeta>(
-    `${url}/${roomID}/join`
+    `${url}/${roomId}/join`
   );
 
   return data;
 };
 
-export const getChat = async (roomID: number, params: Cursor) => {
+export const getChat = async (roomId: number, params: Cursor) => {
   const { data } = await useAxiosInstance().get<CursorResponse<Chat[]>>(
-    `${url}/${roomID}/chats`,
+    `${url}/${roomId}/chats`,
     {
       params,
     }
@@ -36,15 +36,15 @@ export const getChat = async (roomID: number, params: Cursor) => {
   return data;
 };
 
-export const getChatDetail = async (roomID: number) => {
-  const { data } = await useAxiosInstance().get<ChatDetail>(`${url}/${roomID}`);
+export const getChatDetail = async (roomId: number) => {
+  const { data } = await useAxiosInstance().get<ChatDetail>(`${url}/${roomId}`);
 
   return data;
 };
 
-export const addChat = async (roomID: number, message: string) => {
+export const addChat = async (roomId: number, message: string) => {
   const { data } = await useAxiosInstance().post<Chat>(
-    `${url}/${roomID}/chat`,
+    `${url}/${roomId}/chat`,
     {
       message,
     }
@@ -53,33 +53,33 @@ export const addChat = async (roomID: number, message: string) => {
   return data;
 };
 
-export const uploadImage = async (roomID: number, file: File) => {
+export const uploadImage = async (roomId: number, file: File) => {
   const formatData = new FormData();
   formatData.append("image", file);
 
   const { data } = await useAxiosInstance().postForm<Chat>(
-    `${url}/${roomID}/image`,
+    `${url}/${roomId}/image`,
     formatData
   );
 
   return data;
 };
 
-export const uploadVideo = async (roomID: number, file: File) => {
+export const uploadVideo = async (roomId: number, file: File) => {
   const payload = new FormData();
   payload.append("video", file);
 
   const { data } = await useAxiosInstance().postForm<Chat>(
-    `${url}/${roomID}/video`,
+    `${url}/${roomId}/video`,
     payload
   );
 
   return data;
 };
 
-export const getChatRoomMembers = async (roomID: number) => {
+export const getChatRoomMembers = async (roomId: number) => {
   const { data } = await useAxiosInstance().get<Member[]>(
-    `${url}/${roomID}/members`
+    `${url}/${roomId}/members`
   );
 
   return data;

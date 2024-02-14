@@ -1,3 +1,5 @@
+import type { Currency } from "./currency";
+
 export enum OrderStatus {
   FAILED = "failed",
   SUCCESS = "success",
@@ -6,14 +8,16 @@ export enum OrderStatus {
 }
 
 export type CreateOrder = {
+  buyer_currency_id: number;
+  seller_currency_id: number;
   chat_room_id: number;
-  currency_id: number;
   buyer_id: number;
   quantity_to_be_given: number;
   exchange_rate: number;
   handling_fee_percentage: number;
   buyer_pay_commission: boolean;
   other_expense: number;
+  note?: string;
 };
 
 export type ConfirmOrder = {
@@ -50,4 +54,6 @@ export type Order = {
   note?: string;
   seller_confirmed_at?: string;
   buyer_confirmed_at?: string;
+  buyer_currency?: Currency;
+  seller_currency: Currency;
 };
