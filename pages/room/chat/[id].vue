@@ -130,11 +130,26 @@ onMounted(() => {
 
     addChatAndSort(d.data);
   });
+
+  $evOn("order_payment_confirmed", (d) => {
+    if (d.data.id !== chatDetail.value?.order.id) return;
+
+    loading.value = true;
+    if (chatDetail.value) {
+      if (d?.data?.amount_paid) {
+        chatDetail.value.order.amount_paid = d.data.amount_paid;
+      } else if (d?.data?.quantity_given) {
+        chatDetail.value.order.quantity_given = d.data.quantity_given;
+      }
+    }
+    loading.value = false;
+  });
 });
 
 onUnmounted(() => {
   pageStore.$reset();
   $evOff("new_chat_received");
+  $evOff("order_payment_confirmed");
 });
 
 definePageMeta({

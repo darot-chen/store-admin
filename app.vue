@@ -44,6 +44,9 @@ function handleOnMessage(data: SocketMessageData<any>) {
     case SOCKET_EVENT.NEW_CHAT_RECEIVED:
       $evEmit("new_chat_received", data);
       break;
+    case SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED:
+      $evEmit("order_payment_confirmed", data);
+      break;
   }
 }
 
