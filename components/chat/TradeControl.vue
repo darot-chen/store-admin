@@ -34,11 +34,13 @@
             </div>
             <div class="remaining">
               {{
-                `${props.detail?.order?.quantity_given || 0}/${props.detail?.order?.quantity_to_be_given || 0}`
+                `${props.detail?.order?.quantity_given || 0}/${
+                  props.detail?.order?.quantity_to_be_given || 0
+                }`
               }}
             </div>
           </div>
-          <UiProgressBar :progress="computeBuyerCompletionPercentage" />
+          <UiProgressBar :progress="100*props.detail?.order?.quantity_given/props.detail?.order?.quantity_to_be_given" />
         </div>
         <div class="more-detail">
           <div class="amount">
@@ -52,11 +54,13 @@
             </div>
             <div class="remaining">
               {{
-                `${props.detail?.order?.amount_paid || 0}/${computeSellerTotalAmount}`
+                `${
+                  props.detail?.order?.amount_paid || 0
+                }/${computeSellerTotalAmount}`
               }}
             </div>
           </div>
-          <UiProgressBar :progress="computeSellerCompletionPercentage" />
+          <UiProgressBar :progress="100*props.detail?.order?.amount_paid /computeSellerTotalAmount" />
         </div>
       </div>
     </Transition>
