@@ -24,7 +24,7 @@ definePageMeta({
   layout: "chat-list",
 });
 
-const roomType = ref<string>("public");
+const roomType = ref<string>("private");
 
 const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
@@ -57,14 +57,6 @@ async function fetchChatRooms(isChangeType?: boolean) {
   loadMore.value = res.meta.has_next;
 
   loading.value = false;
-}
-
-function onChangeType() {
-  roomType.value === "public"
-    ? (roomType.value = "private")
-    : (roomType.value = "public");
-
-  fetchChatRooms(true);
 }
 
 const handleScroll = (event: Event) => {
