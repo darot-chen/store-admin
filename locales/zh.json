@@ -24,5 +24,10 @@
     "settlement_end_date": "结算完日期：{date}",
     "acceptance_standard": "验收标准：正常即可",
     "kind_tips": "温馨提示：！为避免纠纷建议双方录制视频，快递运输7天时间内。加上后期另外结算时间为交易总时长"
-  }
+  },
+  "home": "担保",
+  "chat": "交谈",
+  "account": "我的",
+  "chat_search_place_holder": "搜索消息或用户",
+  "edit": "编辑"
 }

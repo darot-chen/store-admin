@@ -1,7 +1,9 @@
 <template>
-  <div class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col">
+  <div
+    class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col bg-[#FFFFFFBF]"
+  >
     <slot name="header">
-      <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
+      <div class="sticky top-0 z-10 w-full max-w-lg py-[1.06rem]">
         <div class="flex justify-center px-2">
           <div class="inline-flex items-center gap-2">
             <p class="line-clamp-1 font-bold">
@@ -19,6 +21,9 @@
     <main class="bg-app flex w-full max-w-lg flex-col">
       <slot />
     </main>
+    <slot name="footer">
+      <LayoutFooter />
+    </slot>
   </div>
 </template>
 

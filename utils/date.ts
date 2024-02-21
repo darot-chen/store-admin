@@ -20,3 +20,13 @@ export const formatDate = (
 
   return dayjs(date).locale(localeStr).format(yearBasedFormat);
 };
+
+export const formatChatListDate = (date: string) => {
+  if (dayjs().isSame(date, "day")) {
+    return dayjs(date).format("HH:mm");
+  } else if (dayjs().isSame(date, "week")) {
+    return dayjs(date).format("ddd");
+  }
+
+  return dayjs(date).format("MM/DD");
+};
