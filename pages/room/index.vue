@@ -1,13 +1,6 @@
 <template>
-  <div class="flex h-full flex-col gap-5 px-2" @scroll="handleScroll">
-    <button
-      class="rounded bg-[#50a7ea] p-2 text-center font-bold text-[#0d2744] shadow-md hover:bg-[#87c1f2] focus:bg-[#87c1f2]"
-      @click="onChangeType"
-    >
-      {{
-        roomType === "public" ? $t("switch_to_private") : $t("switch_to_public")
-      }}
-    </button>
+  <div class="flex h-full flex-col gap-5 bg-[#FFFFFFBF]" @scroll="handleScroll">
+    <ChatSearch class="px-3" />
     <div
       v-if="loading"
       class="absolute"
@@ -17,30 +10,8 @@
         class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
       />
     </div>
-    <div v-else class="flex flex-col gap-2">
-      <NuxtLink
-        v-for="room in chatRooms"
-        :key="room.id"
-        class="flex max-h-[200px] cursor-pointer flex-col justify-between rounded-md border bg-slate-200 p-5 shadow-xl"
-        :to="`/room/chat/${room.id}`"
-      >
-        <div class="flex flex-col">
-          <div>
-            <h1 class="line-clamp-1 text-lg font-bold">
-              {{ room.business.title }}
-            </h1>
-            <p class="line-clamp-3 text-sm">
-              {{ room.business.description }}
-            </p>
-          </div>
-        </div>
-        <div class="mt-4 flex justify-end gap-4 text-xs italic">
-          <span>{{ $t("total_fund") }} {{ room.business.total_fund }}</span>
-          <span>
-            {{ $t("available_fund") }} {{ room.business.available_fund }}
-          </span>
-        </div>
-      </NuxtLink>
+    <div v-else class="flex flex-col">
+      <ChatListItem v-for="room in chatRooms" :key="room.id" :room="room" />
     </div>
   </div>
 </template>
@@ -48,6 +19,10 @@
 <script setup lang="ts">
 import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";
+
+definePageMeta({
+  layout: "chat-list",
+});
 
 const roomType = ref<string>("public");
 

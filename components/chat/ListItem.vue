@@ -1,0 +1,47 @@
+<template>
+  <div>
+    <NuxtLink
+      class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
+      :to="`/room/chat/${room.id}`"
+    >
+      <div class="flex gap-2">
+        <img src="/images/avatar.png" width="60" />
+
+        <div class="flex flex-col">
+          <div>
+            <h1 class="line-clamp-1 font-medium">
+              {{ room.business.title }}
+            </h1>
+            <p class="line-clamp-3 text-sm text-[#8E8E93]">
+              {{ room.business.description }}
+            </p>
+          </div>
+        </div>
+
+        <div class="ml-auto flex flex-col items-end justify-between">
+          <div class="flex gap-1.5">
+            <img src="/svg/check.double.svg" alt="check" />
+            <span class="text-sm text-[#8E8E93]">
+              {{ formatChatListDate(room.created_at) }}
+            </span>
+          </div>
+
+          <div class="mb-1">
+            <span
+              class="rounded-full bg-[#037EE5] px-1 py-0.5 text-sm text-white"
+            >
+              {{ 17 }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </NuxtLink>
+  </div>
+</template>
+<script setup lang="ts">
+import type { ChatRoom } from "~/types/chatRoom";
+
+defineProps<{
+  room: ChatRoom;
+}>();
+</script>

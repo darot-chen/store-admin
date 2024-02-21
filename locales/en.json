@@ -24,5 +24,10 @@
     "settlement_end_date": "Settlement date: {date}",
     "acceptance_standard": "Acceptance standard: normal",
     "kind_tips": "t! In order to avoid disputes, it is recommended that both parties record a video and express delivery within 7 days. Including additional settlement time in the later period is the total transaction length"
-  }
+  },
+  "home": "Home",
+  "chat": "Chats",
+  "account": "Account",
+  "chat_search_place_holder": "Search for messages or users",
+  "edit": "Edit"
 }
