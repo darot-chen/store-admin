@@ -121,7 +121,7 @@ const messagePayload = ref<{
 onMounted(() => {
   fetchChats();
 
-  $evOn("new_chat_received", async (d) => {
+  $evOn("new_chat_received", async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;
 
     if (d.data.type === ChatType.Action) {
@@ -131,13 +131,13 @@ onMounted(() => {
     addChatAndSort(d.data);
   });
 
-  $evOn("order_payment_confirmed", (d) => {
-    if (d.data.id !== chatDetail.value?.order.id) return;
+  $evOn("order_payment_confirmed", (d: any) => {
+    if (d.data?.id !== chatDetail.value?.order.id) return;
 
     loading.value = true;
     if (chatDetail.value) {
-      chatDetail.value.order.amount_paid = d.data.amount_paid;
-      chatDetail.value.order.quantity_given = d.data.quantity_given;
+      chatDetail.value.order.amount_paid = d.data?.amount_paid || 0;
+      chatDetail.value.order.quantity_given = d.data?.quantity_given || 0;
     }
     loading.value = false;
   });

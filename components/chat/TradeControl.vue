@@ -2,8 +2,8 @@
   <div class="container">
     <div class="flex items-center justify-between">
       <div class="total">
-        <h2>交易总额 USDT</h2>
-        <p>{{ detail?.order?.quantity_to_be_given || 0 }}</p>
+        <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
+        <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
       </div>
       <div v-if="!showInit" class="action">
         <button class="secondary-button">订单异常</button>
@@ -27,10 +27,30 @@
             <div class="label">
               <div class="currency">
                 <p>
-                  {{ detail?.order?.seller_currency?.code || "" }}
+                  {{ detail?.order?.seller_currency?.code || "USDT" }}
                 </p>
               </div>
               <p class="remaining-title">供方发货</p>
+            </div>
+            <div class="remaining">
+              {{
+                `${props.detail?.order?.amount_paid || 0}/${
+                  props.detail?.order?.amount_to_be_paid || 0
+                }`
+              }}
+            </div>
+          </div>
+          <UiProgressBar :progress="computeSellerCompletionPercentage" />
+        </div>
+        <div class="more-detail">
+          <div class="amount">
+            <div class="label">
+              <div class="currency">
+                <p>
+                  {{ detail?.order?.buyer_currency?.code || "USD" }}
+                </p>
+              </div>
+              <p class="remaining-title">需方发货</p>
             </div>
             <div class="remaining">
               {{
@@ -40,35 +60,15 @@
               }}
             </div>
           </div>
-          <UiProgressBar :progress="100*props.detail?.order?.quantity_given/props.detail?.order?.quantity_to_be_given" />
-        </div>
-        <div class="more-detail">
-          <div class="amount">
-            <div class="label">
-              <div class="currency">
-                <p>
-                  {{ detail?.order?.buyer_currency?.code || "" }}
-                </p>
-              </div>
-              <p class="remaining-title">需方发货</p>
-            </div>
-            <div class="remaining">
-              {{
-                `${
-                  props.detail?.order?.amount_paid || 0
-                }/${computeSellerTotalAmount}`
-              }}
-            </div>
-          </div>
-          <UiProgressBar :progress="100*props.detail?.order?.amount_paid /computeSellerTotalAmount" />
+          <UiProgressBar :progress="computeBuyerCompletionPercentage" />
         </div>
       </div>
     </Transition>
     <div class="flex items-center justify-between">
       <div class="detail">
-        <p>担保订单号：{{ detail?.order?.id || "" }}</p>
+        <p>担保订单号：{{ detail?.order?.id || "-" }}</p>
         <p>
-          担保金额: {{ detail?.order?.quantity_to_be_given || 0 }}
+          担保金额: {{ detail?.order?.quantity_to_be_given || "-" }}
           {{ detail?.order?.seller_currency?.code }}
         </p>
       </div>
@@ -99,28 +99,20 @@ const showCreateOrder = computed(() => {
   return authStore.user?.id === props.detail?.owner_id && props.showInit;
 });
 
-const computeSellerTotalAmount = computed(() => {
-  const totalAmountWithRate =
-    (props.detail?.order?.quantity_to_be_given || 0) *
-    (props.detail?.order?.exchange_rate || 0);
-
-  const handlingFeePercentage =
-    props.detail?.order?.handling_fee_percentage || 0;
-
-  const handlingFee = (totalAmountWithRate * handlingFeePercentage) / 100;
-
-  return totalAmountWithRate + handlingFee;
-});
-
 const computeBuyerCompletionPercentage = computed(() => {
+  if (!props.detail?.order?.amount_paid) return 0;
+
   return (
-    (props.detail?.order?.amount_paid || 0) / computeSellerTotalAmount.value
+    (100 * (props.detail?.order?.amount_paid || 0)) /
+    props.detail?.order?.amount_to_be_paid
   );
 });
 
 const computeSellerCompletionPercentage = computed(() => {
+  if (!props.detail?.order?.quantity_given) return 0;
+
   return (
-    (props.detail?.order?.quantity_given || 0) /
+    (100 * (props.detail?.order?.quantity_given || 0)) /
     (props.detail?.order?.quantity_to_be_given || 0)
   );
 });
