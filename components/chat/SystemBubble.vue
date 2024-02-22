@@ -45,9 +45,7 @@
               <p>
                 {{
                   $t("order_message.total_amount_payable_by_the_demander", {
-                    value:
-                      Number(detail?.order.exchange_rate) *
-                      Number(detail?.order.quantity_to_be_given),
+                    value: detail?.order.amount_to_be_paid,
                   })
                 }}
               </p>

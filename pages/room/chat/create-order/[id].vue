@@ -7,7 +7,7 @@
             <h1 class="text-[15px] font-semibold">汇率</h1>
             <Icon name="Info" color="#E1EFFF" />
           </div>
-          <p class="text-[16px]">1.02</p>
+          <p class="text-[16px]">{{ fee.platformRate }}%</p>
         </div>
         <UiDivider />
         <div class="detail-item">
@@ -15,7 +15,7 @@
             <h1 class="text-[15px] font-semibold">费率</h1>
             <Icon name="Info" color="#E1EFFF" />
           </div>
-          <p class="text-[16px]">20%</p>
+          <p class="text-[16px]">{{ fee.exchangeRate }}</p>
         </div>
         <UiDivider />
         <div class="detail-item">
@@ -23,7 +23,7 @@
             <h1 class="text-[15px] font-semibold">其他费</h1>
             <Icon name="Info" color="#E1EFFF" />
           </div>
-          <p class="text-[16px]">10u</p>
+          <p class="text-[16px]">{{ fee.otherFee }}</p>
         </div>
       </div>
     </div>
@@ -57,19 +57,14 @@
           <FormWrapper title="应入款总额" class="py-[11px]">
             <span class="flex items-center">
               <UiDropdown
-                :model-value="
-                  chatDetail?.business?.currency_id.toString() ?? ''
-                "
+                :model-value="payload.seller_currency_id.toString()"
                 disabled
                 :option="currencyStore.options"
               />
               <UiInput
                 required
-                :model-value="payload.quantity_to_be_given"
+                :model-value="payload.amount"
                 type="number"
-                :icon="
-                  getCurrencyByValue(payload.buyer_currency_id.toString())?.icon
-                "
                 @update:model-value="onBuyAmountChange"
               />
             </span>
@@ -77,11 +72,11 @@
           <FormWrapper title="应下发的币种" class="py-[11px]">
             <span class="flex items-center">
               <UiDropdown
-                :model-value="payload.seller_currency_id.toString()"
+                :model-value="payload.buyer_currency_id.toString()"
                 :option="currencyStore.options"
                 @update:model-value="
                   (value) => {
-                    payload.seller_currency_id = +value;
+                    payload.buyer_currency_id = +value;
                   }
                 "
               />
@@ -89,10 +84,7 @@
                 required
                 :model-value="payload.quantity_to_be_given"
                 type="number"
-                :icon="
-                  getCurrencyByValue(payload.buyer_currency_id.toString())?.icon
-                "
-                @update:model-value="onBuyAmountChange"
+                disabled
               />
             </span>
           </FormWrapper>
@@ -106,7 +98,7 @@
           <FormWrapper title="佣金" class="py-[11px]">
             <UiDropdown
               :model-value="payload.buyer_pay_commission.toString()"
-              :option="commissionPayOptions"
+              :option="COMMISSION_PAY_OPTIONS"
               @update:model-value="
                 (value) => {
                   if (value === 'true') {
@@ -114,7 +106,6 @@
                   } else {
                     payload.buyer_pay_commission = false;
                   }
-                  calculateTotalAmount();
                 }
               "
             />
@@ -137,7 +128,7 @@
     >
       <div class="inline-flex w-full gap-[5px] py-[11px] pr-[16px]">
         <p class="total-title">需方应付总额:</p>
-        <p class="total-amount">612,510 USD</p>
+        <p class="total-amount">{{ payload.amount }}</p>
       </div>
       <UiButton
         class="px-[42px] py-[7px]"
@@ -153,6 +144,7 @@ import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
 import { createOrder } from "~/api/order";
 import FormWrapper from "~/components/ui/FormWrapper.vue";
+import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail } from "~/types/chat";
 import type { Option } from "~/types/common";
@@ -166,6 +158,25 @@ const members = ref<Member[]>([]);
 const currencyStore = useCurrencyStore();
 const chatDetail = ref<ChatDetail>();
 const authStore = useAuthStore();
+const buyers = ref<Option[]>([]);
+
+const fee = ref({
+  otherFee: 0,
+  exchangeRate: 1.02,
+  platformRate: 20,
+});
+
+const payload = ref<CreateOrder>({
+  chat_room_id: roomId,
+  amount: 0,
+  buyer_currency_id: 2,
+  seller_currency_id: 0,
+  quantity_to_be_given: 0,
+  buyer_id: 0,
+  buyer_pay_commission: false,
+  other_expense: 0,
+  duration: "",
+});
 
 onMounted(async () => {
   try {
@@ -191,81 +202,21 @@ onMounted(async () => {
   pageStore.setTitle("交易确认");
 });
 
-const payload = ref<CreateOrder>({
-  chat_room_id: roomId,
-  buyer_currency_id: 0,
-  seller_currency_id: 0,
-  quantity_to_be_given: 0,
-  buyer_id: 0,
-  exchange_rate: 0,
-  handling_fee_percentage: 0,
-  buyer_pay_commission: false,
-  other_expense: 0,
-  duration: "",
-});
-
-const totalAmount = ref({
-  total_amount_after_exchange: 0,
-  commission: 0,
-  amount_pay_by_seller: 0,
-  amount_pay_by_buyer: 0,
-});
-
-const buyers = ref<Option[]>([]);
-
-const commissionPayOptions = ref<Option[]>([
-  {
-    label: "卖家付",
-    value: "true",
-  },
-  {
-    label: "供方付",
-    value: "false",
-  },
-]);
-
-function calculateTotalAmount() {
-  if (payload.value.buyer_pay_commission) {
-    totalAmount.value.amount_pay_by_seller = payload.value.quantity_to_be_given;
-
-    totalAmount.value.amount_pay_by_buyer =
-      totalAmount.value.total_amount_after_exchange +
-      payload.value.other_expense +
-      totalAmount.value.commission;
-  } else {
-    totalAmount.value.amount_pay_by_buyer = payload.value.quantity_to_be_given;
-
-    totalAmount.value.amount_pay_by_seller =
-      totalAmount.value.total_amount_after_exchange +
-      payload.value.other_expense +
-      totalAmount.value.commission;
-  }
-}
-
-function onRateChange(value: string | number) {
-  totalAmount.value.total_amount_after_exchange =
-    payload.value.quantity_to_be_given * +value;
-  calculateTotalAmount();
-  payload.value.exchange_rate = +value;
-}
-
-function onCommissionChange(value: string | number) {
-  totalAmount.value.commission =
-    (payload.value.quantity_to_be_given * +value) / 100;
-  calculateTotalAmount();
-  payload.value.handling_fee_percentage = +value;
-}
-
 function onBuyAmountChange(value: string | number) {
-  payload.value.quantity_to_be_given = +value;
+  payload.value.amount = +value;
+  const platformFee = (100 + fee.value.platformRate) / 100;
 
-  onCommissionChange(payload.value.handling_fee_percentage);
-  onRateChange(payload.value.exchange_rate);
-  calculateTotalAmount();
+  payload.value.quantity_to_be_given = Number(
+    (
+      payload.value.amount * fee.value.exchangeRate * platformFee +
+      fee.value.otherFee
+    ).toFixed(2)
+  );
 }
 
 async function onCreateOrder() {
   try {
+    // const res = await createExchangeOrder(payload.value);
     const res = await createOrder(payload.value);
     navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {

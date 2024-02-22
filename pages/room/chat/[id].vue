@@ -73,7 +73,7 @@ import {
   addChat,
 } from "~/api/chat";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
-import { showFailToast } from "vant";
+import { showDialog, showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
 import { confirmOrder, confirmPayment } from "~/api/order";
 import { OrderStatus } from "~/types/order";
@@ -156,7 +156,12 @@ definePageMeta({
 async function onConfirmOrder() {
   try {
     await confirmOrder(chatDetail.value!.order.id);
-    fetchChats();
+    showDialog({
+      title: t("successfully_sent"),
+      message: t("order_confirmed_message"),
+    }).then(() => {
+      fetchChats();
+    });
   } catch (error: any) {
     showFailToast(error?.message);
   }

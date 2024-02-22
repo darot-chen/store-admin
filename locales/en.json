@@ -29,5 +29,7 @@
   "chat": "Chats",
   "account": "Account",
   "chat_search_place_holder": "Search for messages or users",
-  "edit": "Edit"
+  "edit": "Edit",
+  "successfully_sent": "Successfully Sent",
+  "order_confirmed_message": "Wait for the other party to click to confirm"
 }

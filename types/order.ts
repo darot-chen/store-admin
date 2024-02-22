@@ -13,8 +13,7 @@ export type CreateOrder = {
   chat_room_id: number;
   buyer_id: number;
   quantity_to_be_given: number;
-  exchange_rate: number;
-  handling_fee_percentage: number;
+  amount: number;
   buyer_pay_commission: boolean;
   other_expense: number;
   duration: string;

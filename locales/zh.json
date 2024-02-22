@@ -29,5 +29,6 @@
   "chat": "交谈",
   "account": "我的",
   "chat_search_place_holder": "搜索消息或用户",
-  "edit": "编辑"
+  "successfully_sent": "发送成功",
+  "order_confirmed_message": "等待对方点击确认"
 }

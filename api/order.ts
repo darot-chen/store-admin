@@ -3,11 +3,17 @@ import type { CreateOrder, Order } from "~/types/order";
 
 const url = "orders";
 
-export const createOrder = async (payload: CreateOrder) => {
+export const createExchangeOrder = async (payload: CreateOrder) => {
   const { data } = await useAxiosInstance().post<Order>(
     `${url}/exchange`,
     payload
   );
+
+  return data;
+};
+
+export const createOrder = async (payload: CreateOrder) => {
+  const { data } = await useAxiosInstance().post<Order>(`${url}`, payload);
 
   return data;
 };
