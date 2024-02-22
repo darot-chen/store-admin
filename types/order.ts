@@ -43,6 +43,7 @@ export type Order = {
   exchange_rate: number;
   handling_fee_percentage: number;
   amount_paid: number;
+  amount_to_be_paid: number;
   buyer_commission_percentage: number;
   seller_commission_percentage: number;
   total_commission: number;
