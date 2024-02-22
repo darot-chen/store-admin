@@ -3,6 +3,7 @@
     :class="['inline-flex items-center gap-[9px]', disabled && 'disabled']"
     @click="onClick"
   >
+    <Icon name="ArrowDown" color="#D0D0D0" size="14" class="opacity-30" />
     <img
       v-if="selected?.icon"
       :src="selected.icon"
@@ -11,7 +12,6 @@
     />
     <div class="inline-flex items-center gap-[16px]">
       <p>{{ selected?.label }}</p>
-      <Icon name="Caret" color="#3C3C43" size="14" class="opacity-30" />
     </div>
   </button>
   <VanPopup v-model:show="showPopup" round class="popup">

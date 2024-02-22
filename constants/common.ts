@@ -2,19 +2,19 @@ import type { FooterItem } from "~/types/common";
 
 export const FOOTER_ITEMS: FooterItem[] = [
   {
-    icon: "/svg/house.fill.svg",
+    icon: "Home",
     label: "home",
     key: "home",
     link: "/",
   },
   {
-    icon: "/svg/bubble.left.and.bubble.right.fill.svg",
+    icon: "Chat",
     label: "chat",
     key: "chat",
     link: "/room",
   },
   {
-    icon: "/svg/person.crop.circle.fill.svg",
+    icon: "Person",
     label: "account",
     key: "account",
     link: "/account",

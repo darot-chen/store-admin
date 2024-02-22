@@ -1,9 +1,11 @@
 <template>
   <div class="flex items-center justify-between px-3 py-5">
-    <div class="text-[#037EE5]">{{ $t("edit") }}</div>
-    <div class="text-lg font-semibold">{{ $t("chat") }}</div>
-    <img src="/svg/edit.svg" alt="edit" />
+    <button>
+      <div class="text-[#037EE5]">{{ $t("edit") }}</div>
+    </button>
+    <p class="text-lg font-semibold">{{ $t("chat") }}</p>
+    <button>
+      <Icon name="Edit" color="#037EE5" />
+    </button>
   </div>
 </template>
-
-<script setup lang="ts"></script>

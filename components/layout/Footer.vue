@@ -9,10 +9,10 @@
       class="flex flex-col items-center justify-center"
       active-class="text-blue-500"
     >
-      <NuxtImg
-        :src="item.icon"
-        width="22"
-        :class="{ 'active-img': $route.path === item.link }"
+      <Icon
+        :name="item.icon"
+        color="#999999"
+        :class="['h-6 w-6', { 'active-img': $route.path === item.link }]"
       />
       <span
         :class="[

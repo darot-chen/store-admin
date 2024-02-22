@@ -1,7 +1,7 @@
 <template>
   <div class="inline-flex items-center justify-end gap-[5px]">
     <input
-      class="max-w-1/3 text-end"
+      class="w-20 bg-transparent text-end"
       :value="modelValue"
       :type="type"
       :required="required"
@@ -11,7 +11,7 @@
     <span v-if="isPercent">%</span>
     <img v-if="icon" :src="icon" :alt="icon" class="w-[18px] rounded-full" />
     <button class="inline-flex items-center justify-center" @click="onReset">
-      <Icon name="X" color="#cccccc" />
+      <Icon name="X" class="w-[14px]" color="#cccccc" />
     </button>
   </div>
 </template>

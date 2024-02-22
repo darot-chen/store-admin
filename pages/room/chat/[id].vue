@@ -5,7 +5,7 @@
         v-if="showTradeControl"
         :show-init="!chatDetail?.order?.buyer_confirmed_at"
         :detail="chatDetail"
-        @create-order="navigateTo(`confirm/${roomID}`)"
+        @create-order="navigateTo(`create-order/${roomID}`)"
         @confirm-order="onConfirmPayment"
       />
     </div>

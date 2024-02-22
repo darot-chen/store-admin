@@ -20,7 +20,7 @@
 
         <div class="ml-auto flex flex-col items-end justify-between">
           <div class="flex gap-1.5">
-            <img src="/svg/check.double.svg" alt="check" />
+            <Icon name="DoubleCheck" color="#21C004" />
             <span class="text-sm text-[#8E8E93]">
               {{ formatChatListDate(room.created_at) }}
             </span>

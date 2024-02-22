@@ -17,6 +17,8 @@ export type CreateOrder = {
   handling_fee_percentage: number;
   buyer_pay_commission: boolean;
   other_expense: number;
+  duration: string;
+  title?: string;
   note?: string;
 };
 
