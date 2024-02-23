@@ -5,17 +5,23 @@
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
         <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
       </div>
-      <div v-if="!showInit" class="action">
-        <button class="secondary-button">订单异常</button>
-        <button class="primary-button" @click="$emit('confirmOrder')">
-          发起报备
-        </button>
-      </div>
-      <div v-else-if="showCreateOrder" class="action">
-        <div class="primary-button">
-          <button class="primary-button" @click="$emit('createOrder')">
-            完成交易
+      <div v-if="props.detail?.order.status !== OrderStatus.SUCCESS">
+        <div v-if="props.detail?.order.buyer_confirmed_at" class="action">
+          <button class="secondary-button">订单异常</button>
+          <button
+            v-if="props.detail.order.seller_id === authStore.user?.id"
+            class="primary-button"
+            @click="$emit('confirmOrder')"
+          >
+            发起报备
           </button>
+        </div>
+        <div v-else-if="showCreateOrder" class="action">
+          <div class="primary-button">
+            <button class="primary-button" @click="$emit('createOrder')">
+              完成交易
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -88,32 +94,32 @@
 
 <script setup lang="ts">
 import type { ChatDetail } from "~/types/chat";
+import { OrderStatus } from "~/types/order";
 
 const props = defineProps<{
-  showInit?: boolean;
   detail?: ChatDetail;
 }>();
 
 const authStore = useAuthStore();
 const showCreateOrder = computed(() => {
-  return authStore.user?.id === props.detail?.owner_id && props.showInit;
+  return authStore.user?.id === props.detail?.owner_id;
 });
 
 const computeBuyerCompletionPercentage = computed(() => {
-  if (!props.detail?.order?.amount_paid) return 0;
-
-  return (
-    (100 * (props.detail?.order?.amount_paid || 0)) /
-    props.detail?.order?.amount_to_be_paid
-  );
-});
-
-const computeSellerCompletionPercentage = computed(() => {
   if (!props.detail?.order?.quantity_given) return 0;
 
   return (
     (100 * (props.detail?.order?.quantity_given || 0)) /
     (props.detail?.order?.quantity_to_be_given || 0)
+  );
+});
+
+const computeSellerCompletionPercentage = computed(() => {
+  if (!props.detail?.order?.amount_paid) return 0;
+
+  return (
+    (100 * (props.detail?.order?.amount_paid || 0)) /
+    props.detail?.order?.amount_to_be_paid
   );
 });
 

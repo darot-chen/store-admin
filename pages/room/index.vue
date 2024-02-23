@@ -20,10 +20,6 @@
 import { getPublicChatRoom } from "~/api/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 
-definePageMeta({
-  layout: "chat-list",
-});
-
 const roomType = ref<string>("private");
 
 const chatRooms = ref<ChatRoom[]>([]);

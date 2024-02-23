@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white">
     <NuxtLink
       class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
       :to="`/room/chat/${room.id}`"

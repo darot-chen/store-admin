@@ -33,3 +33,11 @@ export const confirmPayment = async (orderId: number) => {
 
   return data;
 };
+
+export const completeOrder = async (orderId: number) => {
+  const { data } = await useAxiosInstance().post<APIMeta>(
+    `${url}/${orderId}/complete`
+  );
+
+  return data;
+};

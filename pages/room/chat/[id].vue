@@ -3,7 +3,6 @@
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
-        :show-init="!chatDetail?.order?.buyer_confirmed_at"
         :detail="chatDetail"
         @create-order="navigateTo(`create-order/${roomID}`)"
         @confirm-order="onConfirmPayment"
@@ -75,7 +74,7 @@ import {
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showDialog, showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
-import { confirmOrder, confirmPayment } from "~/api/order";
+import { completeOrder, confirmOrder } from "~/api/order";
 import { OrderStatus } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
@@ -169,7 +168,8 @@ async function onConfirmOrder() {
 
 async function onConfirmPayment() {
   try {
-    await confirmPayment(chatDetail.value!.order.id);
+    // await confirmPayment(chatDetail.value!.order.id);
+    await completeOrder(chatDetail.value!.order.id);
     fetchChats();
   } catch (error: any) {
     showFailToast(error?.message);

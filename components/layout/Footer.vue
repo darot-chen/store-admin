@@ -1,12 +1,12 @@
 <template>
   <div
-    class="flex h-[75px] items-center justify-between border-t bg-[#FFFFFFBF] px-[12vw]"
+    class="flex h-[75px] w-full items-center justify-between border-t bg-[#FFFFFFBF] px-[42px]"
   >
     <NuxtLink
       v-for="item in FOOTER_ITEMS"
       :key="item.key"
       :to="item.link"
-      class="flex flex-col items-center justify-center"
+      class="flex flex-col items-center"
       active-class="text-blue-500"
     >
       <Icon
@@ -14,14 +14,14 @@
         color="#999999"
         :class="['h-6 w-6', { 'active-img': $route.path === item.link }]"
       />
-      <span
+      <p
         :class="[
           'text-sm text-[#999999]',
           { '!text-[#007AFF]': $route.path === item.link },
         ]"
       >
         {{ $t(item.label) }}
-      </span>
+      </p>
     </NuxtLink>
   </div>
 </template>

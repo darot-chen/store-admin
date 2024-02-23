@@ -124,7 +124,7 @@
     </div>
 
     <div
-      class="fixed bottom-0 flex h-[3.818rem] w-full items-center justify-between bg-white px-2 py-[15px]"
+      class="fixed bottom-0 flex h-[3.818rem] w-full max-w-lg items-center justify-between bg-white px-2 py-[15px]"
     >
       <div class="inline-flex w-full gap-[5px] py-[11px] pr-[16px]">
         <p class="total-title">需方应付总额:</p>
