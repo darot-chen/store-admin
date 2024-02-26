@@ -30,5 +30,7 @@
   "account": "我的",
   "chat_search_place_holder": "搜索消息或用户",
   "successfully_sent": "发送成功",
-  "order_confirmed_message": "等待对方点击确认"
+  "order_confirmed_message": "等待对方点击确认",
+  "please_confirm_complete_transaction": "请确定要完成交易",
+  "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？"
 }

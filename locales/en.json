@@ -31,5 +31,7 @@
   "chat_search_place_holder": "Search for messages or users",
   "edit": "Edit",
   "successfully_sent": "Successfully Sent",
-  "order_confirmed_message": "Wait for the other party to click to confirm"
+  "order_confirmed_message": "Wait for the other party to click to confirm",
+  "please_confirm_complete_transaction": "Please Confirm that Transaction is Completed",
+  "after_complete_transaction": "After confirming that the transaction is completed, is it necessary to complete the transaction if it cannot be reversed?"
 }

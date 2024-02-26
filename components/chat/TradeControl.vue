@@ -11,7 +11,7 @@
           <button
             v-if="props.detail.order.seller_id === authStore.user?.id"
             class="primary-button"
-            @click="$emit('confirmOrder')"
+            @click="onEmitConfirmOrder"
           >
             发起报备
           </button>
@@ -93,6 +93,7 @@
 </template>
 
 <script setup lang="ts">
+import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
 import { OrderStatus } from "~/types/order";
 
@@ -101,6 +102,7 @@ const props = defineProps<{
 }>();
 
 const authStore = useAuthStore();
+const { t } = useI18n();
 const showCreateOrder = computed(() => {
   return authStore.user?.id === props.detail?.owner_id;
 });
@@ -123,7 +125,7 @@ const computeSellerCompletionPercentage = computed(() => {
   );
 });
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "createOrder"): void;
   (e: "confirmOrder"): void;
 }>();
@@ -132,6 +134,18 @@ const showMore = ref(true);
 
 function onShowMore() {
   showMore.value = !showMore.value;
+}
+
+function onEmitConfirmOrder() {
+  showConfirmDialog({
+    title: t("please_confirm_complete_transaction"),
+    message: t("after_complete_transaction"),
+    cancelButtonColor: "#DE3A3A",
+  })
+    .then(() => {
+      emit("confirmOrder");
+    })
+    .catch(() => {});
 }
 </script>
 
