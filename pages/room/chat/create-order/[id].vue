@@ -204,19 +204,19 @@ onMounted(async () => {
 
 function onBuyAmountChange(value: string | number) {
   payload.value.amount = +value;
-  const platformFee = (100 + fee.value.platformRate) / 100;
+  const handlingFee = (100 + fee.value.platformRate) / 100;
 
+  // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
   payload.value.quantity_to_be_given = Number(
     (
-      payload.value.amount * fee.value.exchangeRate * platformFee +
-      fee.value.otherFee
+      payload.value.amount * fee.value.exchangeRate * handlingFee +
+      fee.value.otherFee * fee.value.exchangeRate
     ).toFixed(2)
   );
 }
 
 async function onCreateOrder() {
   try {
-    // const res = await createExchangeOrder(payload.value);
     const res = await createOrder(payload.value);
     navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {

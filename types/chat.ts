@@ -17,10 +17,12 @@ export type Chat = {
   chat_room_id: number;
   admin_id?: number;
   user_id: number;
+  order_id?: number;
   type: ChatType;
   message: string;
   user: User | null;
   admin: Admin | null;
+  order?: Order;
 };
 
 export type ChatDetail = {
