@@ -28,6 +28,13 @@
             </button>
           </div>
         </div>
+        <div v-else-if="showConfirmButton" class="action">
+          <div class="primary-button">
+            <button class="primary-button" @click="onConfirmOrder">
+              确认订单
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -103,6 +110,7 @@ import type { ChatDetail } from "~/types/chat";
 
 const props = defineProps<{
   detail?: ChatDetail;
+  showConfirmButton?: boolean;
 }>();
 
 const authStore = useAuthStore();
@@ -131,6 +139,7 @@ const computeSellerCompletionPercentage = computed(() => {
 
 const emit = defineEmits<{
   (e: "createOrder"): void;
+  (e: "confirmOrderPayment"): void;
   (e: "confirmOrder"): void;
 }>();
 
@@ -147,9 +156,22 @@ function onEmitConfirmOrder() {
     cancelButtonColor: "#DE3A3A",
   })
     .then(() => {
-      emit("confirmOrder");
+      emit("confirmOrderPayment");
     })
     .catch(() => {});
+}
+
+function onConfirmOrder() {
+  if (props.showConfirmButton) {
+    showConfirmDialog({
+      title: "确认",
+      message: "确认发送？",
+    })
+      .then(() => {
+        emit("confirmOrder");
+      })
+      .catch(() => {});
+  }
 }
 </script>
 

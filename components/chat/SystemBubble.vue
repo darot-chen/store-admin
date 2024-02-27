@@ -30,14 +30,14 @@
               <p>
                 {{
                   $t("order_message.exchange_rate", {
-                    value: detail?.order?.exchange_rate || 0,
+                    value: order?.exchange_rate || 0,
                   })
                 }}
               </p>
               <p>
                 {{
                   $t("order_message.rate", {
-                    value: detail?.order?.handling_fee_percentage || 0,
+                    value: order?.handling_fee_percentage || 0,
                   })
                 }}
               </p>
@@ -45,14 +45,14 @@
               <p>
                 {{
                   $t("order_message.total_amount_payable_by_the_demander", {
-                    value: detail?.order?.amount_to_be_paid || 0,
+                    value: order?.amount_to_be_paid || 0,
                   })
                 }}
               </p>
               <p>
                 {{
                   $t("order_message.total_amount_payable_by_supplier", {
-                    value: detail?.order?.quantity_to_be_given || 0,
+                    value: order?.quantity_to_be_given || 0,
                   })
                 }}
               </p>
@@ -74,10 +74,12 @@
 <script setup lang="ts">
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import type { ChatDetail } from "~/types/chat";
+import type { Order } from "~/types/order";
 
 defineProps<{
   text: string;
-  detail?: ChatDetail;
+  order?: Order;
+  detail: ChatDetail;
   timestamp?: string;
 }>();
 </script>

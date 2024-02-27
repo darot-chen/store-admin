@@ -4,8 +4,10 @@
       <ChatTradeControl
         v-if="showTradeControl"
         :detail="chatDetail"
+        :show-confirm-button="showConfirmOrder"
         @create-order="navigateTo(`create-order/${roomID}`)"
-        @confirm-order="onConfirmPayment"
+        @confirm-order-payment="onConfirmPayment"
+        @confirm-order="onConfirmOrder"
       />
     </div>
     <div
@@ -24,10 +26,7 @@
         :show-profile="true"
         :type="c.type"
         :show-button="
-          !!showConfirmOrder &&
-          c.admin_id === null &&
-          c.user_id === null &&
-          c.message === CHAT_ACTIONS.NEW_ORDER_CREATED
+          !!showConfirmOrder && c.message === CHAT_ACTIONS.NEW_ORDER_CREATED
         "
         :order="c.order"
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
@@ -103,7 +102,7 @@ const { t } = useI18n();
 
 const showConfirmOrder = computed(() => {
   return (
-    chatDetail.value?.order?.id &&
+    chatDetail.value?.order &&
     chatDetail.value?.order?.buyer_id === authStore.user?.id &&
     chatDetail.value?.order?.status === OrderStatus.CONFIRMING &&
     chatDetail.value.order?.buyer_confirmed_at === null
@@ -123,7 +122,7 @@ const messagePayload = ref<{
 });
 
 onMounted(() => {
-  fetchChats();
+  init();
 
   $evOn("new_chat_received", async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;
@@ -166,6 +165,7 @@ async function onConfirmOrder() {
       title: t("successfully_sent"),
       message: t("order_confirmed_message"),
     }).then(() => {
+      lastItemId.value = 0;
       fetchChats();
     });
   } catch (error: any) {
@@ -173,10 +173,16 @@ async function onConfirmOrder() {
   }
 }
 
+async function init() {
+  loading.value = true;
+  await fetchChats();
+  loading.value = false;
+}
+
 async function onConfirmPayment() {
   try {
-    // await confirmPayment(chatDetail.value!.order.id);
     await completeOrder(chatDetail.value!.order.id);
+    lastItemId.value = 0;
     fetchChats();
   } catch (error: any) {
     showFailToast(error?.message);
@@ -223,7 +229,6 @@ async function onJoinChat() {
 }
 
 async function fetchChats() {
-  loading.value = true;
   const detail = await getChatDetail(roomID);
 
   hasJoined.value = detail.is_a_member ?? false;
@@ -245,8 +250,6 @@ async function fetchChats() {
   }
 
   sleepScrollToBottom();
-
-  loading.value = false;
 }
 
 async function sleepScrollToBottom() {

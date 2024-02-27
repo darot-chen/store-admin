@@ -102,11 +102,13 @@
       v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
       :title="$t('buyer_confirm_order')"
     />
+
     <ChatSystemBubble
       v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
       :text="text"
       :timestamp="timestamp"
       :detail="detail"
+      :order="order"
     />
 
     <div
