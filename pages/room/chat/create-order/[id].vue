@@ -188,8 +188,9 @@ onMounted(async () => {
       .filter((member) => member.user_id !== authStore.user?.id)
       .map((member) => {
         return {
-          label: member.user.name,
-          value: member.user_id?.toString() ?? "",
+          label: member?.user?.name ?? member?.admin?.name ?? "",
+          value:
+            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
         };
       });
 

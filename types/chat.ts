@@ -45,5 +45,6 @@ export type Member = {
   chat_room_id: number;
   admin_id: number | null;
   user_id: number | null;
-  user: User;
+  user?: User;
+  admin?: Admin;
 };
