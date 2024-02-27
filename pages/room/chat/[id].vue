@@ -24,8 +24,12 @@
         :show-profile="true"
         :type="c.type"
         :show-button="
-          !!showConfirmOrder && c.admin_id === null && c.user_id === null
+          !!showConfirmOrder &&
+          c.admin_id === null &&
+          c.user_id === null &&
+          c.message === CHAT_ACTIONS.NEW_ORDER_CREATED
         "
+        :order="c.order"
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
         :detail="c.type === ChatType.Action ? chatDetail : undefined"
         @confirm="onConfirmOrder"
@@ -71,6 +75,7 @@ import {
   uploadVideo,
   addChat,
 } from "~/api/chat";
+import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showDialog, showFailToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";

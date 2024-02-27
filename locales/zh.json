@@ -32,5 +32,9 @@
   "successfully_sent": "发送成功",
   "order_confirmed_message": "等待对方点击确认",
   "please_confirm_complete_transaction": "请确定要完成交易",
-  "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？"
+  "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？",
+  "buyer_confirm_order": "买方已确认订单",
+  "seller_complete_order": "卖方已完成订单",
+  "buyer_complete_order": "买方已完成订单",
+  "order_success": "订单已成功完成"
 }

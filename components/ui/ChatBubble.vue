@@ -86,12 +86,29 @@
       v-if="text === CHAT_ACTIONS.JOIN"
       :title="`${name} ${$t('has_joined_the_chat')}`"
     />
+    <UiTag
+      v-if="text === CHAT_ACTIONS.SELLER_COMPLETE_ORDER"
+      :title="$t('seller_complete_order')"
+    />
+    <UiTag
+      v-if="text === CHAT_ACTIONS.BUYER_COMPLETE_ORDER"
+      :title="$t('buyer_complete_order')"
+    />
+    <UiTag
+      v-if="text === CHAT_ACTIONS.ORDER_SUCCESS"
+      :title="$t('order_success')"
+    />
+    <UiTag
+      v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
+      :title="$t('buyer_confirm_order')"
+    />
     <ChatSystemBubble
-      v-if="text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
+      v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
       :text="text"
       :timestamp="timestamp"
       :detail="detail"
     />
+
     <div
       v-if="showButton"
       :class="[
@@ -109,6 +126,7 @@
 import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type ChatDetail } from "~/types/chat";
+import { type Order } from "~/types/order";
 
 const props = defineProps<{
   chatType: "incoming" | "outgoing";
@@ -120,6 +138,7 @@ const props = defineProps<{
   showProfile?: boolean;
   showButton?: boolean;
   detail?: ChatDetail;
+  order?: Order;
 }>();
 
 const emit = defineEmits<{
