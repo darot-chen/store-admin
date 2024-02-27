@@ -5,11 +5,16 @@
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
         <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
       </div>
-      <div v-if="props.detail?.order.status !== OrderStatus.SUCCESS">
-        <div v-if="props.detail?.order.buyer_confirmed_at" class="action">
+      <div v-if="props.detail?.order?.status !== OrderStatus.SUCCESS">
+        <div v-if="props.detail?.order?.buyer_confirmed_at" class="action">
           <button class="secondary-button">订单异常</button>
           <button
-            v-if="props.detail.order.seller_id === authStore.user?.id"
+            v-if="
+              (props.detail.order.seller_completed_at === null &&
+                props.detail.order.seller_id === authStore.user?.id) ||
+              (props.detail.order.buyer_completed_at === null &&
+                props.detail.order.buyer_id === authStore.user?.id)
+            "
             class="primary-button"
             @click="onEmitConfirmOrder"
           >

@@ -30,14 +30,14 @@
               <p>
                 {{
                   $t("order_message.exchange_rate", {
-                    value: detail?.order.exchange_rate,
+                    value: detail?.order?.exchange_rate || 0,
                   })
                 }}
               </p>
               <p>
                 {{
                   $t("order_message.rate", {
-                    value: detail?.order.handling_fee_percentage,
+                    value: detail?.order?.handling_fee_percentage || 0,
                   })
                 }}
               </p>
@@ -45,14 +45,14 @@
               <p>
                 {{
                   $t("order_message.total_amount_payable_by_the_demander", {
-                    value: detail?.order.amount_to_be_paid,
+                    value: detail?.order?.amount_to_be_paid || 0,
                   })
                 }}
               </p>
               <p>
                 {{
                   $t("order_message.total_amount_payable_by_supplier", {
-                    value: detail?.order.quantity_to_be_given,
+                    value: detail?.order?.quantity_to_be_given || 0,
                   })
                 }}
               </p>

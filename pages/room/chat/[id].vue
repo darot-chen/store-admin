@@ -137,6 +137,8 @@ onMounted(() => {
     if (chatDetail.value) {
       chatDetail.value.order.amount_paid = d.data?.amount_paid || 0;
       chatDetail.value.order.quantity_given = d.data?.quantity_given || 0;
+      chatDetail.value.order.buyer_confirmed_at = d.data?.buyer_confirmed_at;
+      chatDetail.value.order.seller_confirmed_at = d.data?.seller_confirmed_at;
     }
     loading.value = false;
   });

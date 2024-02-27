@@ -1,6 +1,4 @@
-import { get } from "http";
-import { Ref, ref } from "vue";
-import { SocketMessageData } from "~/types/base";
+import type { SocketMessageData } from "~/types/base";
 
 type Options = {
   autoConnect?: boolean;

@@ -56,6 +56,8 @@ export type Order = {
   note?: string;
   seller_confirmed_at?: string;
   buyer_confirmed_at?: string;
+  seller_completed_at?: string;
+  buyer_completed_at: string;
   buyer_currency?: Currency;
   seller_currency: Currency;
 };
