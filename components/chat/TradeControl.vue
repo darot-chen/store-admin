@@ -7,7 +7,13 @@
       </div>
       <div>
         <div v-if="props.detail?.order?.buyer_confirmed_at" class="action">
-          <button class="secondary-button">订单异常</button>
+          <button
+            v-if="!detail?.support_ticket?.id"
+            class="secondary-button"
+            @click="emit('request-support')"
+          >
+            订单异常
+          </button>
           <button
             v-if="
               (props.detail.order.seller_completed_at === null &&
@@ -16,19 +22,26 @@
                 props.detail.order.buyer_id === authStore.user?.id)
             "
             class="primary-button"
-            @click="onEmitConfirmOrder"
+            @click="onConfirmPayment"
           >
             发起报备
           </button>
         </div>
         <div v-else-if="showCreateOrder" class="action">
           <div class="primary-button">
-            <button class="primary-button" @click="$emit('createOrder')">
+            <button class="primary-button" @click="$emit('create-order')">
               完成交易
             </button>
           </div>
         </div>
         <div v-else-if="showConfirmButton" class="action">
+          <button
+            v-if="!detail?.support_ticket?.id"
+            class="secondary-button"
+            @click="emit('request-support')"
+          >
+            订单异常
+          </button>
           <div class="primary-button">
             <button class="primary-button" @click="onConfirmOrder">
               确认订单
@@ -138,9 +151,10 @@ const computeSellerCompletionPercentage = computed(() => {
 });
 
 const emit = defineEmits<{
-  (e: "createOrder"): void;
-  (e: "confirmOrderPayment"): void;
-  (e: "confirmOrder"): void;
+  (e: "create-order"): void;
+  (e: "confirm-order-payment"): void;
+  (e: "confirm-order"): void;
+  (e: "request-support"): void;
 }>();
 
 const showMore = ref(true);
@@ -149,14 +163,14 @@ function onShowMore() {
   showMore.value = !showMore.value;
 }
 
-function onEmitConfirmOrder() {
+function onConfirmPayment() {
   showConfirmDialog({
     title: t("please_confirm_complete_transaction"),
     message: t("after_complete_transaction"),
     cancelButtonColor: "#DE3A3A",
   })
     .then(() => {
-      emit("confirmOrderPayment");
+      emit("confirm-order-payment");
     })
     .catch(() => {});
 }
@@ -168,7 +182,7 @@ function onConfirmOrder() {
       message: "确认发送？",
     })
       .then(() => {
-        emit("confirmOrder");
+        emit("confirm-order");
       })
       .catch(() => {});
   }

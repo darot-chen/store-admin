@@ -84,3 +84,11 @@ export const getChatRoomMembers = async (roomId: number) => {
 
   return data;
 };
+
+export const requestSupport = async (roomId: number, orderId: number) => {
+  const { data } = await useAxiosInstance().post<APIMeta>(
+    `${url}/${roomId}/orders/${orderId}/support`
+  );
+
+  return data;
+};

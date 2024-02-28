@@ -8,6 +8,7 @@
         @create-order="navigateTo(`create-order/${roomID}`)"
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
+        @request-support="onRequestSupport"
       />
     </div>
     <div
@@ -73,10 +74,11 @@ import {
   uploadImage,
   uploadVideo,
   addChat,
+  requestSupport,
 } from "~/api/chat";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
-import { showDialog, showFailToast } from "vant";
+import { showDialog, showFailToast, showSuccessToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
 import { completeOrder, confirmOrder } from "~/api/order";
 import { OrderStatus } from "~/types/order";
@@ -157,6 +159,22 @@ onUnmounted(() => {
 definePageMeta({
   layout: "chat",
 });
+
+function onRequestSupport() {
+  showDialog({
+    title: t("report"),
+    message: t("report_message"),
+  }).then(async () => {
+    if (!chatDetail.value?.order) return;
+
+    try {
+      await requestSupport(roomID, chatDetail.value?.order?.id);
+      showSuccessToast(t("report_success"));
+    } catch (error: any) {
+      showFailToast(error?.message);
+    }
+  });
+}
 
 async function onConfirmOrder() {
   try {

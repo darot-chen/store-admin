@@ -1,3 +1,4 @@
+import type { SupportTicket } from "./support-ticket";
 import type { Admin } from "./admin";
 import type { Business } from "./business";
 import type { ChatRoomType } from "./chatRoom";
@@ -36,6 +37,7 @@ export type ChatDetail = {
   closed_at: string;
   business?: Business;
   is_a_member: boolean;
+  support_ticket?: SupportTicket;
   order: Order;
 };
 
