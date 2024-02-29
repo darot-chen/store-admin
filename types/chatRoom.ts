@@ -1,4 +1,6 @@
 import type { Business } from "./business";
+import type { Chat } from "./chat";
+import type { User } from "./user";
 
 export enum ChatRoomType {
   PUBLIC = "public",
@@ -15,6 +17,9 @@ export type ChatRoom = {
   closed_at: string;
   lobby_no: number;
   business: Business;
+  chat_messages: Chat[];
+  latest_message: Chat;
+  owner: User;
 };
 
 export type CursorChatRoomPayload = {
