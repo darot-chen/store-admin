@@ -251,7 +251,11 @@ async function fetchChats() {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  pageStore.setTitle(detail?.business?.title ?? "");
+  let title = detail?.business?.title ?? "";
+  if (detail?.lobby_no) {
+    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+  }
+  pageStore.setTitle(title ?? "");
 
   const chatRes = await getChat(roomID, {
     last: lastItemId.value,

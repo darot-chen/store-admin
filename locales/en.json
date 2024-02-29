@@ -37,5 +37,6 @@
   "buyer_confirm_order": "Buyer has confirmed the order",
   "seller_complete_order": "Seller has completed the order",
   "buyer_complete_order": "Buyer has completed the order",
-  "order_success": "Order has been successfully completed"
+  "order_success": "Order has been successfully completed",
+  "lobby_no": "Room"
 }

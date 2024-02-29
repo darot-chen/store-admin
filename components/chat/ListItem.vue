@@ -11,6 +11,9 @@
           <div>
             <h1 class="line-clamp-1 font-medium">
               {{ room.business.title }}
+              <span v-if="room.lobby_no"
+                >{{ $t("lobby_no") }} {{ room.lobby_no }}</span
+              >
             </h1>
             <p class="line-clamp-3 text-sm text-[#8E8E93]">
               {{ room.business.description }}

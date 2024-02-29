@@ -37,5 +37,6 @@
   "buyer_confirm_order": "买方已确认订单",
   "seller_complete_order": "卖方已完成订单",
   "buyer_complete_order": "买方已完成订单",
-  "order_success": "订单已成功完成"
+  "order_success": "订单已成功完成",
+  "lobby_no": "房间"
 }

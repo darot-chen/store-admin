@@ -13,6 +13,7 @@ export type ChatRoom = {
   business_id: number;
   type: ChatRoomType;
   closed_at: string;
+  lobby_no: number;
   business: Business;
 };
 

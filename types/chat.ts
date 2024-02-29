@@ -36,6 +36,7 @@ export type ChatDetail = {
   type: ChatRoomType;
   closed_at: string;
   business?: Business;
+  lobby_no: number;
   is_a_member: boolean;
   support_ticket?: SupportTicket;
   order: Order;
