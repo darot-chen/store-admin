@@ -37,5 +37,8 @@
   "buyer_confirm_order": "Buyer has confirmed the order",
   "seller_complete_order": "Seller has completed the order",
   "buyer_complete_order": "Buyer has completed the order",
-  "order_success": "Order has been successfully completed"
+  "order_success": "Order has been successfully completed",
+  "report_success": "Report Success",
+  "report": "Report",
+  "are_you_sure_to_report_this_order": "Are you sure you want to report this order?"
 }

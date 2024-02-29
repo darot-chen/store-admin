@@ -163,7 +163,7 @@ definePageMeta({
 function onRequestSupport() {
   showDialog({
     title: t("report"),
-    message: t("report_message"),
+    message: t("are_you_sure_to_report_this_order"),
   }).then(async () => {
     if (!chatDetail.value?.order) return;
 
