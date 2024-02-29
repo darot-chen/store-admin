@@ -40,5 +40,6 @@
   "order_success": "Order has been successfully completed",
   "report_success": "Report Success",
   "report": "Report",
-  "are_you_sure_to_report_this_order": "Are you sure you want to report this order?"
+  "are_you_sure_to_report_this_order": "Are you sure you want to report this order?",
+  "lobby_no": "Room"
 }

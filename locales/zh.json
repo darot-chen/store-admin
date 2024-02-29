@@ -39,5 +39,6 @@
   "buyer_complete_order": "买方已完成订单",
   "order_success": "订单已成功完成",
   "report_success": "报告成功",
-  "are_you_sure_to_report_this_order": "您确定要举报此订单吗？"
+  "are_you_sure_to_report_this_order": "您确定要举报此订单吗？",
+  "lobby_no": "房间"
 }
