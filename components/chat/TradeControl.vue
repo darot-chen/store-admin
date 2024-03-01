@@ -168,11 +168,9 @@ function onConfirmPayment() {
     title: t("please_confirm_complete_transaction"),
     message: t("after_complete_transaction"),
     cancelButtonColor: "#DE3A3A",
-  })
-    .then(() => {
-      emit("confirm-order-payment");
-    })
-    .catch(() => {});
+  }).then(() => {
+    emit("confirm-order-payment");
+  });
 }
 
 function onConfirmOrder() {
@@ -180,11 +178,10 @@ function onConfirmOrder() {
     showConfirmDialog({
       title: "确认",
       message: "确认发送？",
-    })
-      .then(() => {
-        emit("confirm-order");
-      })
-      .catch(() => {});
+      cancelButtonColor: "#DE3A3A",
+    }).then(() => {
+      emit("confirm-order");
+    });
   }
 }
 </script>

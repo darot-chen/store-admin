@@ -39,7 +39,7 @@ export type ChatDetail = {
   lobby_no: number;
   is_a_member: boolean;
   support_ticket?: SupportTicket;
-  order: Order;
+  order?: Order;
 };
 
 export type Member = {

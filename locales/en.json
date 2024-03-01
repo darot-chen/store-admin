@@ -41,5 +41,14 @@
   "report_success": "Report Success",
   "report": "Report",
   "are_you_sure_to_report_this_order": "Are you sure you want to report this order?",
-  "lobby_no": "Room"
+  "lobby_no": "Room",
+  "submit": "Submit",
+  "order_number": "Order Number",
+  "guaranteed_amount": "Guaranteed Amount",
+  "amount": "Amount",
+  "commodity": "Commodity",
+  "success_trx": "Success Trx.",
+  "refund": "Refund",
+  "trx_completion_date": "Trx. Completion",
+  "service_quality": "Service Quality"
 }
