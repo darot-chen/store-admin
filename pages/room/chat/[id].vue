@@ -27,7 +27,9 @@
         :show-profile="true"
         :type="c.type"
         :show-button="
-          !!showConfirmOrder && c.message === CHAT_ACTIONS.NEW_ORDER_CREATED
+          !!showConfirmOrder &&
+          c.message === CHAT_ACTIONS.NEW_ORDER_CREATED &&
+          c.order?.id === chatDetail?.order?.id
         "
         :order="c.order"
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
@@ -58,6 +60,20 @@
         </div>
       </div>
     </div>
+    <UiPopupConfirmation
+      v-model:show="showConfirmationPopup"
+      title="交易成功"
+      type="success"
+      @confirm="onConfirmOrder"
+    >
+      <ChatConfirmationBody
+        v-if="prevDetail && prevDetail?.order"
+        :data="prevDetail"
+      />
+      <template #footer>
+        <ChatConfirmationFooter @click="onConfirmOrder" />
+      </template>
+    </UiPopupConfirmation>
   </div>
   <div v-else class="flex h-screen items-center justify-center">
     <div
@@ -100,6 +116,8 @@ const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
 const isUploading = ref<boolean>(false);
+const showConfirmationPopup = ref<boolean>(false);
+const prevDetail = ref<ChatDetail>();
 const { t } = useI18n();
 
 const showConfirmOrder = computed(() => {
@@ -136,17 +154,35 @@ onMounted(() => {
     addChatAndSort(d.data);
   });
 
-  $evOn("order_payment_confirmed", (d: any) => {
-    if (d.data?.id !== chatDetail.value?.order.id) return;
+  $evOn("order_status_updated", (d: any) => {
+    if (d.data?.id !== chatDetail.value?.order?.id) return;
 
-    loading.value = true;
-    if (chatDetail.value) {
+    if (
+      d.data?.status === OrderStatus.SUCCESS &&
+      d.data?.seller_completed_at &&
+      d.data?.buyer_completed_at &&
+      prevDetail.value?.order?.buyer_id === authStore.user?.id
+    ) {
+      if (prevDetail.value?.order) {
+        prevDetail.value.order.buyer_completed_at = d.data?.buyer_completed_at;
+        prevDetail.value.order.seller_completed_at =
+          d.data?.seller_completed_at;
+        prevDetail.value.order.status = d.data?.status;
+      }
+
+      showConfirmationPopup.value = true;
+    }
+  });
+
+  $evOn("order_payment_confirmed", (d: any) => {
+    if (d.data?.id !== chatDetail.value?.order?.id) return;
+
+    if (chatDetail.value && chatDetail.value.order) {
       chatDetail.value.order.amount_paid = d.data?.amount_paid || 0;
       chatDetail.value.order.quantity_given = d.data?.quantity_given || 0;
       chatDetail.value.order.buyer_confirmed_at = d.data?.buyer_confirmed_at;
       chatDetail.value.order.seller_confirmed_at = d.data?.seller_confirmed_at;
     }
-    loading.value = false;
   });
 });
 
@@ -177,14 +213,15 @@ function onRequestSupport() {
 }
 
 async function onConfirmOrder() {
+  if (!chatDetail.value?.order) return;
+
   try {
-    await confirmOrder(chatDetail.value!.order.id);
+    await confirmOrder(chatDetail.value.order.id);
     showDialog({
       title: t("successfully_sent"),
       message: t("order_confirmed_message"),
     }).then(() => {
       lastItemId.value = 0;
-      fetchChats();
     });
   } catch (error: any) {
     showFailToast(error?.message);
@@ -198,10 +235,12 @@ async function init() {
 }
 
 async function onConfirmPayment() {
+  if (!chatDetail.value?.order) return;
+
   try {
-    await completeOrder(chatDetail.value!.order.id);
+    prevDetail.value = chatDetail.value;
+    await completeOrder(chatDetail.value.order.id);
     lastItemId.value = 0;
-    fetchChats();
   } catch (error: any) {
     showFailToast(error?.message);
   }

@@ -6,6 +6,7 @@ import type { Order } from "~/types/order";
 type SocketEvents = {
   new_chat_received: SocketMessageData<Chat>;
   order_payment_confirmed: SocketMessageData<Order>;
+  order_status_updated: SocketMessageData<Order>;
 };
 
 export default defineNuxtPlugin(() => {
