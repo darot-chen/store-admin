@@ -29,19 +29,23 @@
 
         <div class="ml-auto flex flex-col items-end justify-between">
           <div class="flex gap-1.5">
-            <Icon name="DoubleCheck" color="#21C004" />
+            <!-- <Icon name="DoubleCheck" color="#21C004" /> -->
             <span class="text-sm text-[#8E8E93]">
-              {{ formatChatListDate(room.created_at) }}
+              {{
+                formatChatListDate(
+                  room?.latest_message?.created_at ?? room?.created_at
+                )
+              }}
             </span>
           </div>
 
-          <div class="mb-1">
+          <!-- <div class="mb-1">
             <span
               class="rounded-full bg-[#037EE5] px-1 py-0.5 text-sm text-white"
             >
-              {{ 17 }}
+              {{ 7 }}
             </span>
-          </div>
+          </div> -->
         </div>
       </div>
     </NuxtLink>
