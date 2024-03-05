@@ -50,5 +50,8 @@
   "trx_completion_date": "交易完成时间",
   "service_quality": "服务质量",
   "commodity": "商品业务",
-  "menu": "菜单"
+  "menu": "菜单",
+  "baishun": "百順",
+  "manual_cs_is_being_assigned": "正在分配人工客服，请耐心等待…",
+  "during_the_waiting_period": "等待期间，您可先将需要办理的业务内容进行描述，人工客服稍候将直接回复您"
 }

@@ -103,13 +103,28 @@
       :title="$t('buyer_confirm_order')"
     />
 
-    <ChatSystemBubble
+    <ChatSystem
       v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
-      :text="text"
       :timestamp="timestamp"
-      :detail="detail"
-      :order="order"
-    />
+      :text="text"
+    >
+      <ChatOrderCreated :order="order" :detail="detail" />
+    </ChatSystem>
+
+    <ChatSystem
+      v-if="text === CHAT_ACTIONS.NEW_TICKET_CREATED"
+      :timestamp="timestamp"
+      class="whitespace-pre-wrap"
+      :text="text"
+    >
+      <p>
+        {{ $t("manual_cs_is_being_assigned") }}
+      </p>
+
+      <p>
+        {{ $t("during_the_waiting_period") }}
+      </p>
+    </ChatSystem>
 
     <div
       v-if="showButton"

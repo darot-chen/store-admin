@@ -151,6 +151,13 @@ onMounted(() => {
       chatDetail.value = await getChatDetail(roomID);
     }
 
+    if (
+      d.data.type === ChatType.Action &&
+      d.data.message === CHAT_ACTIONS.NEW_TICKET_CREATED
+    ) {
+      chatDetail.value = d.data?.order && d.data.order;
+    }
+
     addChatAndSort(d.data);
   });
 

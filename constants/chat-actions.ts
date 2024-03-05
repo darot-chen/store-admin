@@ -5,4 +5,5 @@ export const CHAT_ACTIONS = {
   BUYER_COMPLETE_ORDER: "buyer_complete_order",
   ORDER_SUCCESS: "order_success",
   BUYER_CONFIRM_ORDER: "buyer_confirm_order",
+  NEW_TICKET_CREATED: "new_ticket_created",
 };
