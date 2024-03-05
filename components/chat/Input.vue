@@ -4,7 +4,7 @@
       <div class="inline-flex items-center gap-[0.5rem]">
         <button class="menu-btn">
           <Icon name="Burger" color="#ffffff" size="20" />
-          <p>Menu</p>
+          <p>{{ $t("menu") }}</p>
         </button>
         <button type="button" @click="onToggleEmoji">
           <Icon name="Smiley" color="#8E959B" size="27" />

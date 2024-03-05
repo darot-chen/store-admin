@@ -50,5 +50,6 @@
   "success_trx": "Success Trx.",
   "refund": "Refund",
   "trx_completion_date": "Trx. Completion",
-  "service_quality": "Service Quality"
+  "service_quality": "Service Quality",
+  "menu": "Menu"
 }

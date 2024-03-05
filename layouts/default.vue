@@ -5,6 +5,8 @@
     <slot name="header">
       <LayoutChatListHeader v-if="route.path === '/room'" />
 
+      <div v-else-if="route.path === '/account'" />
+
       <div v-else class="sticky top-0 z-10 w-full max-w-lg py-[1.06rem]">
         <div class="flex w-full items-center justify-between gap-2 px-2">
           <div class="basis-1/4">
