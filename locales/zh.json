@@ -49,5 +49,6 @@
   "refund": "退押",
   "trx_completion_date": "交易完成时间",
   "service_quality": "服务质量",
-  "commodity": "商品业务"
+  "commodity": "商品业务",
+  "menu": "菜单"
 }

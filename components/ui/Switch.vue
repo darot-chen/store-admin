@@ -38,6 +38,8 @@ defineEmits<{
   padding: 2px;
   align-items: center;
   border-radius: 9px;
+  font-weight: 500;
+  font-size: 13px;
 }
 
 .switch-container div {
