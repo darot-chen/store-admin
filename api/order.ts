@@ -1,5 +1,11 @@
 import type { APIMeta } from "~/types/base";
-import type { CreateOrder, Order } from "~/types/order";
+import type {
+  CreateOrder,
+  GetOrderParams,
+  Order,
+  OrderDetail,
+} from "~/types/order";
+import type { CursorResponse } from "~/types/pagination";
 
 const url = "orders";
 
@@ -37,6 +43,17 @@ export const confirmPayment = async (orderId: number) => {
 export const completeOrder = async (orderId: number) => {
   const { data } = await useAxiosInstance().post<APIMeta>(
     `${url}/${orderId}/complete`
+  );
+
+  return data;
+};
+
+export const getOrders = async (id: number, params: GetOrderParams) => {
+  const { data } = await useAxiosInstance().get<CursorResponse<OrderDetail[]>>(
+    `${url}/${id}/payments`,
+    {
+      params,
+    }
   );
 
   return data;
