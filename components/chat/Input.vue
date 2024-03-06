@@ -96,6 +96,7 @@ function onFileChange(event: Event) {
   const selectedFile = (event.target as HTMLInputElement).files?.[0];
   if (selectedFile) {
     emits("attachFile", selectedFile);
+    fileInput.value!.value = "";
   }
 }
 
