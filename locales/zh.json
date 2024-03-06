@@ -10,7 +10,7 @@
   "switch_to_public": "切换到公共",
   "go_to_room": "进入聊天室",
   "back": "后退",
-  "has_joined_the_chat": "已加入聊天",
+  "name_has_joined_the_chat": "{name} 已加入聊天",
   "order_message": {
     "business_name": "企业名称: {name}",
     "contact_person": "交易方对接人: {name}",
@@ -53,5 +53,7 @@
   "menu": "菜单",
   "baishun": "百順",
   "manual_cs_is_being_assigned": "正在分配人工客服，请耐心等待…",
-  "during_the_waiting_period": "等待期间，您可先将需要办理的业务内容进行描述，人工客服稍候将直接回复您"
+  "during_the_waiting_period": "等待期间，您可先将需要办理的业务内容进行描述，人工客服稍候将直接回复您",
+  "report": "报告",
+  "name_has_left_the_chat": "{name} 已经离开聊天"
 }

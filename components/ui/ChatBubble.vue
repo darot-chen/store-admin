@@ -84,7 +84,11 @@
   <div v-else>
     <UiTag
       v-if="text === CHAT_ACTIONS.JOIN"
-      :title="`${name} ${$t('has_joined_the_chat')}`"
+      :title="
+        $t('name_has_joined_the_chat', {
+          name,
+        })
+      "
     />
     <UiTag
       v-if="text === CHAT_ACTIONS.SELLER_COMPLETE_ORDER"
@@ -101,6 +105,14 @@
     <UiTag
       v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
       :title="$t('buyer_confirm_order')"
+    />
+    <UiTag
+      v-if="text === CHAT_ACTIONS.LEAVE"
+      :title="
+        $t('name_has_left_the_chat', {
+          name,
+        })
+      "
     />
 
     <ChatSystem

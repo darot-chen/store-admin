@@ -10,7 +10,7 @@
   "switch_to_public": "Switch To Public",
   "go_to_room": "Go to chat room",
   "back": "Back",
-  "has_joined_the_chat": "has joined the chat",
+  "name_has_joined_the_chat": "{name} has joined the chat",
   "order_message": {
     "business_name": "Business Name: {name}",
     "contact_person": "Contact Person: {name}",
@@ -54,5 +54,6 @@
   "menu": "Menu",
   "baishun": "Baishun",
   "manual_cs_is_being_assigned": "Manual customer service is being assigned, please wait patiently...",
-  "during_the_waiting_period": "During the waiting period, you can first describe the business content you need to handle, and the manual customer service will reply to you directly later."
+  "during_the_waiting_period": "During the waiting period, you can first describe the business content you need to handle, and the manual customer service will reply to you directly later.",
+  "name_has_left_the_chat": "{name} has left the chat"
 }
