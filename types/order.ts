@@ -1,3 +1,4 @@
+import type { Cursor } from "./common";
 import type { Currency } from "./currency";
 
 export enum OrderStatus {
@@ -19,6 +20,10 @@ export type CreateOrder = {
   duration: string;
   title?: string;
   note?: string;
+};
+
+export type GetOrderParams = Cursor & {
+  party: string;
 };
 
 export type ConfirmOrder = {
@@ -60,4 +65,16 @@ export type Order = {
   buyer_completed_at: string;
   buyer_currency?: Currency;
   seller_currency: Currency;
+};
+
+export type OrderDetail = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  order_id: number;
+  user_id: number;
+  chat_message_id: number;
+  status: string;
+  quantity_given: number;
+  amount_paid: null;
 };

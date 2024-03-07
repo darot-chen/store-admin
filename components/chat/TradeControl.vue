@@ -3,7 +3,10 @@
     <div class="flex items-center justify-between">
       <div class="total">
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
-        <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
+        <div class="flex flex-row items-center">
+          <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
+          <Icon name="Clock" class="ml-2" />
+        </div>
       </div>
       <div>
         <div v-if="props.detail?.order?.buyer_confirmed_at" class="action">
@@ -53,73 +56,37 @@
 
     <Transition name="drop">
       <div v-show="showMore" class="show-more">
-        <div class="more-detail">
-          <div class="amount">
-            <div class="label">
-              <div class="currency">
-                <p>
-                  {{ detail?.order?.seller_currency?.code || "USDT" }}
-                </p>
-              </div>
-              <p class="remaining-title">供方发货</p>
-            </div>
-            <div class="remaining">
-              {{
-                `${props.detail?.order?.amount_paid || 0}/${
-                  props.detail?.order?.amount_to_be_paid || 0
-                }`
-              }}
-            </div>
-          </div>
-          <UiProgressBar :progress="computeSellerCompletionPercentage" />
-        </div>
-        <div class="more-detail">
-          <div class="amount">
-            <div class="label">
-              <div class="currency">
-                <p>
-                  {{ detail?.order?.buyer_currency?.code || "USD" }}
-                </p>
-              </div>
-              <p class="remaining-title">需方发货</p>
-            </div>
-            <div class="remaining">
-              {{
-                `${props.detail?.order?.quantity_given || 0}/${
-                  props.detail?.order?.quantity_to_be_given || 0
-                }`
-              }}
-            </div>
-          </div>
-          <UiProgressBar :progress="computeBuyerCompletionPercentage" />
-        </div>
+        <TradeControlItem
+          :id="props.detail?.order?.id || 0"
+          party="seller"
+          class="flex-1"
+          :paid-amount="props.detail?.order?.amount_paid || 0"
+          :total-amount="props.detail?.order?.amount_to_be_paid || 0"
+          :currency="detail?.order?.seller_currency?.code || ''"
+        />
+        <TradeControlItem
+          :id="props.detail?.order?.id || 0"
+          party="buyer"
+          class="flex-1"
+          :paid-amount="props.detail?.order?.quantity_given || 0"
+          :total-amount="props.detail?.order?.quantity_to_be_given || 0"
+          :currency="detail?.order?.buyer_currency?.code || ''"
+        />
       </div>
     </Transition>
-    <div class="flex items-center justify-between">
-      <div class="detail">
-        <p>担保订单号：{{ detail?.order?.id || "-" }}</p>
-        <p>
-          担保金额: {{ detail?.order?.quantity_to_be_given || "-" }}
-          {{ detail?.order?.seller_currency?.code }}
-        </p>
-      </div>
-      <div>
-        <button class="arrow" @click="onShowMore">
-          <Icon
-            :class="[showMore ? 'arrow-up' : 'arrow-down', 'opacity-30']"
-            name="Caret"
-            color="#3C3C43"
-            size="11"
-          />
-        </button>
-      </div>
-    </div>
+    <TradeControlBottom
+      :detail="detail"
+      :is-visible="showMore"
+      @click="onShowMore"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
+import TradeControlItem from "./TradeControlItem.vue";
+import TradeControlBottom from "./TradeControlBottom.vue";
 
 const props = defineProps<{
   detail?: ChatDetail;
@@ -132,24 +99,6 @@ const showCreateOrder = computed(() => {
   return authStore.user?.id === props.detail?.owner_id;
 });
 
-const computeBuyerCompletionPercentage = computed(() => {
-  if (!props.detail?.order?.quantity_given) return 0;
-
-  return (
-    (100 * (props.detail?.order?.quantity_given || 0)) /
-    (props.detail?.order?.quantity_to_be_given || 0)
-  );
-});
-
-const computeSellerCompletionPercentage = computed(() => {
-  if (!props.detail?.order?.amount_paid) return 0;
-
-  return (
-    (100 * (props.detail?.order?.amount_paid || 0)) /
-    props.detail?.order?.amount_to_be_paid
-  );
-});
-
 const emit = defineEmits<{
   (e: "create-order"): void;
   (e: "confirm-order-payment"): void;
@@ -159,9 +108,7 @@ const emit = defineEmits<{
 
 const showMore = ref(true);
 
-function onShowMore() {
-  showMore.value = !showMore.value;
-}
+const onShowMore = () => (showMore.value = !showMore.value);
 
 function onConfirmPayment() {
   showConfirmDialog({
@@ -210,7 +157,10 @@ function onConfirmOrder() {
 
 .total p {
   color: #3a8ccf;
-  font-size: 0.9375rem;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
 }
 
 .action {
@@ -256,30 +206,9 @@ function onConfirmOrder() {
   line-height: 130%;
 }
 
-.arrow {
-  width: 0.43369rem;
-  height: 0.74394rem;
-}
-
-.arrow-up {
-  transition: transform 0.3s ease-in-out;
-  transform: rotate(180deg);
-}
-
-/* add arrow up transition */
-.arrow-up {
-  transition: transform 0.3s ease-in-out;
-  transform: rotate(180deg);
-}
-
-.arrow-down {
-  transition: transform 0.3s ease-in-out;
-  transform: rotate(0deg);
-}
-
 .show-more {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 0.625rem;
   align-self: stretch;
 }
@@ -295,24 +224,6 @@ function onConfirmOrder() {
   position: absolute;
 }
 
-.more-detail {
-  border-radius: 0.25rem;
-  background: #f6f6f6;
-  display: flex;
-  padding: 0.5rem;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 0 0;
-}
-
-.more-detail .amount {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.3125rem;
-}
-
 .label {
   display: flex;
   justify-content: center;
@@ -325,23 +236,6 @@ function onConfirmOrder() {
   border-radius: 0.625rem;
   background: #50a7ea;
   color: #fff;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 130%;
-}
-
-.remaining-title {
-  border-radius: 0.625rem;
-  color: #50a7ea;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 130%;
-}
-
-.remaining {
-  color: #212121;
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;

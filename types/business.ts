@@ -13,4 +13,5 @@ export type Business = {
   total_fund: number;
   available_fund: number;
   owner: User;
+  commission: number;
 };
