@@ -30,7 +30,9 @@
               <p class="time">
                 {{ getFormattedTime(order.created_at) }}
               </p>
-              <p class="ml-1">{{ order.quantity_given }}</p>
+              <p class="ml-1">
+                {{ order.quantity_given ?? order.amount_paid }}
+              </p>
               <p class="u">(...)</p>
             </div>
           </div>
