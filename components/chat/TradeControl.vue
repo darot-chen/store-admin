@@ -157,7 +157,6 @@ function onConfirmOrder() {
 
 .total p {
   color: #3a8ccf;
-  font-family: "DIN Alternate";
   font-size: 24px;
   font-style: normal;
   font-weight: 700;
