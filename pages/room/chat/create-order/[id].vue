@@ -1,44 +1,21 @@
 <template>
   <div class="relative mb-[62px]">
-    <div class="container py-[12px]">
-      <div class="detail mx-[12px] items-center">
-        <div class="detail-item">
-          <div class="inline-flex items-center gap-[5px]">
-            <h1 class="text-[15px] font-semibold">汇率</h1>
-            <Icon name="Info" color="#E1EFFF" />
-          </div>
-          <p class="text-[16px]">{{ fee.platformRate }}%</p>
-        </div>
-        <UiDivider />
-        <div class="detail-item">
-          <div class="inline-flex items-center gap-[5px]">
-            <h1 class="text-[15px] font-semibold">费率</h1>
-            <Icon name="Info" color="#E1EFFF" />
-          </div>
-          <p class="text-[16px]">{{ fee.exchangeRate }}</p>
-        </div>
-        <UiDivider />
-        <div class="detail-item">
-          <div class="inline-flex items-center gap-[5px]">
-            <h1 class="text-[15px] font-semibold">其他费</h1>
-            <Icon name="Info" color="#E1EFFF" />
-          </div>
-          <p class="text-[16px]">{{ fee.otherFee }}</p>
-        </div>
-      </div>
-    </div>
+    <CreateOrderAmountDisplay :fee="fee" />
 
     <div class="relative mx-[12px] rounded-[10px]">
       <div
-        class="flex flex-col items-center gap-[16px] rounded-[10px] bg-white p-[16px]"
+        class="flex flex-col items-center gap-[16px] rounded-[10px] bg-white p-[1rem]"
       >
-        <FormWrapper
+        <!-- Buyer Dropdown -->
+        <UiFormWrapper
           type="border"
           title="需方负责人"
           class="px-[11px] py-[7px]"
         >
           <UiDropdown
+            :hide-show-arrow-down="true"
             title="请选择需方负责人"
+            class="text-[17px]"
             :model-value="payload?.buyer_id.toString()"
             :option="buyers"
             @update:model-value="
@@ -47,78 +24,152 @@
               }
             "
           />
-        </FormWrapper>
+        </UiFormWrapper>
 
-        <UiDivider type="horizontal" />
+        <!-- Currency and Amount Input -->
+        <div
+          class="relative w-full rounded-[10px] border-[0.5px] border-[#0000001a] py-[7px]"
+        >
+          <div
+            class="relative grid grid-cols-2 divide-x-[0.5px] divide-[#0000001a]"
+          >
+            <div class="border-r-[0.5px] border-[#0000001a] pr-[8px]">
+              <div class="p-[5px]">
+                <CreateOrderCurrency
+                  class="mx-[4px]"
+                  :model-value="payload.seller_currency_id.toString()"
+                  :option="currencyStore.options"
+                  @update:model-value="
+                    (value) => {
+                      payload.seller_currency_id = +value;
+                    }
+                  "
+                />
+                <div class="my-[5px] border-[0.5px] border-[#0000001a]" />
+                <div
+                  class="flex w-full flex-col items-end gap-[10px] px-[4px] py-[5px]"
+                >
+                  <button class="flex items-center gap-[5px]">
+                    <Icon name="Info" color="#EDEDED" />
+                    <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
+                  </button>
+                  <input
+                    disabled
+                    class="w-full text-right text-[24px] font-bold disabled:bg-transparent"
+                    :value="payload.quantity_to_be_given"
+                  />
+                  <div class="flex items-center gap-[5px]">
+                    <p class="text-[10px] text-[#F57F7F]">Error Message</p>
+                    <button>
+                      <Icon name="Info" color="#EDEDED" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              class="absolute left-1/2 top-1/2 mt-[0.8rem] flex -translate-x-1/2 -translate-y-1/2 transform items-center rounded-[4px] border-[0.8px] border-[#0000001a] bg-white p-0.5"
+            >
+              <Icon name="Swap" color="#0000004D" size="10" />
+            </button>
+
+            <div class="pl-[8px]">
+              <div class="p-[5px]">
+                <CreateOrderCurrency
+                  :model-value="payload.buyer_currency_id.toString()"
+                  :option="currencyStore.options"
+                  @update:model-value="
+                    (value) => {
+                      payload.buyer_currency_id = +value;
+                    }
+                  "
+                />
+                <div class="my-[5px] border-[0.5px]" />
+                <div
+                  class="flex w-full flex-col items-end gap-[10px] px-[4px] py-[5px]"
+                >
+                  <button class="flex items-center gap-[5px]">
+                    <Icon name="Info" color="#EDEDED" />
+                    <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
+                  </button>
+                  <input
+                    class="w-full text-right text-[24px] font-bold"
+                    :value="payload.amount"
+                    @input="
+                      (e) => {
+                        onBuyAmountChange(
+                          (e.target as HTMLInputElement)?.value
+                        );
+                      }
+                    "
+                  />
+                  <div class="flex items-center gap-[5px]">
+                    <p class="text-[10px] text-[#F57F7F]">Error Message</p>
+                    <button>
+                      <Icon name="Info" color="#EDEDED" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment method selector -->
+        <CreateOrderPaymentMethod
+          v-model:payment-method="updatedPayload.payment_method"
+          :options="PAYMENT_METHODS"
+        />
 
         <div
-          class="flex w-full flex-col items-center gap-[10px] rounded-[10px] bg-[#F5F5F5] px-[16px]"
+          class="flex w-full flex-col items-center gap-[11px] rounded-[10px] bg-[#F5F5F5] py-[11px]"
         >
-          <FormWrapper title="应入款总额" class="py-[11px]">
-            <span class="flex items-center">
+          <div class="w-full px-[16px]">
+            <UiFormWrapper title="交易内容" class="py-[11px]">
+              <UiInput :model-value="payload.title" />
+            </UiFormWrapper>
+            <UiFormWrapper title="交易时间" class="py-[11px]">
+              <UiInput :model-value="payload.duration" />
+            </UiFormWrapper>
+            <UiFormWrapper title="佣金" class="py-[11px]">
               <UiDropdown
-                :model-value="payload.seller_currency_id.toString()"
-                disabled
-                :option="currencyStore.options"
-              />
-              <UiInput
-                required
-                :model-value="payload.amount"
-                type="number"
-                @update:model-value="onBuyAmountChange"
-              />
-            </span>
-          </FormWrapper>
-          <FormWrapper title="应下发的币种" class="py-[11px]">
-            <span class="flex items-center">
-              <UiDropdown
-                :model-value="payload.buyer_currency_id.toString()"
-                :option="currencyStore.options"
+                :model-value="payload.buyer_pay_commission.toString()"
+                :option="COMMISSION_PAY_OPTIONS"
+                class="text-[12px]"
+                hide-show-arrow-down
                 @update:model-value="
                   (value) => {
-                    payload.buyer_currency_id = +value;
+                    if (value === 'true') {
+                      payload.buyer_pay_commission = true;
+                    } else {
+                      payload.buyer_pay_commission = false;
+                    }
                   }
                 "
+              >
+                <template #right-icon>
+                  <button class="inline-flex items-center justify-center">
+                    <Icon name="X" size="14" color="#cccccc" />
+                  </button>
+                </template>
+              </UiDropdown>
+            </UiFormWrapper>
+          </div>
+          <div class="w-full border-b" />
+          <div class="w-full px-[16px]">
+            <UiFormWrapper title="交易详情" class="py-[11px]">
+              <template #icon>
+                <button class="flex items-center">
+                  <Icon name="Question" color="#666666" size="15" />
+                </button>
+              </template>
+              <textarea
+                v-model="payload.note"
+                class="h-[55px] w-[70%] resize-none rounded-[6px] bg-white p-[5px] text-[16px]"
               />
-              <UiInput
-                required
-                :model-value="payload.quantity_to_be_given"
-                type="number"
-                disabled
-              />
-            </span>
-          </FormWrapper>
-
-          <FormWrapper title="交易内容" class="py-[11px]">
-            <UiInput :model-value="payload.title" />
-          </FormWrapper>
-          <FormWrapper title="交易时间" class="py-[11px]">
-            <UiInput :model-value="payload.duration" />
-          </FormWrapper>
-          <FormWrapper title="佣金" class="py-[11px]">
-            <UiDropdown
-              :model-value="payload.buyer_pay_commission.toString()"
-              :option="COMMISSION_PAY_OPTIONS"
-              @update:model-value="
-                (value) => {
-                  if (value === 'true') {
-                    payload.buyer_pay_commission = true;
-                  } else {
-                    payload.buyer_pay_commission = false;
-                  }
-                }
-              "
-            />
-          </FormWrapper>
-
-          <UiDivider type="horizontal" />
-
-          <FormWrapper title="交易详情" class="py-[11px]">
-            <textarea
-              v-model="payload.note"
-              class="h-[250px] rounded-[6px] bg-white p-[5px] text-[14px]"
-            />
-          </FormWrapper>
+            </UiFormWrapper>
+          </div>
         </div>
       </div>
     </div>
@@ -143,8 +194,8 @@
 import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
 import { createOrder } from "~/api/order";
-import FormWrapper from "~/components/ui/FormWrapper.vue";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
+import { PAYMENT_METHODS } from "~/constants/options/payment-method";
 import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail } from "~/types/chat";
 import type { Option } from "~/types/common";
@@ -164,6 +215,12 @@ const fee = ref({
   otherFee: 0,
   exchangeRate: 1.02,
   platformRate: 20,
+});
+
+const updatedPayload = ref<{
+  payment_method: string;
+}>({
+  payment_method: PAYMENT_METHODS[0].value,
 });
 
 const payload = ref<CreateOrder>({
@@ -234,31 +291,6 @@ async function onCreateOrder() {
   height: 1px;
   width: 100%;
   margin: 10px 0;
-}
-
-.detail {
-  display: flex;
-  padding: 16px;
-  gap: 5px;
-  border-radius: 8px;
-  background: url("/images/bg-detail.png") no-repeat center center;
-  background-blend-mode: color, normal;
-  box-shadow:
-    0px 4px 10px 0px rgba(92, 177, 255, 0.26),
-    0px 0px 9px 0px rgba(255, 255, 255, 0.75) inset;
-  filter: drop-shadow(0px 10px 50px rgba(92, 177, 255, 1));
-}
-
-.detail-item {
-  color: #e1efff;
-  display: flex;
-  height: 62px;
-  padding: 10px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 5px;
-  flex: 1 0 0;
 }
 
 .total-title {

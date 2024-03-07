@@ -16,7 +16,7 @@
       class="inline-flex items-center justify-center"
       @click="onReset"
     >
-      <Icon name="X" class="w-[14px]" color="#cccccc" />
+      <Icon name="X" size="14" color="#cccccc" />
     </button>
   </div>
 </template>

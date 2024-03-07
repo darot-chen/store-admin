@@ -1,34 +1,20 @@
 <template>
-  <button
-    v-bind="$attrs"
-    :class="['inline-flex items-center gap-[9px]', disabled && 'disabled']"
-    @click="onClick"
-  >
-    <Icon
-      v-if="!hideShowArrowDown"
-      name="ArrowDown"
-      color="#D0D0D0"
-      size="14"
-      class="opacity-30"
-    />
-    <img
-      v-if="selected?.icon"
-      :src="selected.icon"
-      :alt="selected.label"
-      class="w-[18px] rounded-full"
-    />
-    <div class="inline-flex items-center gap-[16px]">
-      <p class="text-[#393939]">{{ selected?.label }}</p>
-      <slot v-if="!!$slots['right-icon']" name="right-icon" />
-      <Icon
-        v-else
-        name="Caret"
-        size="14"
-        color="#3C3C434D"
-        class="-rotate-90"
-      />
+  <button v-bind="$attrs" class="flex w-full items-center pr-2">
+    <div class="flex-1 text-left">
+      <p class="text-sm font-medium text-[#0000004d]">
+        {{ selected?.label }}
+      </p>
+    </div>
+
+    <div
+      :class="['inline-flex items-center gap-[5px]', disabled && 'disabled']"
+      @click="onClick"
+    >
+      <Icon name="ArrowDown" color="#0000001A" size="9" />
+      <Icon v-if="selected?.label" :name="selected?.label" width="16" />
     </div>
   </button>
+
   <VanPopup v-model:show="showPopup" round class="popup">
     <div class="sticky top-0 z-10 bg-white pb-3 pt-5">
       <h1 v-if="title" class="text-[16px] font-semibold">{{ title }}</h1>
@@ -54,7 +40,6 @@ const showPopup = ref(false);
 const props = defineProps<{
   option: Option[];
   modelValue: string;
-  hideShowArrowDown?: boolean;
   disabled?: boolean;
   title?: string;
 }>();

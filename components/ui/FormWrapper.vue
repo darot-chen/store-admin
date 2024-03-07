@@ -1,12 +1,15 @@
 <template>
   <div v-if="type === 'border'" class="box-border flex w-full rounded-[10px]">
     <div class="flex w-full items-center justify-between">
-      <h2 class="px-[11px] py-[7px] text-[14px]">{{ title }}</h2>
+      <h2 class="px-[11px] py-[7px] text-[12px]">{{ title }}</h2>
       <slot />
     </div>
   </div>
   <div v-else class="flex w-full justify-between">
-    <h2 class="text-[17px]">{{ title }}</h2>
+    <div class="inline-flex items-center gap-[4px]">
+      <h2 class="text-[12px]">{{ title }}</h2>
+      <slot name="icon" />
+    </div>
     <slot />
   </div>
 </template>
@@ -20,6 +23,6 @@ defineProps<{
 
 <style scoped lang="css">
 .box-border {
-  border: 1px solid #d9d9d9;
+  border: 0.5px solid #0000001a;
 }
 </style>
