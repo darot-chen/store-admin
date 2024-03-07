@@ -69,8 +69,8 @@ export type Order = {
 
 export type OrderDetail = {
   id: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   order_id: number;
   user_id: number;
   chat_message_id: number;

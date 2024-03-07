@@ -62,7 +62,7 @@
           class="flex-1"
           :paid-amount="props.detail?.order?.amount_paid || 0"
           :total-amount="props.detail?.order?.amount_to_be_paid || 0"
-          :currency="detail?.order?.seller_currency?.code || 'no currency'"
+          :currency="detail?.order?.seller_currency?.code || ''"
         />
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
@@ -70,7 +70,7 @@
           class="flex-1"
           :paid-amount="props.detail?.order?.quantity_given || 0"
           :total-amount="props.detail?.order?.quantity_to_be_given || 0"
-          :currency="detail?.order?.buyer_currency?.code || 'no currency'"
+          :currency="detail?.order?.buyer_currency?.code || ''"
         />
       </div>
     </Transition>
@@ -107,10 +107,6 @@ const emit = defineEmits<{
 }>();
 
 const showMore = ref(true);
-
-onMounted(() => {
-  // fetchOrders();
-});
 
 const onShowMore = () => (showMore.value = !showMore.value);
 

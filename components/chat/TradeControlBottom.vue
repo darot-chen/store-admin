@@ -6,7 +6,7 @@
           <p class="label">费率</p>
           <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
         </div>
-        <p>20%</p>
+        <p>{{ detail?.business?.commission || 0 }}%</p>
       </div>
       <UiDivider
         orientation="vertical"
@@ -19,7 +19,7 @@
           <p class="label">固定汇率</p>
           <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
         </div>
-        <p>1.02</p>
+        <p>{{ detail?.order?.exchange_rate || 0 }}</p>
       </div>
       <UiDivider
         orientation="vertical"

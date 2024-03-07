@@ -27,10 +27,15 @@
         >
           <div v-for="(order, index) in orders" :key="index">
             <div class="paid-detail my-2 flex w-auto flex-row">
-              <p class="time">{{ getFormattedTime(order.created_at) }}</p>
+              <p class="time">
+                {{ getFormattedTime(order.created_at) }}
+              </p>
               <p class="ml-1">{{ order.quantity_given }}</p>
               <p class="u">(...)</p>
             </div>
+          </div>
+          <div v-show="loadMore" class="flex justify-center">
+            {{ $t("loading") }}
           </div>
         </div>
       </div>
@@ -62,17 +67,23 @@ const { paidAmount, totalAmount, currency, id, party } = defineProps<{
 
 const isLoading = ref(false);
 const cursorId = ref(0);
-const loadMore = ref(true);
+const loadMore = ref(false);
 const isVisible = ref(false);
 const orders = ref<OrderDetail[]>([]);
 
-function getFormattedTime(date?: Date): string {
-  if (!date) return "no time";
-  console.log(`Date: ${date}`);
+watch(isVisible, () => {
+  if (!isVisible.value) {
+    orders.value = [];
+  }
+});
 
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
+function getFormattedTime(date: string): string {
+  if (!date) return "no date";
+
+  const formattedDate = new Date(date);
+  const hours = formattedDate.getHours();
+  const minutes = formattedDate.getMinutes();
+  const seconds = formattedDate.getSeconds();
 
   const formattedHours = String(hours).padStart(2, "0");
   const formattedMinutes = String(minutes).padStart(2, "0");
@@ -95,7 +106,7 @@ const onScroll = (event: Event) => {
   setTimeout(() => {
     if (scrollTop + clientHeight >= scrollHeight) {
       if (loadMore.value) {
-        // fetchChatRooms();
+        fetchOrders(party);
       }
     }
   }, 300);
@@ -112,7 +123,7 @@ async function fetchOrders(party: string) {
   });
 
   orders.value.push(...res.results);
-  cursorId.value = res.results[res.results.length - 1].id;
+  cursorId.value = res.results[res.results.length - 1]?.id || 0;
   loadMore.value = res.meta.has_next;
 }
 </script>
