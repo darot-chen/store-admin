@@ -32,7 +32,7 @@
           <p class="label">净余担保金额</p>
           <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
         </div>
-        <p>510,000U</p>
+        <p>{{ detail?.order?.other_expense || 0 }}U</p>
       </div>
     </div>
     <div class="mb-2 mr-2 flex">
