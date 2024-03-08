@@ -182,13 +182,16 @@ onMounted(() => {
   });
 
   $evOn("order_payment_confirmed", (d: any) => {
-    if (d.data?.id !== chatDetail.value?.order?.id) return;
+    if (d.data?.order?.id !== chatDetail.value?.order?.id) return;
 
     if (chatDetail.value && chatDetail.value.order) {
-      chatDetail.value.order.amount_paid = d.data?.amount_paid || 0;
-      chatDetail.value.order.quantity_given = d.data?.quantity_given || 0;
-      chatDetail.value.order.buyer_confirmed_at = d.data?.buyer_confirmed_at;
-      chatDetail.value.order.seller_confirmed_at = d.data?.seller_confirmed_at;
+      chatDetail.value.order.amount_paid = d.data?.order?.amount_paid || 0;
+      chatDetail.value.order.quantity_given =
+        d.data?.order?.quantity_given || 0;
+      chatDetail.value.order.buyer_confirmed_at =
+        d.data?.order?.buyer_confirmed_at;
+      chatDetail.value.order.seller_confirmed_at =
+        d.data?.order?.seller_confirmed_at;
     }
   });
 });
