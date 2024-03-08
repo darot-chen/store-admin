@@ -38,7 +38,7 @@
               </div>
             </div>
             <div v-show="loadMore" class="flex justify-center">
-              <UiCircularLoading width="16" height="16" />
+              <UiCircularLoading size="16" />
             </div>
           </div>
         </div>

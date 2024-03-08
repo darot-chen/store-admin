@@ -1,8 +1,8 @@
 <template>
   <svg
     class="mr-3 animate-spin"
-    :width="width"
-    :height="height"
+    :width="size"
+    :height="size"
     viewBox="0 0 24 24"
   >
     <circle
@@ -26,11 +26,7 @@
 import { defineProps } from "vue";
 
 defineProps({
-  width: {
-    type: String,
-    default: "24",
-  },
-  height: {
+  size: {
     type: String,
     default: "24",
   },
