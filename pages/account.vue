@@ -43,6 +43,7 @@ const profileTopItems: Cell[] = [
     title: "我的报表",
     icon: "Statistic",
     backgroundColor: "#FF453A",
+    onClick: () => navigateTo("/report"),
   },
   {
     title: "账户管理",

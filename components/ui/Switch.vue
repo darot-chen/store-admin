@@ -9,6 +9,7 @@
           active: modelValue.value === option.value,
         },
       ]"
+      :style="{ height: buttonHeight }"
       @click="$emit('update:modelValue', option)"
     >
       {{ option.label }}
@@ -22,6 +23,7 @@ import type { Option } from "~/types/common";
 defineProps<{
   options: Option[];
   modelValue: Option;
+  buttonHeight?: string;
 }>();
 
 defineEmits<{
