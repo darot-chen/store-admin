@@ -9,8 +9,9 @@
       </span>
     </div>
     <input
-      type="text"
       class="relative z-20 w-full rounded-lg bg-[#7676801F] p-2 placeholder:text-center"
+      type="button"
+      @click="navigateTo('/room/search')"
     />
   </div>
 </template>
