@@ -1,3 +1,33 @@
+const colors = [
+  "#ff8a65",
+  "#ffcc80",
+  "#fff59d",
+  "#dcedc8",
+  "#80cbc4",
+  "#80deea",
+  "#81d4fa",
+  "#80deea",
+  "#b0bec5",
+  "#ffab91",
+  "#ffcc80",
+  "#ffee58",
+  "#dcedc8",
+  "#80cbc4",
+  "#80deea",
+];
+
+export function generateLinearGradient(username: string, length: number = 0) {
+  const usernameColor = colors[(username.length + length) % colors.length];
+  const linearGradient = `linear-gradient(135deg, ${usernameColor} 0%, ${generateColor(usernameColor)} 50%, ${generateColor(usernameColor)} 100%)`;
+
+  return linearGradient;
+}
+
+export function generateColorForName(username: string) {
+  const usernameColor = colors[username.length % colors.length];
+  return generateColor(usernameColor);
+}
+
 export const generateColor = (text: string) => {
   let hash = 0;
   for (let i = 0; i < text.length; i++) {
