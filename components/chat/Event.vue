@@ -12,6 +12,10 @@
       {{ $t("seller_complete_order") }}
     </p>
 
+    <p v-if="text === CHAT_ACTIONS.BUYER_COMPLETE_ORDER" v>
+      {{ $t("buyer_complete_order") }}
+    </p>
+
     <p v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
       {{ $t("order_success") }}
     </p>
