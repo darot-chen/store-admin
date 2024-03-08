@@ -70,11 +70,16 @@ export type Order = {
 export type OrderDetail = {
   id: number;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
   order_id: number;
   user_id: number;
   chat_message_id: number;
   status: string;
   quantity_given: number;
-  amount_paid: null;
+  amount_paid?: number;
+};
+
+export type OrderPaymentConfirmedType = {
+  order: Order;
+  orderPayment: OrderDetail;
 };

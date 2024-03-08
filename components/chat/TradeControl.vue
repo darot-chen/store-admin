@@ -63,6 +63,7 @@
           :paid-amount="props.detail?.order?.amount_paid || 0"
           :total-amount="props.detail?.order?.amount_to_be_paid || 0"
           :currency="detail?.order?.seller_currency?.code || ''"
+          :new-order="newOrder.amount_paid ? newOrder : undefined"
         />
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
@@ -71,6 +72,7 @@
           :paid-amount="props.detail?.order?.quantity_given || 0"
           :total-amount="props.detail?.order?.quantity_to_be_given || 0"
           :currency="detail?.order?.buyer_currency?.code || ''"
+          :new-order="newOrder.quantity_given ? newOrder : undefined"
         />
       </div>
     </Transition>
@@ -87,6 +89,9 @@ import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
 import TradeControlItem from "./TradeControlItem.vue";
 import TradeControlBottom from "./TradeControlBottom.vue";
+import type { OrderDetail } from "~/types/order";
+
+const { $evOn } = useNuxtApp();
 
 const props = defineProps<{
   detail?: ChatDetail;
@@ -97,6 +102,24 @@ const authStore = useAuthStore();
 const { t } = useI18n();
 const showCreateOrder = computed(() => {
   return authStore.user?.id === props.detail?.owner_id;
+});
+const newOrder = ref<OrderDetail>({
+  id: 0,
+  created_at: "",
+  order_id: 0,
+  user_id: 0,
+  chat_message_id: 0,
+  status: "",
+  quantity_given: 0,
+  amount_paid: 0,
+});
+
+$evOn("order_payment_confirmed", (d) => {
+  const payment = d.data?.orderPayment;
+
+  if (!payment) return;
+
+  newOrder.value = payment;
 });
 
 const emit = defineEmits<{
