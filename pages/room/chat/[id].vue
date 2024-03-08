@@ -181,7 +181,7 @@ onMounted(() => {
     }
   });
 
-  $evOn("order_payment_confirmed", (d: any) => {
+  $evOn("order_payment_confirmed", (d) => {
     if (d.data?.order?.id !== chatDetail.value?.order?.id) return;
 
     if (chatDetail.value && chatDetail.value.order) {

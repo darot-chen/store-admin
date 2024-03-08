@@ -1,5 +1,5 @@
 <template>
-  <div class="more-detail relative flex flex-col">
+  <div class="more-detail relative flex h-fit flex-col">
     <div style="padding: 0.5rem">
       <div class="amount">
         <div class="label">
@@ -20,26 +20,24 @@
         <div class="divider my-2 h-0 border-t">
           <UiDivider />
         </div>
-        <div>
-          <div
-            style="height: 100px"
-            class="gap-[1rem] overflow-auto pt-1"
-            @scroll="debouncedScrollHandler"
-          >
-            <div v-for="(order, index) in orders" :key="index">
-              <div class="paid-detail my-2 flex w-auto flex-row">
-                <p class="time">
-                  {{ getFormattedTime(order.created_at) }}
-                </p>
-                <p class="ml-1">
-                  {{ order.quantity_given ?? order.amount_paid }}
-                </p>
-                <p class="u">(...)</p>
-              </div>
+        <div
+          style="height: 100px"
+          class="gap-[1rem] overflow-auto pt-1"
+          @scroll="debouncedScrollHandler"
+        >
+          <div v-for="(order, index) in orders" :key="index">
+            <div class="paid-detail my-2 flex w-auto flex-row">
+              <p class="time">
+                {{ getFormattedTime(order.created_at) }}
+              </p>
+              <p class="ml-1">
+                {{ order.quantity_given ?? order.amount_paid }}
+              </p>
+              <p class="u">(...)</p>
             </div>
-            <div v-show="loadMore" class="flex justify-center">
-              <UiCircularLoading size="16" />
-            </div>
+          </div>
+          <div v-show="loadMore" class="flex justify-center">
+            <UiCircularLoading size="16" />
           </div>
         </div>
       </div>
@@ -62,12 +60,13 @@ import { getOrders } from "~/api/order";
 import type { OrderDetail } from "~/types/order";
 import _ from "lodash";
 
-const { paidAmount, totalAmount, currency, id, party } = defineProps<{
+const props = defineProps<{
   paidAmount: number;
   totalAmount: number;
   currency: string;
   id: number;
   party: string;
+  newOrder?: OrderDetail;
 }>();
 
 const isLoading = ref(false);
@@ -75,13 +74,22 @@ const cursorId = ref(0);
 const loadMore = ref(false);
 const isVisible = ref(false);
 const orders = ref<OrderDetail[]>([]);
+const newOrderRef = toRefs(props).newOrder;
 
-watch(isVisible, () => {
-  if (!isVisible.value) {
-    orders.value = [];
-    loadMore.value = false;
-    cursorId.value = 0;
+watch(
+  () => newOrderRef,
+  () => {
+    if (newOrderRef?.value) {
+      orders.value.unshift(newOrderRef.value);
+    }
+  },
+  {
+    deep: true,
   }
+);
+
+onMounted(() => {
+  fetchOrders(props.party);
 });
 
 const debouncedScrollHandler = _.debounce((event: UIEvent) => {
@@ -90,7 +98,7 @@ const debouncedScrollHandler = _.debounce((event: UIEvent) => {
 
   if (scrollTop + 2 + clientHeight >= scrollHeight) {
     if (loadMore.value) {
-      fetchOrders(party);
+      fetchOrders(props.party);
     }
   }
 }, 300);
@@ -114,9 +122,6 @@ function getFormattedTime(date: string): string {
 
 const onClicked = () => {
   isVisible.value = !isVisible.value;
-  if (isVisible.value) {
-    fetchOrders(party);
-  }
 };
 
 async function fetchOrders(party: string) {
@@ -124,7 +129,7 @@ async function fetchOrders(party: string) {
     isLoading.value = true;
   }
 
-  const res = await getOrders(id, {
+  const res = await getOrders(props.id, {
     last: cursorId.value,
     party,
     limit: 10,
