@@ -1,5 +1,5 @@
 <template>
-  <div class="more-detail flex flex-col">
+  <div class="more-detail relative flex flex-col">
     <div style="padding: 0.5rem">
       <div class="amount">
         <div class="label">
@@ -18,31 +18,48 @@
 
       <div v-if="isVisible" class="mx-1 flex flex-col">
         <div class="divider my-2 h-0 border-t">
-          <UiDivider size="md" />
+          <UiDivider />
         </div>
-        <div
-          style="height: 100px"
-          class="gap-[1rem] overflow-auto pt-1"
-          @scroll="onScroll"
-        >
-          <div v-for="(order, index) in orders" :key="index">
-            <div class="paid-detail my-2 flex w-auto flex-row">
-              <p class="time">
-                {{ getFormattedTime(order.created_at) }}
-              </p>
-              <p class="ml-1">
-                {{ order.quantity_given ?? order.amount_paid }}
-              </p>
-              <p class="u">(...)</p>
+        <div>
+          <div
+            style="height: 100px"
+            class="gap-[1rem] overflow-auto pt-1"
+            @scroll="debouncedScrollHandler"
+          >
+            <div v-for="(order, index) in orders" :key="index">
+              <div class="paid-detail my-2 flex w-auto flex-row">
+                <p class="time">
+                  {{ getFormattedTime(order.created_at) }}
+                </p>
+                <p class="ml-1">
+                  {{ order.quantity_given ?? order.amount_paid }}
+                </p>
+                <p class="u">(...)</p>
+              </div>
             </div>
-          </div>
-          <div v-show="loadMore" class="flex justify-center">
-            {{ $t("loading") }}
+            <div v-show="loadMore" class="flex justify-center">
+              <svg class="mr-3 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                  fill="none"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="mb-3 mr-4 flex place-self-end">
+    <div class="absolute bottom-0 mr-4 items-center justify-end place-self-end">
       <button class="arrow" @click="onClicked">
         <Icon
           :class="[isVisible ? 'arrow-up' : 'arrow-down', 'opacity-30']"
@@ -58,6 +75,7 @@
 <script setup lang="ts">
 import { getOrders } from "~/api/order";
 import type { OrderDetail } from "~/types/order";
+import _ from "lodash";
 
 const { paidAmount, totalAmount, currency, id, party } = defineProps<{
   paidAmount: number;
@@ -76,8 +94,21 @@ const orders = ref<OrderDetail[]>([]);
 watch(isVisible, () => {
   if (!isVisible.value) {
     orders.value = [];
+    loadMore.value = false;
+    cursorId.value = 0;
   }
 });
+
+const debouncedScrollHandler = _.debounce((event: UIEvent) => {
+  const target = event.target as HTMLElement;
+  const { scrollTop, clientHeight, scrollHeight } = target;
+
+  if (scrollTop + 2 + clientHeight >= scrollHeight) {
+    if (loadMore.value) {
+      fetchOrders(party);
+    }
+  }
+}, 300);
 
 function getFormattedTime(date: string): string {
   if (!date) return "no date";
@@ -98,26 +129,16 @@ function getFormattedTime(date: string): string {
 
 const onClicked = () => {
   isVisible.value = !isVisible.value;
-  fetchOrders(party);
-};
-
-const onScroll = (event: Event) => {
-  const target = event.target as HTMLElement;
-  const { scrollTop, clientHeight, scrollHeight } = target;
-
-  setTimeout(() => {
-    if (scrollTop + clientHeight >= scrollHeight) {
-      if (loadMore.value) {
-        fetchOrders(party);
-      }
-    }
-  }, 300);
+  if (isVisible.value) {
+    fetchOrders(party);
+  }
 };
 
 async function fetchOrders(party: string) {
   if (orders.value.length === 0) {
     isLoading.value = true;
   }
+
   const res = await getOrders(id, {
     last: cursorId.value,
     party,
