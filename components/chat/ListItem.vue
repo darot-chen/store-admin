@@ -6,10 +6,13 @@
     >
       <div class="flex gap-2">
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-full bg-[#F2F2F7]"
+          class="flex h-12 w-12 items-center justify-center rounded-full"
+          :style="{
+            background: generateLinearGradient(room.business.title, room.id),
+          }"
         >
-          <span class="text-lg font-medium text-[#8E8E93]">
-            {{ room.owner.name.charAt(0) }}
+          <span class="text-lg font-bold text-[#fff]">
+            {{ room.business.title?.charAt(0).toUpperCase() || "" }}
           </span>
         </div>
 
@@ -21,7 +24,16 @@
                 {{ $t("lobby_no") }} {{ room.lobby_no }}
               </span>
             </h1>
-            <p class="line-clamp-3 text-sm text-[#8E8E93]">
+            <ChatEvent
+              v-if="room.latest_message.type === ChatType.Action"
+              class="line-clamp-3 text-sm text-[#8E8E93]"
+              :text="room.latest_message.message"
+              :name="
+                room.latest_message.user?.name ||
+                room.latest_message.admin?.name
+              "
+            />
+            <p v-else class="line-clamp-3 text-sm text-[#8E8E93]">
               {{ room?.latest_message?.message || "" }}
             </p>
           </div>
@@ -52,6 +64,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { ChatType } from "~/types/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 
 defineProps<{

@@ -56,5 +56,7 @@
   "manual_cs_is_being_assigned": "Manual customer service is being assigned, please wait patiently...",
   "during_the_waiting_period": "During the waiting period, you can first describe the business content you need to handle, and the manual customer service will reply to you directly later.",
   "name_has_left_the_chat": "{name} has left the chat",
-  "merchant real-time transaction exchange rate": "Merchant real-time transaction exchange rate"
+  "merchant real-time transaction exchange rate": "Merchant real-time transaction exchange rate",
+  "new_order_create": "New Order Created",
+  "new_ticket_created": "New Ticcket Created"
 }

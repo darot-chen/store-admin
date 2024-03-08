@@ -11,7 +11,7 @@
           v-if="(showProfile || profile) && chatType === 'incoming'"
           :class="!profile && 'bg-avatar'"
           :style="{
-            backgroundColor: generateColor(name),
+            background: generateLinearGradient(name),
           }"
         >
           <img
@@ -19,7 +19,7 @@
             class="w-[2.375rem] rounded-full"
             src="/images/bs-logo.png"
           />
-          <p v-else>{{ name.charAt(0) }}</p>
+          <p v-else>{{ name.charAt(0).toUpperCase() }}</p>
         </div>
         <Icon
           v-if="chatType === 'incoming'"
@@ -37,7 +37,7 @@
           <p
             v-if="chatType === 'incoming'"
             class="incoming-name px-[0.38rem]"
-            :style="{ color: generateColor(name) }"
+            :style="{ color: generateColorForName(name) }"
           >
             {{ name }}
           </p>

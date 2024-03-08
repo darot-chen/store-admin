@@ -1,18 +1,19 @@
 <template>
   <div
-    class="flex h-[75px] w-full items-center justify-between border-t bg-[#FFFFFFBF] px-[42px]"
+    class="flex w-full items-center justify-between border-t bg-[#FFFFFFBF] px-[42px] pb-[6px] pt-[7px]"
   >
     <NuxtLink
       v-for="item in FOOTER_ITEMS"
       :key="item.key"
       :to="item.link"
-      class="flex flex-col items-center"
+      class="flex cursor-pointer flex-col items-center px-[10px]"
       active-class="text-blue-500"
     >
       <Icon
         :name="item.icon"
         color="#999999"
-        :class="['h-6 w-6', { 'active-img': $route.path === item.link }]"
+        size="28"
+        :class="[{ 'active-img': $route.path === item.link }]"
       />
       <p
         :class="[

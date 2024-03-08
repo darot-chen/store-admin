@@ -208,7 +208,7 @@ function onConfirmOrder() {
 
 .show-more {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
   gap: 0.625rem;
   align-self: stretch;
 }
