@@ -12,6 +12,7 @@
         >
           <template #button>
             <VanButton
+              :disabled="userNameRef.trim().length === 0"
               size="small"
               type="primary"
               :loading="isLoading"
