@@ -14,7 +14,7 @@ export enum ChatType {
 }
 
 export type GetMessagePayload = Cursor & {
-  keyword: string;
+  query: string;
 };
 
 export type Chat = {

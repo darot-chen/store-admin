@@ -145,7 +145,7 @@ const fetchChatMessages = async () => {
 
   const res = await getChatMessages({
     last: cursorId.value,
-    keyword: searchQuery.value,
+    query: searchQuery.value,
     limit: 20,
   });
 
