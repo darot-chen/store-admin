@@ -20,6 +20,7 @@ export type ChatRoom = {
   chat_messages: Chat[];
   latest_message: Chat;
   owner: User;
+  total_unread: number;
 };
 
 export type CursorChatRoomPayload = {

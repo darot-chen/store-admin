@@ -51,13 +51,13 @@
             </span>
           </div>
 
-          <!-- <div class="mb-1">
+          <div v-show="room.total_unread > 0" class="mb-1">
             <span
-              class="rounded-full bg-[#037EE5] px-1 py-0.5 text-sm text-white"
+              class="rounded-full bg-[#037EE5] px-1 py-0.5 text-sm font-bold text-white"
             >
-              {{ 7 }}
+              {{ room.total_unread }}
             </span>
-          </div> -->
+          </div>
         </div>
       </div>
     </NuxtLink>
