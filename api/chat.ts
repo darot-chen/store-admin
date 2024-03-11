@@ -1,5 +1,11 @@
 import type { APIMeta } from "~/types/base";
-import type { Chat, ChatDetail, Member } from "~/types/chat";
+import type {
+  Chat,
+  ChatDetail,
+  ChatMessage,
+  GetMessagePayload,
+  Member,
+} from "~/types/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 import type { Cursor } from "~/types/common";
 import type { CursorResponse } from "~/types/pagination";
@@ -88,6 +94,17 @@ export const getChatRoomMembers = async (roomId: number) => {
 export const requestSupport = async (roomId: number, orderId: number) => {
   const { data } = await useAxiosInstance().post<APIMeta>(
     `${url}/${roomId}/orders/${orderId}/support`
+  );
+
+  return data;
+};
+
+export const getChatMessages = async (params: GetMessagePayload) => {
+  const { data } = await useAxiosInstance().get<CursorResponse<ChatMessage[]>>(
+    "chat-messages",
+    {
+      params,
+    }
   );
 
   return data;

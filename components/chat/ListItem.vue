@@ -25,7 +25,7 @@
               </span>
             </h1>
             <ChatEvent
-              v-if="room.latest_message.type === ChatType.Action"
+              v-if="room.latest_message?.type === ChatType.Action"
               class="line-clamp-3 text-sm text-[#8E8E93]"
               :text="room.latest_message.message"
               :name="

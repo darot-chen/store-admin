@@ -1,22 +1,22 @@
 <template>
-  <div class="m-5">
-    <div class="relative">
+  <div class="flex h-full flex-col overflow-auto" @scroll="handleScroll">
+    <div class="fixed w-full bg-white px-3 py-3">
       <input
         ref="inputRef"
         v-model="searchQuery"
         type="text"
-        class="relative z-20 w-full rounded-lg bg-[#7676801F] p-2 pl-10 placeholder:text-center"
+        class="relative z-20 w-full rounded-lg bg-[#7676801F] p-2.5 pl-10 placeholder:text-center"
         @input="handleInput"
       />
 
       <Icon
         name="Edit"
         color="#037EE5"
-        class="absolute left-4 top-1/2 flex -translate-y-1/2 items-center gap-2"
+        class="absolute left-6 top-1/2 flex -translate-y-1/2 items-center gap-2"
       />
       <div
         v-if="!searchQuery"
-        class="absolute left-10 top-1/2 flex -translate-y-1/2 items-center gap-2"
+        class="absolute left-[60px] top-1/2 flex -translate-y-1/2 items-center gap-2"
       >
         <span class="whitespace-nowrap text-[#3C3C4399]">
           {{ $t("chat_search_place_holder") }}
@@ -24,17 +24,79 @@
       </div>
     </div>
 
-    <div class="mt-5 h-64 overflow-y-auto" @scroll="handleScroll">
-      <div
-        v-for="result in visibleResults"
-        :key="result.id"
-        class="border-b border-gray-300 py-2"
-      >
-        <div class="mb-1 h-3 w-16 rounded bg-gray-300"></div>
-        <div class="h-3 w-48 rounded bg-gray-300"></div>
+    <div
+      v-if="isLoading"
+      class="absolute top-1/2 flex justify-center place-self-center"
+    >
+      <UiCircularLoading size="24" />
+    </div>
+    <div v-else>
+      <div v-if="searchItems.length === 0">
+        <div class="flex justify-center">No data</div>
       </div>
+      <div
+        v-for="room in searchItems"
+        v-else
+        :key="room.chat_room.id"
+        class="border-b border-gray-300"
+      >
+        <div class="rounded-md bg-white">
+          <NuxtLink
+            class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
+            :to="`/room/chat/${room.chat_room.id}`"
+          >
+            <div class="flex gap-2">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-full"
+                :style="{
+                  background: generateLinearGradient(
+                    room.chat_room.business.title,
+                    room.chat_room.id
+                  ),
+                }"
+              >
+                <span class="text-lg font-bold text-[#fff]">
+                  {{
+                    room.chat_room.business.title?.charAt(0).toUpperCase() || ""
+                  }}
+                </span>
+              </div>
 
-      <div v-show="isLoading" class="flex justify-center">
+              <div class="flex w-7/12 flex-col">
+                <div>
+                  <h1 class="font-medium">
+                    {{ room.chat_room.business.title }}
+                    <span v-if="room.chat_room.lobby_no">
+                      {{ $t("lobby_no") }} {{ room.chat_room.lobby_no }}
+                    </span>
+                  </h1>
+                  <ChatEvent
+                    v-if="room.type === ChatType.Action"
+                    class="line-clamp-3 text-sm text-[#8E8E93]"
+                    :text="room.message"
+                    :name="room.message"
+                  />
+                  <p
+                    v-else
+                    class="line-clamp-2 text-ellipsis text-sm text-[#8E8E93]"
+                  >
+                    {{ room.message || "" }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="ml-auto flex flex-col items-end justify-between">
+                <div class="flex gap-1.5">
+                  <span class="text-sm text-[#8E8E93]">
+                    {{ formatChatListDate(room?.created_at.toString()) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+      <div v-show="loadMore" class="mt-1 flex justify-center">
         <UiCircularLoading size="24" />
       </div>
     </div>
@@ -44,6 +106,8 @@
 <script setup lang="ts">
 import _ from "lodash";
 import { ref } from "vue";
+import { getChatMessages } from "~/api/chat";
+import { ChatType, type ChatMessage } from "~/types/chat";
 
 const pageStore = usePageStore();
 
@@ -55,52 +119,50 @@ onMounted(() => {
   });
 });
 
-const mockResults = [
-  { id: 1, title: "Result 1" },
-  { id: 2, title: "Result 2" },
-  { id: 3, title: "Result 3" },
-  { id: 4, title: "Result 4" },
-  { id: 5, title: "Result 5" },
-  { id: 6, title: "Result 6" },
-  { id: 7, title: "Result 7" },
-  { id: 8, title: "Result 8" },
-  { id: 9, title: "Result 9" },
-  { id: 10, title: "Result 10" },
-];
-
 const searchQuery = ref("");
-const filteredResults = ref(mockResults);
-const visibleResults = ref(filteredResults.value.slice(0, 5));
-const loadMore = ref(true);
+
+const loadMore = ref(false);
 const isLoading = ref(false);
 const inputRef = ref<HTMLInputElement | null>(null);
+const searchItems = ref<ChatMessage[]>([]);
+const cursorId = ref(0);
+
+onMounted(() => {
+  fetchChatMessages();
+});
 
 const handleInput = () => {
-  filteredResults.value = mockResults.filter((result) =>
-    result.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  searchItems.value.length = 0;
+  cursorId.value = 0;
+  loadMoreResults();
+  isLoading.value = true;
+};
 
-  visibleResults.value = filteredResults.value.slice(0, 5);
-  loadMore.value = true;
+const fetchChatMessages = async () => {
+  if (searchItems.value.length === 0) {
+    isLoading.value = true;
+  }
+
+  const res = await getChatMessages({
+    last: cursorId.value,
+    keyword: searchQuery.value,
+    limit: 20,
+  });
+
+  searchItems.value.push(...res.results);
+  cursorId.value = res.results[res.results.length - 1]?.id || 0;
+  loadMore.value = res.meta.has_next;
+  isLoading.value = false;
 };
 
 const handleScroll = (event: Event) => {
   const target = event.target as HTMLDivElement;
   const { scrollTop, clientHeight, scrollHeight } = target;
 
-  if (
-    scrollTop + clientHeight >= scrollHeight &&
-    loadMore.value &&
-    !isLoading.value
-  ) {
+  if (scrollTop + clientHeight >= scrollHeight) {
     loadMoreResults();
   }
 };
 
-const loadMoreResults = _.debounce(() => {
-  const nextIndex = visibleResults.value.length;
-  const nextResults = filteredResults.value.slice(nextIndex, nextIndex + 5);
-  visibleResults.value = [...visibleResults.value, ...nextResults];
-  loadMore.value = nextResults.length === 5;
-}, 300);
+const loadMoreResults = _.debounce(fetchChatMessages, 300);
 </script>
