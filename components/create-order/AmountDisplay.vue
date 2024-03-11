@@ -14,7 +14,7 @@
           <h1 class="text-[15px] font-semibold">费率</h1>
           <Icon name="Info" color="#E1EFFF" />
         </div>
-        <p class="text-[16px]">{{ fee.exchangeRate }}</p>
+        <p class="text-[16px]">{{ rate?.price || 0 }}</p>
       </div>
       <UiDivider />
       <div class="detail-item">
@@ -29,12 +29,14 @@
 </template>
 
 <script setup lang="ts">
+import type { Rate } from "~/types/rate";
+
 defineProps<{
   fee: {
     platformRate: number;
-    exchangeRate: number;
     otherFee: number;
   };
+  rate?: Rate;
 }>();
 </script>
 

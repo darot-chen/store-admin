@@ -57,12 +57,12 @@
               height="400"
               provider="s3"
               :src="text"
-              class="rounded-lg"
+              class="rounded-sm pt-2"
               @click="onPreview(text)"
             />
             <video
               v-else-if="type === ChatType.Video"
-              class="max-h-[400] max-w-[200] rounded-lg"
+              class="max-h-[400] max-w-[200] rounded-sm pt-2"
               controls
             >
               <source :src="getS3Url(text)" />

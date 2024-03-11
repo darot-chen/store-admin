@@ -75,11 +75,11 @@
       </template>
     </UiPopupConfirmation>
   </div>
-  <div v-else class="flex h-screen items-center justify-center">
-    <div
-      class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
-    />
-  </div>
+  <UiCircularLoading
+    v-else
+    class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+    size="40"
+  />
 </template>
 
 <script setup lang="ts">

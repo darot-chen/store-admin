@@ -54,70 +54,24 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  type ChartData,
-  type ChartOptions,
-} from "chart.js";
-
+import type { ChartData, ChartOptions } from "chart.js";
 import { Line } from "vue-chartjs";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-const data: ChartData<"line"> = {
+const data = ref<ChartData<"line">>({
   labels: ["晨", "午", "晚"],
   datasets: [
     {
       data: [40, 39, 10, 40, 39, 80, 40],
     },
   ],
-};
+});
 
-const options: ChartOptions<"line"> = {
+const options = ref<ChartOptions<"line">>({
   responsive: true,
-  scales: {
-    yAxes: [
-      {
-        display: true,
-        position: "right",
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-      {
-        display: true,
-        position: "left",
-        ticks: {
-          beginAtZero: true,
-          max: 45,
-          min: 0,
-          stepSize: 5,
-        },
-      },
-    ],
-  },
   plugins: {
     legend: {
       display: false,
     },
   },
-
-  // backgroundColor: "rgba(244, 144, 128, 0.8)",
-  // showLine: true,
-};
+});
 </script>

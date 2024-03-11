@@ -36,9 +36,7 @@
           </transition>
         </div>
         <div v-else class="flex items-center justify-center">
-          <div
-            class="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-500"
-          />
+          <UiCircularLoading />
         </div>
         <transition name="pop">
           <button v-show="isInputFocused" type="submit">

@@ -21,7 +21,7 @@
         />
       </div>
 
-      <span>{{ option.label }} </span>
+      <p class="text-[14px] text-[#8e8e93]">{{ option.label }}</p>
     </label>
   </div>
 </template>
@@ -45,14 +45,6 @@ defineEmits<{
   justify-content: center;
   align-items: center;
   gap: 10px;
-}
-
-span {
-  color: #8e8e93;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
 }
 
 .checkbox input[type="radio"] {

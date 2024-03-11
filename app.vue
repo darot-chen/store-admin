@@ -1,17 +1,13 @@
 <template>
   <NuxtLayout v-if="loading">
-    <div class="flex h-screen items-center justify-center">
-      <div
-        class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
-      />
-    </div>
+    <UiCircularLoading
+      size="40"
+      class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+    />
   </NuxtLayout>
 
   <NuxtLayout v-else>
-    <NuxtPage
-      :page-key="(route: any) => route.path"
-      :keepalive="$route.meta.keepalive"
-    />
+    <NuxtPage :page-key="(route: any) => route.path" />
   </NuxtLayout>
 </template>
 

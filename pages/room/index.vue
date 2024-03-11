@@ -1,15 +1,12 @@
 <template>
   <div class="flex h-full flex-col gap-5 bg-[#FFFFFFBF]" @scroll="handleScroll">
     <ChatSearch class="px-3" />
-    <div
+
+    <UiCircularLoading
       v-if="loading"
-      class="absolute"
-      style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
-    >
-      <div
-        class="h-10 w-10 animate-spin rounded-full border-b-2 border-blue-500"
-      />
-    </div>
+      size="40"
+      class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+    />
     <div v-else class="flex flex-col">
       <ChatListItem v-for="room in chatRooms" :key="room.id" :room="room" />
     </div>

@@ -1,6 +1,6 @@
 <template>
-  <div class="relative mb-[62px]">
-    <CreateOrderAmountDisplay :fee="fee" />
+  <div v-if="!isLoading" class="relative mb-[62px]">
+    <CreateOrderAmountDisplay :rate="updatedPayload.selected_rate" :fee="fee" />
 
     <div class="relative mx-[12px] rounded-[10px]">
       <div
@@ -41,7 +41,8 @@
                   :option="currencyStore.options"
                   @update:model-value="
                     (value) => {
-                      payload.seller_currency_id = +value;
+                      payload.seller_currency_id = +value.value;
+                      getExchangeRate();
                     }
                   "
                 />
@@ -81,7 +82,8 @@
                   :option="currencyStore.options"
                   @update:model-value="
                     (value) => {
-                      payload.buyer_currency_id = +value;
+                      payload.seller_currency_id = +value.value;
+                      getExchangeRate();
                     }
                   "
                 />
@@ -118,8 +120,16 @@
 
         <!-- Payment method selector -->
         <CreateOrderPaymentMethod
-          v-model:payment-method="updatedPayload.payment_method"
-          :options="PAYMENT_METHODS"
+          :payment-methods="PAYMENT_METHODS"
+          :rates="exchangeRate"
+          :selected-rate="updatedPayload.selected_rate"
+          :selected-payment-method="updatedPayload.payment_method"
+          @update:selected-rate="
+            (item) => (updatedPayload.selected_rate = item)
+          "
+          @update:selected-payment-method="
+            (item) => (updatedPayload.payment_method = item)
+          "
         />
 
         <div
@@ -188,18 +198,24 @@
       />
     </div>
   </div>
+  <UiCircularLoading
+    v-else
+    class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+  />
 </template>
 
 <script setup lang="ts">
 import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
 import { createOrder } from "~/api/order";
+import { getRate } from "~/api/rate";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { PAYMENT_METHODS } from "~/constants/options/payment-method";
 import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail } from "~/types/chat";
 import type { Option } from "~/types/common";
 import type { CreateOrder } from "~/types/order";
+import type { Rate, RateParams } from "~/types/rate";
 
 const pageStore = usePageStore();
 const route = useRoute();
@@ -210,6 +226,8 @@ const currencyStore = useCurrencyStore();
 const chatDetail = ref<ChatDetail>();
 const authStore = useAuthStore();
 const buyers = ref<Option[]>([]);
+const exchangeRate = ref<Rate[]>([]);
+const isLoading = ref(true);
 
 const fee = ref({
   otherFee: 0,
@@ -218,16 +236,17 @@ const fee = ref({
 });
 
 const updatedPayload = ref<{
-  payment_method: string;
+  payment_method: Option;
+  selected_rate?: Rate;
 }>({
-  payment_method: PAYMENT_METHODS[0].value,
+  payment_method: PAYMENT_METHODS[0],
 });
 
 const payload = ref<CreateOrder>({
   chat_room_id: roomId,
   amount: 0,
   buyer_currency_id: 2,
-  seller_currency_id: 0,
+  seller_currency_id: 1,
   quantity_to_be_given: 0,
   buyer_id: 0,
   buyer_pay_commission: false,
@@ -237,9 +256,14 @@ const payload = ref<CreateOrder>({
 
 onMounted(async () => {
   try {
-    chatDetail.value = await getChatDetail(roomId);
-    members.value = await getChatRoomMembers(roomId);
-    currencyStore.getCurrencyOptions();
+    const data = await Promise.all([
+      getChatDetail(roomId),
+      getChatRoomMembers(roomId),
+      currencyStore.getCurrencyOptions(),
+    ]);
+
+    chatDetail.value = data[0];
+    members.value = data[1];
 
     buyers.value = members.value
       .filter((member) => member.user_id !== authStore.user?.id)
@@ -254,10 +278,14 @@ onMounted(async () => {
     payload.value.buyer_id = +buyers.value[0].value;
     payload.value.seller_currency_id =
       chatDetail.value.business?.currency_id ?? 0;
+
+    await getExchangeRate();
   } catch (error) {
     router.back();
+  } finally {
+    pageStore.setTitle("交易确认");
+    isLoading.value = false;
   }
-  pageStore.setTitle("交易确认");
 });
 
 function onBuyAmountChange(value: string | number) {
@@ -277,6 +305,25 @@ async function onCreateOrder() {
   try {
     const res = await createOrder(payload.value);
     navigateTo(`/room/chat/${res.chat_room_id}`);
+  } catch (error: any) {
+    showFailToast(error?.message ?? "");
+  }
+}
+
+async function getExchangeRate() {
+  const params: RateParams = {
+    base_currency:
+      currencyStore.data.find(
+        (currency) => currency.id === payload.value.buyer_currency_id
+      )?.code ?? "USDT",
+    quote_currency:
+      currencyStore.data.find(
+        (currency) => currency.id === payload.value.seller_currency_id
+      )?.code ?? "CNY",
+  };
+
+  try {
+    exchangeRate.value = await getRate(params);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
   }

@@ -26,7 +26,7 @@
         :title="item.label"
         class="!text-[16px]"
         is-link
-        @click="() => onOptionClick(item.value)"
+        @click="() => onOptionClick(item)"
       />
     </VanCellGroup>
   </VanPopup>
@@ -49,7 +49,7 @@ const selected = computed(() => {
 });
 
 const emits = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: "update:modelValue", value: Option): void;
 }>();
 
 function onClick() {
@@ -58,7 +58,7 @@ function onClick() {
   }
 }
 
-function onOptionClick(value: string) {
+function onOptionClick(value: Option) {
   emits("update:modelValue", value);
   showPopup.value = false;
 }

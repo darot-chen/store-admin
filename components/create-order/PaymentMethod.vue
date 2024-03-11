@@ -11,12 +11,12 @@
     </div>
     <div v-if="showRealtimeExchangeRate" class="inline-flex gap-[16px]">
       <button
-        v-for="item in options"
+        v-for="item in paymentMethods"
         :key="item.value"
-        :class="[
-          item.value === paymentMethod ? 'text-[#50A7EA]' : 'text-[#787A8D]',
-        ]"
-        @click="() => $emit('update:paymentMethod', item.value)"
+        :style="{
+          color: selectedPaymentMethod === item ? '#FF9900' : '#787A8D',
+        }"
+        @click="() => $emit('update:selectedPaymentMethod', item)"
       >
         {{ item.label }}
       </button>
@@ -36,26 +36,37 @@
     </div>
     <div class="grid py-[10px] text-[12px]">
       <div
-        v-for="(item, index) in exchangeRate"
+        v-for="(item, index) in x"
         :key="index"
         :class="[
           'grid grid-cols-2 px-[16px]',
           index === 0
             ? 'border-b border-[#FAFAFA] pb-[10px]'
-            : index === exchangeRate.length - 1
+            : index === x.length - 1
               ? 'pt-[10px]'
               : 'border-b border-[#FAFAFA] pb-[10px] pt-[10px]',
         ]"
       >
-        <div class="inline-flex items-center gap-[10px] py-[11px]">
+        <div
+          class="inline-flex w-[126px] items-center justify-between gap-[10px] py-[11px]"
+        >
           <div class="inline-flex items-center gap-1">
-            <p :class="[index <= 2 && 'text-[#FF9900]']">{{ index + 1 }}</p>
-            <p>{{ item.title }}</p>
+            <p :class="[index <= 2 && 'text-[#FF9900]']">
+              {{ index + 1 }}
+            </p>
+            <p class="line-clamp-1">{{ item.nickName }}</p>
           </div>
-          <VanSwitch v-model="item.selected" size="10.5" />
+          <VanSwitch
+            :model-value="selectedRate?.id === item.id"
+            size="10.5"
+            @change="() => $emit('update:selectedRate', item)"
+          />
         </div>
         <div class="flex items-center justify-end gap-[10px] py-[11px]">
-          <CreateOrderRateCounter />
+          <CreateOrderRateCounter
+            :model-value="item"
+            @update:model-value="(value) => onRateAmountChange(value)"
+          />
         </div>
       </div>
     </div>
@@ -64,40 +75,45 @@
 
 <script setup lang="ts">
 import type { Option } from "~/types/common";
+import type { Rate } from "~/types/rate";
 
 const showRealtimeExchangeRate = ref(false);
 
-defineProps<{
-  paymentMethod: string;
-  options: Option[];
+const props = defineProps<{
+  rates: Rate[];
+  paymentMethods: Option[];
+  selectedRate?: Rate;
+  selectedPaymentMethod: Option;
 }>();
 
-const exchangeRate = [
-  {
-    title: "守规矩的蚂蚱",
-    selected: false,
-  },
-  {
-    title: "守规矩的蚂蚱",
-    selected: false,
-  },
-  {
-    title: "守规矩的蚂蚱",
-    selected: false,
-  },
-  {
-    title: "守规矩的蚂蚱",
-    selected: false,
-  },
-  {
-    title: "守规矩的蚂蚱",
-    selected: false,
-  },
-];
+const x = ref(props.rates);
 
-defineEmits<{
-  (e: "update:paymentMethod", value: string): void;
+watch(
+  () => props.rates,
+  (newVal) => {
+    x.value = newVal;
+  }
+);
+
+const emit = defineEmits<{
+  (e: "update:selectedPaymentMethod", value: Option): void;
+  (e: "update:selectedRate", value: Rate): void;
 }>();
+
+function onRateAmountChange(value: Rate) {
+  if (!props.selectedRate && value && value === props.selectedRate) return;
+
+  x.value = x.value.map((item) => {
+    if (item.id === value.id) {
+      return value;
+    }
+    return item;
+  });
+
+  if (props.selectedRate?.id === value.id) {
+    emit("update:selectedRate", value);
+  }
+}
 </script>
 
 <style scoped lang="css">
