@@ -1,35 +1,34 @@
 <template>
   <div class="container py-[12px]">
     <div class="detail mx-[12px] items-center">
-      <div class="detail-item">
-        <div class="inline-flex items-center gap-[5px]">
-          <h1 class="text-[15px] font-semibold">汇率</h1>
-          <Icon name="Info" color="#E1EFFF" />
-        </div>
-        <p class="text-[16px]">{{ fee.platformRate }}%</p>
-      </div>
+      <FeeInfo
+        type="platformRate"
+        :value="fee.platformRate"
+        @click="$emit('feeClick', 'platformRate', fee.platformRate)"
+      />
       <UiDivider />
-      <div class="detail-item">
-        <div class="inline-flex items-center gap-[5px]">
-          <h1 class="text-[15px] font-semibold">费率</h1>
-          <Icon name="Info" color="#E1EFFF" />
-        </div>
-        <p class="text-[16px]">{{ rateComputed?.price || 0 }}</p>
-      </div>
+      <FeeInfo
+        type="price"
+        :value="rateComputed?.price || 0"
+        @click="
+          rateComputed
+            ? $emit('feeClick', 'price', rateComputed?.price)
+            : undefined
+        "
+      />
       <UiDivider />
-      <div class="detail-item">
-        <div class="inline-flex items-center gap-[5px]">
-          <h1 class="text-[15px] font-semibold">其他费</h1>
-          <Icon name="Info" color="#E1EFFF" />
-        </div>
-        <p class="text-[16px]">{{ fee.otherFee }}</p>
-      </div>
+      <FeeInfo
+        type="otherFee"
+        :value="fee.otherFee || 0"
+        @click="$emit('feeClick', 'otherFee', fee.otherFee)"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Rate } from "~/types/rate";
+import FeeInfo from "./FeeInfo.vue";
 
 const props = defineProps<{
   fee: {
@@ -38,6 +37,8 @@ const props = defineProps<{
   };
   rate?: Rate;
 }>();
+
+defineEmits(["feeClick"]);
 
 const rateComputed = computed(() => {
   return props.rate;
@@ -56,17 +57,5 @@ const rateComputed = computed(() => {
     0px 4px 10px 0px rgba(92, 177, 255, 0.26),
     0px 0px 9px 0px rgba(255, 255, 255, 0.75) inset;
   filter: drop-shadow(0px 10px 50px rgba(92, 177, 255, 1));
-}
-
-.detail-item {
-  color: #e1efff;
-  display: flex;
-  height: 62px;
-  padding: 10px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 5px;
-  flex: 1 0 0;
 }
 </style>
