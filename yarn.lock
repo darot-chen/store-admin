@@ -2007,7 +2007,7 @@
   resolved "https://registry.yarnpkg.com/@vant/popperjs/-/popperjs-1.3.0.tgz#e0eff017124b5b2352ef3b36a6df06277f4400f2"
   integrity sha512-hB+czUG+aHtjhaEmCJDuXOep0YTZjdlRR+4MSmIFnkCQIxJaXLQdSsR90XWvAI2yvKUI7TCGqR8pQg2RtvkMHw==
 
-"@vant/touch-emulator@^1.4.0":
+"@vant/touch-emulator@1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@vant/touch-emulator/-/touch-emulator-1.4.0.tgz#02420ca5f312a7eb6c36c349cbb8e80e6f29ff2f"
   integrity sha512-Zt+zISV0+wpOew2S1siOJ3G22y+hapHAKmXM+FhpvWzsRc4qahaYXatCAITuuXt0EcDp7WvEeTO4F7p9AtX/pw==
@@ -7935,10 +7935,10 @@ validate-npm-package-name@^5.0.0:
   dependencies:
     builtins "^5.0.0"
 
-vant@^4.8.3:
-  version "4.8.5"
-  resolved "https://registry.yarnpkg.com/vant/-/vant-4.8.5.tgz#35498b6deeee6400fad27aeae34c1609b6227c64"
-  integrity sha512-l+gz0oVNn5z/3q2AYGsyi0jvkRb8968rr+bBe3mifV+Szad6LwD1i715LlA3Nrv8PlimQ9ZT8wtkjuKjGkNMGw==
+vant@4.8.0:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/vant/-/vant-4.8.0.tgz#46cc6cf77593abb1ccf023629b3f47e15aade1dd"
+  integrity sha512-JeEcSd1zt0+fcSo/wuyvhF+dUdd1IaaJmrG0BTiUvH/XcBJEUaTSSEaYG0V8iI38xUTUCuDG+TSfSoSeEwGVAQ==
   dependencies:
     "@vant/popperjs" "^1.3.0"
     "@vant/use" "^1.6.0"
