@@ -13,7 +13,9 @@
             {{ `/${totalAmount}${currency}` }}
           </p>
         </div>
-        <p class="remaining" style="font-size: 13px">未下发 230,000 USDT</p>
+        <p class="remaining" style="font-size: 13px">
+          未下发 {{ props.totalAmount - props.paidAmount }} USDT
+        </p>
       </div>
 
       <div v-if="isVisible" class="mx-1 flex flex-col">
