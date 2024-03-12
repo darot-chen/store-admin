@@ -9,17 +9,18 @@ export enum OrderStatus {
 }
 
 export type CreateOrder = {
-  buyer_currency_id: number;
-  seller_currency_id: number;
   chat_room_id: number;
+  seller_currency_id: number;
+  buyer_currency_id: number;
   buyer_id: number;
-  quantity_to_be_given: number;
   amount: number;
-  buyer_pay_commission: boolean;
+  exchange_rate: number;
+  handling_fee_percentage: number;
+  commission_type: "buyer" | "seller" | "both";
   other_expense: number;
-  duration: string;
-  title?: string;
+  duration?: string;
   note?: string;
+  title?: string;
 };
 
 export type GetOrderParams = Cursor & {

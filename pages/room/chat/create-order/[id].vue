@@ -61,6 +61,7 @@
                     </button>
                     <input
                       v-model="payload.amount"
+                      type="number"
                       class="w-full text-right text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
@@ -105,7 +106,7 @@
                     <input
                       disabled
                       class="w-full text-right text-[24px] font-bold disabled:bg-transparent"
-                      :value="payload.quantity_to_be_given"
+                      :value="sellerReceived"
                     />
                     <div class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
@@ -142,19 +143,10 @@
               </UiFormWrapper>
               <UiFormWrapper title="佣金" class="py-[11px]">
                 <UiDropdown
-                  :model-value="payload.buyer_pay_commission.toString()"
+                  v-model:model-value="payload.commission_type"
                   :option="COMMISSION_PAY_OPTIONS"
                   class="text-[12px]"
                   hide-show-arrow-down
-                  @update:model-value="
-                    (value) => {
-                      if (value === 'true') {
-                        payload.buyer_pay_commission = true;
-                      } else {
-                        payload.buyer_pay_commission = false;
-                      }
-                    }
-                  "
                 >
                   <template #right-icon>
                     <button class="inline-flex items-center justify-center">
@@ -263,16 +255,19 @@ const updatedPayload = ref<{
 }>({
   payment_method: PAYMENT_METHODS[0],
 });
+
+const sellerReceived = ref(0);
+
 const payload = ref<CreateOrder>({
   chat_room_id: roomId,
-  amount: 0,
-  buyer_currency_id: 2,
-  seller_currency_id: 1,
-  quantity_to_be_given: 0,
+  seller_currency_id: 0,
+  buyer_currency_id: 0,
   buyer_id: 0,
-  buyer_pay_commission: false,
+  amount: 0,
+  exchange_rate: 0,
+  handling_fee_percentage: 0,
+  commission_type: "buyer",
   other_expense: 0,
-  duration: "",
 });
 
 const debounceGetRate = useDebounceFn(getExchangeRate, 500);
@@ -292,7 +287,7 @@ function onBuyAmountChange() {
   const handlingFee = (100 + fee.value.platformRate) / 100;
 
   // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
-  payload.value.quantity_to_be_given = Number(
+  sellerReceived.value = Number(
     (
       payload.value.amount *
         Number(updatedPayload.value.selected_rate.price) *
@@ -331,7 +326,10 @@ function onConfirmUpdate() {
 
 async function onCreateOrder() {
   try {
-    const res = await createOrder(payload.value);
+    const res = await createOrder({
+      ...payload.value,
+      exchange_rate: Number(updatedPayload.value.selected_rate?.price) ?? 0,
+    });
     navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
@@ -394,6 +392,12 @@ onMounted(async () => {
     payload.value.buyer_id = +buyers.value[0].value;
     payload.value.seller_currency_id =
       chatDetail.value.business?.currency_id ?? 0;
+
+    if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
+      payload.value.buyer_currency_id = currencyStore.data[1].id;
+    } else {
+      payload.value.buyer_currency_id = currencyStore.data[0].id;
+    }
 
     await getExchangeRate();
   } catch (error) {
