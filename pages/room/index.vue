@@ -67,7 +67,7 @@ onMounted(() => {
   fetchChatRooms();
   $evOn("new_chat_received", async (d: any) => {
     const hasChatRoom = chatRooms.value.find(
-      (c) => c.business_id === d?.data?.chat_room?.business_id
+      (c) => c.id === d?.data?.chat_room?.id
     );
     if (hasChatRoom) {
       const index = chatRooms.value.findIndex(
