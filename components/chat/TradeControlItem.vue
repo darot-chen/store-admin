@@ -10,11 +10,12 @@
             {{ paidAmount }}
           </p>
           <p class="remaining">
-            {{ `/${totalAmount}${currency}` }}
+            {{ `/${totalAmount} ${currency}` }}
           </p>
         </div>
         <p class="remaining" style="font-size: 13px">
-          未下发 {{ props.totalAmount - props.paidAmount }} USDT
+          未下发 {{ props.totalAmount - props.paidAmount }}
+          {{ props?.currency || "USDT" }}
         </p>
       </div>
 
