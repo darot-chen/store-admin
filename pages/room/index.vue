@@ -19,15 +19,13 @@ import type { ChatRoom } from "~/types/chatRoom";
 
 const roomType = ref<string>("private");
 
+const { $evOn, $evOff } = useNuxtApp();
+
 const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
 const loading = ref<boolean>(false);
 const firstLoad = ref<boolean>(false);
-
-onMounted(() => {
-  fetchChatRooms();
-});
 
 async function fetchChatRooms(isChangeType?: boolean) {
   if (firstLoad.value) {
@@ -52,8 +50,8 @@ async function fetchChatRooms(isChangeType?: boolean) {
   loading.value = false;
 }
 
-const handleScroll = (event: Event) => {
-  const target = event.target as HTMLElement; // Type casting to HTMLElement
+function handleScroll(event: Event) {
+  const target = event.target as HTMLElement;
   const { scrollTop, clientHeight, scrollHeight } = target;
 
   setTimeout(() => {
@@ -63,5 +61,32 @@ const handleScroll = (event: Event) => {
       }
     }
   }, 300);
-};
+}
+
+onMounted(() => {
+  fetchChatRooms();
+});
+
+onUnmounted(() => {
+  $evOff("new_chat_received");
+});
+
+$evOn("new_chat_received", (d: any) => {
+  const hasChatRoom = chatRooms.value.find(
+    (c) => c.business_id === d?.data?.chat_room?.business_id
+  );
+  if (hasChatRoom) {
+    const index = chatRooms.value.findIndex(
+      (c) => c.business_id === d?.data?.chat_room?.business_id
+    );
+
+    chatRooms.value[index].latest_message = d.data;
+    chatRooms.value[index].total_unread += 1;
+
+    chatRooms.value.unshift(chatRooms.value.splice(index, 1)[0]);
+    chatRooms.value[index].updated_at = new Date().toISOString();
+  } else {
+    fetchChatRooms(true);
+  }
+});
 </script>
