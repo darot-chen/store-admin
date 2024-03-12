@@ -25,11 +25,49 @@
         </VanField>
       </VanCellGroup>
     </VanPopup>
-    <img
-      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987"
-      :alt="refUser.name"
-      class="h-20 w-20 rounded-full object-cover"
-    />
+
+    <VanPopup
+      v-model:show="isEditProfilePopupVisible"
+      round
+      closeable
+      :close-on-click-overlay="false"
+      @closed="
+        () => {
+          isEditProfilePopupVisible = false;
+          previewImage = '';
+        }
+      "
+    >
+      <UiImageCropper :image-src="previewImage" />
+      <van-button
+        :loading="isUpdateProfileLoading"
+        type="primary"
+        :round="false"
+        class="rounded-b-[16px] rounded-e-none"
+        @click="onUploaded"
+      >
+        Upload
+      </van-button>
+    </VanPopup>
+    <div>
+      <input
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        style="display: none"
+        @change="uploadImage"
+      />
+      <img
+        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987"
+        :alt="refUser.name"
+        class="h-20 w-20 rounded-full object-cover"
+        @click="
+          () => {
+            fileInput?.click();
+          }
+        "
+      />
+    </div>
     <div class="relative inline-flex items-center gap-[10px]">
       <h1
         class="text-[20px] font-semibold text-[#010101]"
@@ -52,7 +90,7 @@
 <script setup lang="ts">
 import type { User } from "~/types/user";
 import { ref, toRef } from "vue";
-import { updateName } from "~/api/user";
+import { updateName, uploadProfileImage } from "~/api/user";
 import { showFailToast, showSuccessToast } from "vant";
 
 const props = defineProps<{
@@ -61,16 +99,55 @@ const props = defineProps<{
 
 const refUser = toRef(props).value.user;
 const isEditPopupVisible = ref(false);
+const isEditProfilePopupVisible = ref(false);
+const fileInput = ref<HTMLInputElement>();
+
 const userNameRef = ref("");
 const isLoading = ref(false);
+const isUpdateProfileLoading = ref(false);
+const previewImage = ref<string | ArrayBuffer | null | undefined>();
+
+const uploadImage = (e: any) => {
+  const image = e.target?.files[0];
+  const reader = new FileReader();
+  reader.readAsDataURL(image);
+  reader.onload = (e) => {
+    previewImage.value = e.target?.result;
+  };
+  isEditProfilePopupVisible.value = true;
+};
+
+const onUploaded = async () => {
+  isUpdateProfileLoading.value = true;
+
+  if (typeof previewImage.value !== "string") return;
+
+  const file = dataURLtoFile(previewImage.value, "profile-image.jpg", 2048);
+  if (!file) {
+    showFailToast("Image exceed 2mb");
+    isEditProfilePopupVisible.value = false;
+    isUpdateProfileLoading.value = false;
+    return;
+  }
+
+  const isUpdated = await uploadProfileImage(file);
+
+  if (isUpdated) {
+    showSuccessToast("Updated");
+  } else {
+    showFailToast("Failed");
+  }
+  isEditProfilePopupVisible.value = false;
+  isUpdateProfileLoading.value = false;
+};
 
 const onSavedUsername = async () => {
   isLoading.value = true;
   const isSuccess = await updateName(userNameRef.value);
-  if (!isSuccess) {
-    showFailToast("Failed");
-  } else {
+  if (isSuccess) {
     showSuccessToast("Updated");
+  } else {
+    showFailToast("Failed");
   }
   isLoading.value = false;
   refUser.name = userNameRef.value;
@@ -80,4 +157,39 @@ const onSavedUsername = async () => {
 const toggleEditMode = () => {
   isEditPopupVisible.value = !isEditPopupVisible.value;
 };
+
+const dataURLtoFile = (
+  dataUrl: string,
+  filename: string,
+  maxSizeKB: number
+): File | undefined => {
+  // Convert data URL to byte array
+  const byteString = atob(dataUrl.split(",")[1]);
+  const bytes = new Uint8Array(byteString.length);
+  for (let i = 0; i < byteString.length; i++) {
+    bytes[i] = byteString.charCodeAt(i);
+  }
+
+  // Check if file size exceeds the maximum allowed size
+  const fileSizeKB = bytes.length / 1024;
+  if (fileSizeKB > maxSizeKB) {
+    return;
+  }
+
+  // Create File object
+  const mime = dataUrl.match(/:(.*?);/)?.[1];
+  if (!mime) {
+    return;
+  }
+  const blob = new Blob([bytes], { type: mime });
+  return new File([blob], filename, { type: mime });
+};
 </script>
+
+<style lang="css">
+.upload-example-cropper {
+  border: solid 1px #eee;
+  height: 300px;
+  width: 100%;
+}
+</style>
