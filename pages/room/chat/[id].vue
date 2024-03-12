@@ -198,7 +198,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   pageStore.$reset();
-  $evOff("new_chat_received");
+  $evOff("order_status_updated");
   $evOff("order_payment_confirmed");
 });
 
