@@ -39,14 +39,14 @@ const emit = defineEmits<{
 function onPlus() {
   emit("update:modelValue", {
     ...props.modelValue,
-    price: (props.modelValue ? +props.modelValue.price + 0.01 : 0).toString(),
+    price: props.modelValue ? (+props.modelValue.price + 0.01).toFixed(2) : "0",
   });
 }
 
 function onMinus() {
   emit("update:modelValue", {
     ...props.modelValue,
-    price: (props.modelValue ? +props.modelValue.price - 0.01 : 0).toString(),
+    price: props.modelValue ? (+props.modelValue.price - 0.01).toFixed(2) : "0",
   });
 }
 

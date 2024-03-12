@@ -14,7 +14,7 @@
           <h1 class="text-[15px] font-semibold">费率</h1>
           <Icon name="Info" color="#E1EFFF" />
         </div>
-        <p class="text-[16px]">{{ rate?.price || 0 }}</p>
+        <p class="text-[16px]">{{ rateComputed?.price || 0 }}</p>
       </div>
       <UiDivider />
       <div class="detail-item">
@@ -31,13 +31,17 @@
 <script setup lang="ts">
 import type { Rate } from "~/types/rate";
 
-defineProps<{
+const props = defineProps<{
   fee: {
     platformRate: number;
     otherFee: number;
   };
   rate?: Rate;
 }>();
+
+const rateComputed = computed(() => {
+  return props.rate;
+});
 </script>
 
 <style scoped lang="css">

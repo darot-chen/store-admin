@@ -6,17 +6,17 @@
     >
       <div class="flex gap-2">
         <div
-          class="flex h-12 w-12 items-center justify-center rounded-full"
+          class="flex h-12 w-full max-w-12 items-center justify-center rounded-full"
           :style="{
             background: generateLinearGradient(room.business.title, room.id),
           }"
         >
-          <span class="text-lg font-bold text-[#fff]">
+          <p class="text-lg font-bold text-[#fff]">
             {{ room.business.title?.charAt(0).toUpperCase() || "" }}
-          </span>
+          </p>
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-1 flex-col">
           <div>
             <h1 class="font-medium">
               {{ room.business.title }}
@@ -26,37 +26,37 @@
             </h1>
             <ChatEvent
               v-if="room.latest_message?.type === ChatType.Action"
-              class="line-clamp-3 text-sm text-[#8E8E93]"
+              class="line-clamp-1 text-sm text-[#8E8E93]"
               :text="room.latest_message.message"
               :name="
                 room.latest_message.user?.name ||
                 room.latest_message.admin?.name
               "
             />
-            <p v-else class="line-clamp-3 text-sm text-[#8E8E93]">
+            <p v-else class="line-clamp-1 text-sm text-[#8E8E93]">
               {{ room?.latest_message?.message || "" }}
             </p>
           </div>
         </div>
 
         <div class="ml-auto flex flex-col items-end justify-between">
-          <div class="flex gap-1.5">
+          <div class="inline-flex gap-1.5">
             <!-- <Icon name="DoubleCheck" color="#21C004" /> -->
-            <span class="text-sm text-[#8E8E93]">
+            <p class="text-sm text-[#8E8E93]">
               {{
                 formatChatListDate(
                   room?.latest_message?.created_at ?? room?.created_at
                 )
               }}
-            </span>
+            </p>
           </div>
 
           <div v-show="room.total_unread > 0" class="mb-1">
-            <span
+            <p
               class="rounded-full bg-[#037EE5] px-1 py-0.5 text-sm font-bold text-white"
             >
               {{ room.total_unread }}
-            </span>
+            </p>
           </div>
         </div>
       </div>

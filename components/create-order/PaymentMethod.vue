@@ -1,7 +1,14 @@
 <template>
   <div class="flex w-full items-center">
     <div class="inline-flex items-center gap-[10px] pr-[16px]">
-      <VanSwitch v-model="showRealtimeExchangeRate" size="15" />
+      <VanSwitch
+        v-model="showRealtimeExchangeRate"
+        size="15"
+        @change="
+          () =>
+            emit('update:showRealtimeExchangeRate', showRealtimeExchangeRate)
+        "
+      />
       <p v-if="!showRealtimeExchangeRate" class="text-[#50A7EA]">
         {{ $t("merchant real-time transaction exchange rate") }}
       </p>
@@ -28,21 +35,28 @@
     >
       <div class="inline-flex flex-1 items-center gap-[10px]">
         <p>姓名</p>
-        <Icon name="Info" color="#C5DBF0" />
+        <button>
+          <Icon name="Info" color="#C5DBF0" />
+        </button>
       </div>
-      <div class="inline-flex flex-1 items-center gap-[10px] pr-[16px]">
-        <p class="w-full text-center">汇率</p>
+      <div
+        class="inline-flex flex-1 items-center justify-center gap-[10px] pr-[16px]"
+      >
+        <p>汇率</p>
+        <button>
+          <Icon name="UpDown" />
+        </button>
       </div>
     </div>
     <div class="grid py-[10px] text-[12px]">
       <div
-        v-for="(item, index) in x"
+        v-for="(item, index) in rates"
         :key="index"
         :class="[
           'grid grid-cols-2 px-[16px]',
           index === 0
             ? 'border-b border-[#FAFAFA] pb-[10px]'
-            : index === x.length - 1
+            : index === rates.length - 1
               ? 'pt-[10px]'
               : 'border-b border-[#FAFAFA] pb-[10px] pt-[10px]',
         ]"
@@ -50,16 +64,27 @@
         <div
           class="inline-flex w-[126px] items-center justify-between gap-[10px] py-[11px]"
         >
-          <div class="inline-flex items-center gap-1">
-            <p :class="[index <= 2 && 'text-[#FF9900]']">
+          <div class="inline-flex w-2/3 items-center gap-1">
+            <p :style="{ color: index <= 2 ? '#FF9900' : '' }">
               {{ index + 1 }}
             </p>
-            <p class="line-clamp-1">{{ item.nickName }}</p>
+            <p class="line-clamp-1 text-ellipsis">
+              {{ item.nickName }}
+            </p>
           </div>
           <VanSwitch
+            class="w-1/3"
             :model-value="selectedRate?.id === item.id"
             size="10.5"
-            @change="() => $emit('update:selectedRate', item)"
+            @change="
+              () => {
+                if (selectedRate?.id === item.id) {
+                  $emit('update:selectedRate', undefined);
+                } else {
+                  $emit('update:selectedRate', item);
+                }
+              }
+            "
           />
         </div>
         <div class="flex items-center justify-end gap-[10px] py-[11px]">
@@ -77,33 +102,34 @@
 import type { Option } from "~/types/common";
 import type { Rate } from "~/types/rate";
 
-const showRealtimeExchangeRate = ref(false);
-
 const props = defineProps<{
+  showRealtimeExchangeRate: boolean;
   rates: Rate[];
   paymentMethods: Option[];
   selectedRate?: Rate;
   selectedPaymentMethod: Option;
 }>();
 
-const x = ref(props.rates);
+const rates = ref(props.rates);
+const showRealtimeExchangeRate = ref(props.showRealtimeExchangeRate);
 
 watch(
   () => props.rates,
   (newVal) => {
-    x.value = newVal;
+    rates.value = newVal;
   }
 );
 
 const emit = defineEmits<{
   (e: "update:selectedPaymentMethod", value: Option): void;
-  (e: "update:selectedRate", value: Rate): void;
+  (e: "update:selectedRate", value: Rate | undefined): void;
+  (e: "update:showRealtimeExchangeRate", value: boolean): void;
 }>();
 
 function onRateAmountChange(value: Rate) {
   if (!props.selectedRate && value && value === props.selectedRate) return;
 
-  x.value = x.value.map((item) => {
+  rates.value = rates.value.map((item) => {
     if (item.id === value.id) {
       return value;
     }
