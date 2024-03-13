@@ -64,6 +64,7 @@
           :total-amount="props.detail?.order?.amount_to_be_paid || 0"
           :currency="detail?.order?.seller_currency?.code || ''"
           :new-order="newOrder?.amount_paid ? newOrder : undefined"
+          :payment-count="detail?.order?.total_seller_payments || 0"
         />
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
@@ -73,6 +74,7 @@
           :total-amount="props.detail?.order?.quantity_to_be_given || 0"
           :currency="detail?.order?.buyer_currency?.code || ''"
           :new-order="newOrder?.quantity_given ? newOrder : undefined"
+          :payment-count="detail?.order?.total_buyer_payments || 0"
         />
       </div>
     </Transition>
@@ -111,6 +113,12 @@ $evOn("order_payment_confirmed", (d) => {
   if (!payment) return;
 
   newOrder.value = payment;
+
+  if (payment.amount_paid) {
+    emit("count-payment", "seller");
+  } else if (payment.quantity_given) {
+    emit("count-payment", "buyer");
+  }
 });
 
 const emit = defineEmits<{
@@ -118,6 +126,7 @@ const emit = defineEmits<{
   (e: "confirm-order-payment"): void;
   (e: "confirm-order"): void;
   (e: "request-support"): void;
+  (e: "count-payment", type: "buyer" | "seller"): void;
 }>();
 
 const showMore = ref(true);

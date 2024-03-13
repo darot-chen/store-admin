@@ -54,6 +54,8 @@ export type Order = {
   buyer_commission_percentage: number;
   seller_commission_percentage: number;
   total_commission: number;
+  total_seller_payments: number;
+  total_buyer_payments: number;
   other_expense: number;
   buyer_guaranteed_amount?: number;
   buyer_guaranteed_currency_id?: number;
