@@ -65,6 +65,7 @@
           :total-amount="props.detail?.order?.amount_to_be_paid || 0"
           :currency="detail?.order?.seller_currency?.code || ''"
           :new-order="newOrderDetail?.amount_paid ? newOrderDetail : undefined"
+          :payment-count="detail?.order?.total_seller_payments || 0"
         />
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
@@ -77,6 +78,7 @@
           :new-order="
             newOrderDetail?.quantity_given ? newOrderDetail : undefined
           "
+          :payment-count="detail?.order?.total_buyer_payments || 0"
         />
       </div>
     </Transition>

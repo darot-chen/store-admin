@@ -3,7 +3,9 @@
     <div style="padding: 0.5rem">
       <div class="amount">
         <div class="label">
-          <p class="remaining-title">已入款 / 应入款 (3笔)</p>
+          <p class="remaining-title">
+            {{ "已入款 / 应入款" + " (" + `${paymentCount ?? 0}` + "笔)" }}
+          </p>
         </div>
         <div class="flex">
           <p class="remaining-paid">
@@ -75,6 +77,7 @@ const props = defineProps<{
   currency: string;
   id: number;
   party: string;
+  paymentCount: number;
   newOrder?: OrderDetail;
   exchangeRate: number;
 }>();

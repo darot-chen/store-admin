@@ -199,6 +199,12 @@ onMounted(() => {
     const payment = d.data?.orderPayment;
     if (!payment) return;
     newOrderDetail.value = payment;
+
+    if (payment.amount_paid) {
+      onCountPayment("seller");
+    } else if (payment.quantity_given) {
+      onCountPayment("buyer");
+    }
   });
 });
 
@@ -211,6 +217,18 @@ onUnmounted(() => {
 definePageMeta({
   layout: "chat",
 });
+
+function onCountPayment(type: "buyer" | "seller") {
+  if (type === "buyer") {
+    if (chatDetail.value && chatDetail.value.order) {
+      chatDetail.value.order.total_buyer_payments += 1;
+    }
+  } else if (type === "seller") {
+    if (chatDetail.value && chatDetail.value.order) {
+      chatDetail.value.order.total_seller_payments += 1;
+    }
+  }
+}
 
 function onRequestSupport() {
   showDialog({

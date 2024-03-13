@@ -322,6 +322,8 @@ function onConfirmUpdate() {
     default:
       break;
   }
+
+  debounceCalcAmount();
 }
 
 async function onCreateOrder() {
