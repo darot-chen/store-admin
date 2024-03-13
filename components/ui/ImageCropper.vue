@@ -34,9 +34,9 @@ const emit = defineEmits<{
   cropImage: [cropper: Ref];
 }>();
 
+const cropper = ref();
+
 const handleClick = () => {
   emit("cropImage", cropper);
 };
-
-const cropper = ref();
 </script>

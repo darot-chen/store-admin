@@ -40,6 +40,7 @@
     </VanPopup>
     <div>
       <input
+        :key="previewImage?.toString()"
         ref="fileInput"
         type="file"
         accept="image/*"
@@ -91,7 +92,7 @@ const props = defineProps<{
 const refUser = toRef(props).value.user;
 const isEditPopupVisible = ref(false);
 const isEditProfilePopupVisible = ref(false);
-const fileInput = ref<HTMLInputElement>();
+const fileInput = ref();
 
 const userNameRef = ref("");
 const isLoading = ref(false);
@@ -108,11 +109,11 @@ const uploadImage = (e: any) => {
   isEditProfilePopupVisible.value = true;
 };
 
-const cropImage = (cropper: Ref) => {
+const cropImage = async (cropper: Ref) => {
   if (cropper.value) {
     const { canvas } = cropper.value.getResult();
     const croppedImg = canvas.toDataURL("image/jpg");
-    onUploaded(croppedImg);
+    await onUploaded(croppedImg);
   }
 };
 
