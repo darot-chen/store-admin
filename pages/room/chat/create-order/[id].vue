@@ -329,6 +329,8 @@ async function onCreateOrder() {
     const res = await createOrder({
       ...payload.value,
       exchange_rate: Number(updatedPayload.value.selected_rate?.price) ?? 0,
+      handling_fee_percentage: Number(fee.value.platformRate) ?? 0,
+      other_expense: Number(fee.value.otherFee) ?? 0,
     });
     navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {
