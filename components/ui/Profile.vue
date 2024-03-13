@@ -47,13 +47,11 @@
         style="display: none"
         @change="uploadImage"
       />
+
       <NuxtImg
-        :src="
-          refUser.profile_key ||
-          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987'
-        "
-        :provider="refUser.profile_key ? 's3' : undefined"
-        :alt="refUser.name"
+        v-if="refUser.profile_key"
+        :src="refUser.profile_key"
+        provider="s3"
         class="h-20 w-20 rounded-full object-cover"
         @click="
           () => {
@@ -61,6 +59,22 @@
           }
         "
       />
+      <div
+        v-else
+        class="flex h-20 w-20 items-center justify-center rounded-full object-cover"
+        :style="{
+          background: generateLinearGradient(refUser.name),
+        }"
+        @click="
+          () => {
+            fileInput?.click();
+          }
+        "
+      >
+        <p class="font-500 text-2xl">
+          {{ refUser.name.charAt(0).toUpperCase() }}
+        </p>
+      </div>
     </div>
     <div class="relative inline-flex items-center gap-[10px]">
       <h1
