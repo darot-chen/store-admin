@@ -15,6 +15,7 @@
 import { SOCKET_EVENT } from "~/constants/socket";
 import { useAuthStore } from "./stores/auth";
 import type { SocketMessageData } from "./types/base";
+import "./utils/extension";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
 const local = getLocaleCookie();

@@ -30,7 +30,7 @@
     >
       <UiCircularLoading size="24" />
     </div>
-    <div v-else>
+    <div v-else class="mt-[70px]">
       <div v-if="searchItems.length === 0">
         <div class="flex justify-center">No data</div>
       </div>

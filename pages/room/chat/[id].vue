@@ -4,12 +4,12 @@
       <ChatTradeControl
         v-if="showTradeControl"
         :detail="chatDetail"
+        :new-order-detail="newOrderDetail"
         :show-confirm-button="showConfirmOrder"
         @create-order="navigateTo(`create-order/${roomID}`)"
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
-        @count-payment="onCountPayment"
       />
     </div>
     <div
@@ -98,7 +98,7 @@ import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
 import { showDialog, showFailToast, showSuccessToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
 import { completeOrder, confirmOrder } from "~/api/order";
-import { OrderStatus } from "~/types/order";
+import { OrderStatus, type OrderDetail } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
@@ -119,6 +119,7 @@ const chatDetail = ref<ChatDetail>();
 const isUploading = ref<boolean>(false);
 const showConfirmationPopup = ref<boolean>(false);
 const prevDetail = ref<ChatDetail>();
+const newOrderDetail = ref<OrderDetail>();
 const { t } = useI18n();
 
 const showConfirmOrder = computed(() => {
@@ -193,6 +194,16 @@ onMounted(() => {
         d.data?.order?.buyer_confirmed_at;
       chatDetail.value.order.seller_confirmed_at =
         d.data?.order?.seller_confirmed_at;
+    }
+
+    const payment = d.data?.orderPayment;
+    if (!payment) return;
+    newOrderDetail.value = payment;
+
+    if (payment.amount_paid) {
+      onCountPayment("seller");
+    } else if (payment.quantity_given) {
+      onCountPayment("buyer");
     }
   });
 });
