@@ -48,33 +48,16 @@
         @change="uploadImage"
       />
 
-      <NuxtImg
-        v-if="refUser.profile_key"
-        :src="refUser.profile_key"
-        provider="s3"
-        class="h-20 w-20 rounded-full object-cover"
-        @click="
+      <UiGradientProfile
+        :image-source="refUser.profile_key"
+        :name="refUser.name"
+        size="80px"
+        @clicked="
           () => {
             fileInput?.click();
           }
         "
       />
-      <div
-        v-else
-        class="flex h-20 w-20 items-center justify-center rounded-full object-cover"
-        :style="{
-          background: generateLinearGradient(refUser.name),
-        }"
-        @click="
-          () => {
-            fileInput?.click();
-          }
-        "
-      >
-        <p class="font-500 text-2xl">
-          {{ refUser.name.charAt(0).toUpperCase() }}
-        </p>
-      </div>
     </div>
     <div class="relative inline-flex items-center gap-[10px]">
       <h1
