@@ -48,8 +48,11 @@
         @change="uploadImage"
       />
       <NuxtImg
-        :src="refUser.profile_key"
-        provider="s3"
+        :src="
+          refUser.profile_key ||
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987'
+        "
+        :provider="refUser.profile_key ? 's3' : undefined"
         :alt="refUser.name"
         class="h-20 w-20 rounded-full object-cover"
         @click="
