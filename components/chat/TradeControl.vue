@@ -58,6 +58,7 @@
       <div v-show="showMore" class="show-more">
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
+          :exchange-rate="detail?.order?.exchange_rate || 0"
           party="seller"
           class="flex-1"
           :paid-amount="props.detail?.order?.amount_paid || 0"
@@ -67,6 +68,7 @@
         />
         <TradeControlItem
           :id="props.detail?.order?.id || 0"
+          :exchange-rate="detail?.order?.exchange_rate || 0"
           party="buyer"
           class="flex-1"
           :paid-amount="props.detail?.order?.quantity_given || 0"

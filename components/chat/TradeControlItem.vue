@@ -36,7 +36,13 @@
               <p class="ml-1">
                 {{ order.quantity_given ?? order.amount_paid }}
               </p>
-              <p class="u">(...)</p>
+              <p v-show="currency !== 'USDT'" class="u">
+                ({{
+                  (
+                    (order.quantity_given ?? order.amount_paid) / exchangeRate
+                  ).toFixed(2)
+                }}U)
+              </p>
             </div>
           </div>
           <div v-show="loadMore" class="flex justify-center">
@@ -70,6 +76,7 @@ const props = defineProps<{
   id: number;
   party: string;
   newOrder?: OrderDetail;
+  exchangeRate: number;
 }>();
 
 const isLoading = ref(false);
@@ -144,7 +151,7 @@ async function fetchOrders(party: string) {
 }
 </script>
 
-<style scoped>
+<style scoped lang="css">
 .divider {
   color: "#B7B7B7";
 }
@@ -205,8 +212,6 @@ async function fetchOrders(party: string) {
 
 .remaining-title {
   color: #50a7ea;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "PingFang SC";
   font-size: 10px;
   font-style: normal;
