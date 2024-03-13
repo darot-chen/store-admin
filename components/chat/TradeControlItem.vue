@@ -69,7 +69,6 @@
 <script setup lang="ts">
 import { getOrders } from "~/api/order";
 import type { OrderDetail } from "~/types/order";
-import _ from "lodash";
 
 const props = defineProps<{
   paidAmount: number;
@@ -105,7 +104,7 @@ onMounted(() => {
   fetchOrders(props.party);
 });
 
-const debouncedScrollHandler = _.debounce((event: UIEvent) => {
+const debouncedScrollHandler = useDebounceFn((event: UIEvent) => {
   const target = event.target as HTMLElement;
   const { scrollTop, clientHeight, scrollHeight } = target;
 

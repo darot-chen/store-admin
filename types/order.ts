@@ -8,6 +8,12 @@ export enum OrderStatus {
   PROCESSING = "processing",
 }
 
+export enum CommissionType {
+  BUYER = "buyer",
+  SELLER = "seller",
+  BOTH = "both",
+}
+
 export type CreateOrder = {
   chat_room_id: number;
   seller_currency_id: number;
@@ -16,7 +22,7 @@ export type CreateOrder = {
   amount: number;
   exchange_rate: number;
   handling_fee_percentage: number;
-  commission_type: "buyer" | "seller" | "both";
+  commission_type: CommissionType;
   other_expense: number;
   duration?: string;
   note?: string;

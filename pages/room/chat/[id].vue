@@ -208,10 +208,11 @@ onMounted(() => {
   });
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   pageStore.$reset();
   $evOff("order_status_updated");
   $evOff("order_payment_confirmed");
+  $evOff("new_chat_received");
 });
 
 definePageMeta({

@@ -1,6 +1,9 @@
 <template>
-  <div class="flex h-full flex-col overflow-auto" @scroll="handleScroll">
-    <div class="fixed w-full bg-white px-3 py-3">
+  <div
+    class="relative flex h-full flex-col overflow-auto"
+    @scroll="handleScroll"
+  >
+    <div class="sticky top-0 w-full bg-white px-3 py-3">
       <input
         ref="inputRef"
         v-model="searchQuery"
@@ -104,7 +107,6 @@
 </template>
 
 <script setup lang="ts">
-import _ from "lodash";
 import { ref } from "vue";
 import { getChatMessages } from "~/api/chat";
 import { ChatType, type ChatMessage } from "~/types/chat";
@@ -164,5 +166,7 @@ const handleScroll = (event: Event) => {
   }
 };
 
-const loadMoreResults = _.debounce(fetchChatMessages, 300);
+const loadMoreResults = useDebounceFn(() => {
+  fetchChatMessages();
+}, 300);
 </script>

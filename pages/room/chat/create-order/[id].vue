@@ -2,9 +2,10 @@
   <div>
     <div v-if="!isLoading" class="relative mb-[62px]">
       <CreateOrderAmountDisplay
-        :rate="updatedPayload.selected_rate"
-        :fee="fee"
-        @fee-click="onFeeClick"
+        v-model:handling-fee-percentage="fee.handlingFeePercentage"
+        v-model:other-fee="fee.otherFee"
+        v-model:rate="fee.selected_rate"
+        @change="debounceCalcAmount"
       />
 
       <div class="relative mx-[12px] rounded-[10px]">
@@ -122,8 +123,8 @@
 
           <!-- Payment method selector -->
           <CreateOrderPaymentMethod
-            v-model:selected-rate="updatedPayload.selected_rate"
-            v-model:selected-payment-method="updatedPayload.payment_method"
+            v-model:selected-rate="fee.selected_rate"
+            v-model:selected-payment-method="ss.payment_method"
             :show-realtime-exchange-rate="showRealtimeExchangeRate"
             :payment-methods="PAYMENT_METHODS"
             :rates="exchangeRate"
@@ -193,23 +194,6 @@
       size="40"
       class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
     />
-
-    <VanDialog
-      v-model:show="showUpdateFee"
-      show-cancel-button
-      title="更新"
-      @confirm="onConfirmUpdate"
-    >
-      <div style="margin: 10px">
-        <VanField
-          v-model="feeRef"
-          class="fee-input"
-          clearable
-          placeholder="0"
-          :border="true"
-        />
-      </div>
-    </VanDialog>
   </div>
 </template>
 
@@ -223,7 +207,7 @@ import { PAYMENT_METHODS } from "~/constants/options/payment-method";
 import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail } from "~/types/chat";
 import type { Option } from "~/types/common";
-import type { CreateOrder } from "~/types/order";
+import { CommissionType, type CreateOrder } from "~/types/order";
 import type { Rate, RateParams } from "~/types/rate";
 
 const pageStore = usePageStore();
@@ -240,18 +224,17 @@ const buyers = ref<Option[]>([]);
 const exchangeRate = ref<Rate[]>([]);
 const isLoading = ref(true);
 const showRealtimeExchangeRate = ref(false);
-const showUpdateFee = ref<boolean>(false);
-const feeRef = ref<string | number>("");
-const feeType = ref<"platformRate" | "exchange_rate" | "otherFee">();
 
-const fee = ref({
-  otherFee: 0,
-  exchangeRate: 1,
-  platformRate: 20,
-});
-const updatedPayload = ref<{
-  payment_method: Option;
+const fee = ref<{
+  otherFee: number;
   selected_rate?: Rate;
+  handlingFeePercentage: number;
+}>({
+  otherFee: 0,
+  handlingFeePercentage: 20,
+});
+const ss = ref<{
+  payment_method: Option;
 }>({
   payment_method: PAYMENT_METHODS[0],
 });
@@ -266,85 +249,62 @@ const payload = ref<CreateOrder>({
   amount: 0,
   exchange_rate: 0,
   handling_fee_percentage: 0,
-  commission_type: "buyer",
+  commission_type: CommissionType.BUYER,
   other_expense: 0,
 });
 
 const debounceGetRate = useDebounceFn(getExchangeRate, 500);
-const debounceCalcAmount = useDebounceFn(onBuyAmountChange, 500);
+const debounceCalcAmount = useDebounceFn(() => {
+  const handlingFee = (100 + fee.value.handlingFeePercentage) / 100;
+
+  const isBuyerCurrencyIsUSDT =
+    currencyStore.data.find(
+      (currency) => currency.id === payload.value.buyer_currency_id
+    )?.code === "USDT";
+
+  if (isBuyerCurrencyIsUSDT && fee.value.selected_rate?.price) {
+    sellerReceived.value = Number(
+      (
+        payload.value.amount *
+          (1 / Number(fee.value.selected_rate.price)) *
+          handlingFee +
+        fee.value.otherFee * Number(fee.value.selected_rate.price)
+      ).toFixed(2)
+    );
+  } else if (fee.value.selected_rate?.price) {
+    sellerReceived.value = Number(
+      (
+        payload.value.amount *
+          Number(fee.value.selected_rate.price) *
+          handlingFee +
+        fee.value.otherFee * Number(fee.value.selected_rate.price)
+      ).toFixed(2)
+    );
+  } else {
+    sellerReceived.value = Number(
+      (payload.value.amount * handlingFee + fee.value.otherFee).toFixed(2)
+    );
+  }
+}, 500);
 
 function onToggleExchangeRate(v: boolean) {
   showRealtimeExchangeRate.value = v;
-  updatedPayload.value.selected_rate = undefined;
+  fee.value.selected_rate = undefined;
 
   if (v === false) {
     getExchangeRate();
   }
 }
 
-function onBuyAmountChange() {
-  if (updatedPayload.value.selected_rate?.price) {
-    const handlingFee = (100 + fee.value.platformRate) / 100;
-
-    // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
-    sellerReceived.value = Number(
-      (
-        payload.value.amount *
-          Number(updatedPayload.value.selected_rate.price) *
-          handlingFee +
-        fee.value.otherFee * fee.value.exchangeRate
-      ).toFixed(2)
-    );
-  } else {
-    const handlingFee = (100 + fee.value.platformRate) / 100;
-
-    // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
-    sellerReceived.value = Number(
-      (
-        payload.value.amount * Number(fee.value.exchangeRate) * handlingFee +
-        fee.value.otherFee * fee.value.exchangeRate
-      ).toFixed(2)
-    );
-  }
-}
-
-function onFeeClick(
-  type: "platformRate" | "exchange_rate" | "otherFee",
-  value: string | number
-) {
-  showUpdateFee.value = true;
-  feeType.value = type;
-  feeRef.value = value;
-}
-
-function onConfirmUpdate() {
-  switch (feeType.value) {
-    case "platformRate":
-      fee.value.platformRate = Number(feeRef.value);
-      break;
-    case "exchange_rate":
-      if (updatedPayload.value.selected_rate?.price) {
-        updatedPayload.value.selected_rate.price = feeRef.value.toString();
-      } else {
-        fee.value.exchangeRate = Number(feeRef.value);
-      }
-      break;
-    case "otherFee":
-      fee.value.otherFee = Number(feeRef.value);
-      break;
-    default:
-      break;
-  }
-}
-
 async function onCreateOrder() {
   try {
-    const res = await createOrder({
+    const preparedPayload = {
       ...payload.value,
-      exchange_rate: Number(updatedPayload.value.selected_rate?.price) ?? 0,
-      handling_fee_percentage: Number(fee.value.platformRate) ?? 0,
-      other_expense: Number(fee.value.otherFee) ?? 0,
-    });
+      exchange_rate: Number(fee.value?.selected_rate?.price) ?? 1,
+      handling_fee_percentage: fee.value.handlingFeePercentage,
+      other_expense: fee.value.otherFee,
+    };
+    const res = await createOrder(preparedPayload);
     navigateTo(`/room/chat/${res.chat_room_id}`);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
@@ -370,6 +330,7 @@ async function getExchangeRate() {
 
   try {
     exchangeRate.value = await getRate(params);
+    debounceCalcAmount();
   } catch (error: any) {
     showFailToast(error?.message ?? "");
   }
@@ -379,6 +340,10 @@ function onSwapCurrency() {
   const temp = payload.value.buyer_currency_id;
   payload.value.buyer_currency_id = payload.value.seller_currency_id;
   payload.value.seller_currency_id = temp;
+
+  payload.value.amount = 0;
+  sellerReceived.value = 0;
+  fee.value.selected_rate = undefined;
 
   debounceGetRate();
 }

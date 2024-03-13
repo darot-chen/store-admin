@@ -23,3 +23,14 @@ export type Cell = {
   iconColor?: string;
   onClick?: () => void;
 };
+
+export enum FeeTypeEnum {
+  HANDLING_FEE_PERCENTAGE = "handlingFeePercentage",
+  RATE = "rate",
+  OTHER_FEE = "otherFee",
+}
+
+export type FeeType =
+  | FeeTypeEnum.HANDLING_FEE_PERCENTAGE
+  | FeeTypeEnum.RATE
+  | FeeTypeEnum.OTHER_FEE;

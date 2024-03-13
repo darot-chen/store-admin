@@ -80,4 +80,8 @@ onMounted(() => {
     }
   });
 });
+
+onBeforeUnmount(() => {
+  $evOn("new_chat_received", () => {});
+});
 </script>
