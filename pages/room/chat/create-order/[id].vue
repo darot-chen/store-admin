@@ -242,11 +242,11 @@ const isLoading = ref(true);
 const showRealtimeExchangeRate = ref(false);
 const showUpdateFee = ref<boolean>(false);
 const feeRef = ref<string | number>("");
-const feeType = ref<"platformRate" | "price" | "otherFee">();
+const feeType = ref<"platformRate" | "exchange_rate" | "otherFee">();
 
 const fee = ref({
   otherFee: 0,
-  exchangeRate: 1.02,
+  exchangeRate: 1,
   platformRate: 20,
 });
 const updatedPayload = ref<{
@@ -283,22 +283,33 @@ function onToggleExchangeRate(v: boolean) {
 }
 
 function onBuyAmountChange() {
-  if (!updatedPayload.value.selected_rate?.price) return;
-  const handlingFee = (100 + fee.value.platformRate) / 100;
+  if (updatedPayload.value.selected_rate?.price) {
+    const handlingFee = (100 + fee.value.platformRate) / 100;
 
-  // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
-  sellerReceived.value = Number(
-    (
-      payload.value.amount *
-        Number(updatedPayload.value.selected_rate.price) *
-        handlingFee +
-      fee.value.otherFee * fee.value.exchangeRate
-    ).toFixed(2)
-  );
+    // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
+    sellerReceived.value = Number(
+      (
+        payload.value.amount *
+          Number(updatedPayload.value.selected_rate.price) *
+          handlingFee +
+        fee.value.otherFee * fee.value.exchangeRate
+      ).toFixed(2)
+    );
+  } else {
+    const handlingFee = (100 + fee.value.platformRate) / 100;
+
+    // QuantityToBeGiven = amount * exchange_rate * (100+handling_fee_percentage)/100 + other_expense * exchange_rate
+    sellerReceived.value = Number(
+      (
+        payload.value.amount * Number(fee.value.exchangeRate) * handlingFee +
+        fee.value.otherFee * fee.value.exchangeRate
+      ).toFixed(2)
+    );
+  }
 }
 
 function onFeeClick(
-  type: "platformRate" | "price" | "otherFee",
+  type: "platformRate" | "exchange_rate" | "otherFee",
   value: string | number
 ) {
   showUpdateFee.value = true;
@@ -311,9 +322,11 @@ function onConfirmUpdate() {
     case "platformRate":
       fee.value.platformRate = Number(feeRef.value);
       break;
-    case "price":
+    case "exchange_rate":
       if (updatedPayload.value.selected_rate?.price) {
         updatedPayload.value.selected_rate.price = feeRef.value.toString();
+      } else {
+        fee.value.exchangeRate = Number(feeRef.value);
       }
       break;
     case "otherFee":
@@ -322,8 +335,6 @@ function onConfirmUpdate() {
     default:
       break;
   }
-
-  debounceCalcAmount();
 }
 
 async function onCreateOrder() {
