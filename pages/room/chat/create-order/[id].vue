@@ -246,7 +246,7 @@ const feeType = ref<"platformRate" | "exchange_rate" | "otherFee">();
 
 const fee = ref({
   otherFee: 0,
-  exchangeRate: 7.0,
+  exchangeRate: 1,
   platformRate: 20,
 });
 const updatedPayload = ref<{
