@@ -47,12 +47,12 @@
         style="display: none"
         @change="uploadImage"
       />
-      <NuxtImg
-        :src="refUser.profile_key"
-        provider="s3"
-        :alt="refUser.name"
-        class="h-20 w-20 rounded-full object-cover"
-        @click="
+
+      <UiGradientProfile
+        :image-source="refUser.profile_key"
+        :name="refUser.name"
+        size="80px"
+        @clicked="
           () => {
             fileInput?.click();
           }
