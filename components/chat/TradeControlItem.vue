@@ -14,7 +14,7 @@
           </p>
         </div>
         <p class="remaining" style="font-size: 13px">
-          未下发 {{ props.totalAmount - props.paidAmount }}
+          未下发 {{ (totalAmount - paidAmount).toVFixed(2) }}
           {{ props?.currency || "USDT" }}
         </p>
       </div>
@@ -40,7 +40,7 @@
                 ({{
                   (
                     (order.quantity_given ?? order.amount_paid) / exchangeRate
-                  ).toFixed(2)
+                  ).toVFixed(2)
                 }}U)
               </p>
             </div>

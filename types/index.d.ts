@@ -17,4 +17,10 @@ declare module "#app" {
   }
 }
 
+declare global {
+  interface Number {
+    toVFixed(fractionDigits: number): string;
+  }
+}
+
 export {};
