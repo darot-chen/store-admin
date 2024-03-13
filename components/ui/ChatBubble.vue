@@ -11,13 +11,13 @@
           v-if="(showProfile || profile) && chatType === 'incoming'"
           :class="!profile && 'bg-avatar'"
           :style="{
-            background: generateLinearGradient(name),
+            background: !profile ? generateLinearGradient(name) : 'transparent',
           }"
         >
           <img
             v-if="profile"
             class="w-[2.375rem] rounded-full"
-            src="/images/bs-logo.png"
+            :src="getS3Url(profile)"
           />
           <p v-else>{{ name.charAt(0).toUpperCase() }}</p>
         </div>

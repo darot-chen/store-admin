@@ -35,6 +35,7 @@
         :order="c.order"
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
         :detail="c.type === ChatType.Action ? chatDetail : undefined"
+        :profile="c.user?.profile_key"
         @confirm="onConfirmOrder"
       />
       <div ref="bottomEl" />
