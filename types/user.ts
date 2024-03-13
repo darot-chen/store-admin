@@ -19,6 +19,7 @@ export type User = {
   username: string;
   rating_score: number;
   rating_count: number;
+  profile_key: string;
 };
 
 export type LoginPayload = {

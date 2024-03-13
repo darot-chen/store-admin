@@ -42,8 +42,7 @@
       <van-button
         :loading="isUpdateProfileLoading"
         type="primary"
-        :round="false"
-        class="rounded-b-[16px] rounded-e-none"
+        class="w-full rounded-b-3xl"
         @click="onUploaded"
       >
         Upload
@@ -57,8 +56,9 @@
         style="display: none"
         @change="uploadImage"
       />
-      <img
-        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=987"
+      <NuxtImg
+        :src="refUser.profile_key"
+        provider="s3"
         :alt="refUser.name"
         class="h-20 w-20 rounded-full object-cover"
         @click="
@@ -106,6 +106,11 @@ const userNameRef = ref("");
 const isLoading = ref(false);
 const isUpdateProfileLoading = ref(false);
 const previewImage = ref<string | ArrayBuffer | null | undefined>();
+let imageSource: string;
+
+watch(refUser, () => {
+  imageSource = `https://dev-baishun-public.s3.ap-southeast-1.amazonaws.com${refUser.profile_key}`;
+});
 
 const uploadImage = (e: any) => {
   const image = e.target?.files[0];

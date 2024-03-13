@@ -1,12 +1,10 @@
 <template>
-  <div class="flex flex-col">
-    <Cropper
-      :src="imageSrc"
-      class="h-96"
-      image-class="cropper__image"
-      :stencil-component="CircleStencil"
-    />
-  </div>
+  <Cropper
+    :src="imageSrc"
+    class="h-96"
+    image-class="cropper__image"
+    :stencil-component="CircleStencil"
+  />
 </template>
 
 <script setup lang="ts">
