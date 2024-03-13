@@ -9,6 +9,7 @@
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
+        @count-payment="onCountPayment"
       />
     </div>
     <div
@@ -205,6 +206,18 @@ onUnmounted(() => {
 definePageMeta({
   layout: "chat",
 });
+
+function onCountPayment(type: "buyer" | "seller") {
+  if (type === "buyer") {
+    if (chatDetail.value && chatDetail.value.order) {
+      chatDetail.value.order.total_buyer_payments += 1;
+    }
+  } else if (type === "seller") {
+    if (chatDetail.value && chatDetail.value.order) {
+      chatDetail.value.order.total_seller_payments += 1;
+    }
+  }
+}
 
 function onRequestSupport() {
   showDialog({
