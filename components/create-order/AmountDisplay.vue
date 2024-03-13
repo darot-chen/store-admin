@@ -9,11 +9,13 @@
       <UiDivider />
       <FeeInfo
         type="price"
-        :value="rateComputed?.price || 0"
+        :value="rateComputed?.price ?? fee.exchangeRate"
         @click="
-          rateComputed
-            ? $emit('feeClick', 'price', rateComputed?.price)
-            : undefined
+          $emit(
+            'feeClick',
+            'exchange_rate',
+            rateComputed?.price ?? fee.exchangeRate
+          )
         "
       />
       <UiDivider />
@@ -34,6 +36,7 @@ const props = defineProps<{
   fee: {
     platformRate: number;
     otherFee: number;
+    exchangeRate: number;
   };
   rate?: Rate;
 }>();

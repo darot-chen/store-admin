@@ -1,7 +1,7 @@
 <template>
   <button v-bind="$attrs" class="flex w-full items-center pr-2">
     <div class="flex-1 text-left">
-      <p class="text-sm font-medium text-[#0000004d]">
+      <p class="text-[12px] text-sm text-[#0000004d]">
         {{ selected?.label }}
       </p>
     </div>
