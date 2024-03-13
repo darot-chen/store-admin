@@ -29,24 +29,14 @@
     <VanPopup
       v-model:show="isEditProfilePopupVisible"
       round
-      closeable
+      :closeable="!isUpdateProfileLoading"
       :close-on-click-overlay="false"
-      @closed="
-        () => {
-          isEditProfilePopupVisible = false;
-          previewImage = '';
-        }
-      "
     >
-      <UiImageCropper :image-src="previewImage" />
-      <van-button
-        :loading="isUpdateProfileLoading"
-        type="primary"
-        class="w-full rounded-b-3xl"
-        @click="onUploaded"
-      >
-        Upload
-      </van-button>
+      <UiImageCropper
+        :image-src="previewImage"
+        :is-loading="isUpdateProfileLoading"
+        @crop-image="cropImage"
+      />
     </VanPopup>
     <div>
       <input
@@ -92,6 +82,7 @@ import type { User } from "~/types/user";
 import { ref, toRef } from "vue";
 import { updateName, uploadProfileImage } from "~/api/user";
 import { showFailToast, showSuccessToast } from "vant";
+import imageCompression from "browser-image-compression";
 
 const props = defineProps<{
   user: User;
@@ -106,11 +97,6 @@ const userNameRef = ref("");
 const isLoading = ref(false);
 const isUpdateProfileLoading = ref(false);
 const previewImage = ref<string | ArrayBuffer | null | undefined>();
-let imageSource: string;
-
-watch(refUser, () => {
-  imageSource = `https://dev-baishun-public.s3.ap-southeast-1.amazonaws.com${refUser.profile_key}`;
-});
 
 const uploadImage = (e: any) => {
   const image = e.target?.files[0];
@@ -122,28 +108,57 @@ const uploadImage = (e: any) => {
   isEditProfilePopupVisible.value = true;
 };
 
-const onUploaded = async () => {
+const cropImage = (cropper: Ref) => {
+  if (cropper.value) {
+    const { canvas } = cropper.value.getResult();
+    const croppedImg = canvas.toDataURL("image/jpg");
+    onUploaded(croppedImg);
+  }
+};
+
+const onUploaded = async (croppedImg: string) => {
   isUpdateProfileLoading.value = true;
 
-  if (typeof previewImage.value !== "string") return;
+  if (typeof croppedImg !== "string") return;
 
-  const file = dataURLtoFile(previewImage.value, "profile-image.jpg", 2048);
+  const file = dataURLtoFile(croppedImg, "profile-image.jpg");
+
   if (!file) {
-    showFailToast("Image exceed 2mb");
+    isEditProfilePopupVisible.value = false;
+    isUpdateProfileLoading.value = false;
+    showFailToast("Failed");
+    return;
+  }
+
+  const compressedFile = await imageCompression(file, {
+    maxSizeMB: 2,
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+    fileType: "image/jpeg",
+  });
+
+  const profileImg = new File([compressedFile], "profile-image.jpg", {
+    type: compressedFile.type,
+  });
+
+  const compressedFileSizeKB = compressedFile.size / 1024;
+  if (compressedFileSizeKB > 1024 * 2) {
+    showFailToast("Compressed file size exceeds the maximum allowed size");
     isEditProfilePopupVisible.value = false;
     isUpdateProfileLoading.value = false;
     return;
   }
 
-  const isUpdated = await uploadProfileImage(file);
+  const isUpdated = await uploadProfileImage(profileImg);
 
+  isEditProfilePopupVisible.value = false;
+  isUpdateProfileLoading.value = false;
   if (isUpdated) {
     showSuccessToast("Updated");
+    refUser.profile_key = isUpdated;
   } else {
     showFailToast("Failed");
   }
-  isEditProfilePopupVisible.value = false;
-  isUpdateProfileLoading.value = false;
 };
 
 const onSavedUsername = async () => {
@@ -163,25 +178,13 @@ const toggleEditMode = () => {
   isEditPopupVisible.value = !isEditPopupVisible.value;
 };
 
-const dataURLtoFile = (
-  dataUrl: string,
-  filename: string,
-  maxSizeKB: number
-): File | undefined => {
-  // Convert data URL to byte array
+const dataURLtoFile = (dataUrl: string, filename: string): File | undefined => {
   const byteString = atob(dataUrl.split(",")[1]);
   const bytes = new Uint8Array(byteString.length);
   for (let i = 0; i < byteString.length; i++) {
     bytes[i] = byteString.charCodeAt(i);
   }
 
-  // Check if file size exceeds the maximum allowed size
-  const fileSizeKB = bytes.length / 1024;
-  if (fileSizeKB > maxSizeKB) {
-    return;
-  }
-
-  // Create File object
   const mime = dataUrl.match(/:(.*?);/)?.[1];
   if (!mime) {
     return;
@@ -190,11 +193,3 @@ const dataURLtoFile = (
   return new File([blob], filename, { type: mime });
 };
 </script>
-
-<style lang="css">
-.upload-example-cropper {
-  border: solid 1px #eee;
-  height: 300px;
-  width: 100%;
-}
-</style>

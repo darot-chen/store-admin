@@ -20,6 +20,7 @@
     "@vant/touch-emulator": "1.4.0",
     "@vueuse/nuxt": "10.7.2",
     "axios": "^1.6.5",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.2",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",

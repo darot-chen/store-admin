@@ -21,18 +21,23 @@ export const updateName = async (name: string) => {
   return false;
 };
 
-export const uploadProfileImage = async (file: File) => {
-  const formatData = new FormData();
-  formatData.append("photo", file);
+export const uploadProfileImage = async (
+  file: File
+): Promise<string | undefined> => {
+  try {
+    const formatData = new FormData();
+    formatData.append("photo", file);
 
-  const { data } = await useAxiosInstance().postForm(
-    `${url}/me/photo`,
-    formatData
-  );
+    const { data } = await useAxiosInstance().postForm(
+      `${url}/me/photo`,
+      formatData
+    );
 
-  if (data.message === "Success") {
-    return true;
+    if (data?.profile_key) {
+      return data?.profile_key?.toString();
+    }
+    return undefined;
+  } catch (error) {
+    return undefined;
   }
-
-  return false;
 };
