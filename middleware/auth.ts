@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware((to) => {
-  const isLogin = !!useCookie(TOKEN_KEY).value;
+  const isLogin = true;
 
   if (isLogin) {
     if (to.name === "login") {

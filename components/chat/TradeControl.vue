@@ -3,10 +3,13 @@
     <div class="flex items-center justify-between">
       <div class="total">
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
-        <div class="flex flex-row items-center">
+        <button
+          class="flex cursor-pointer flex-row items-center"
+          @click="navigateTo(`order-detail/${roomID}`)"
+        >
           <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
           <Icon name="Clock" class="ml-2" />
-        </div>
+        </button>
       </div>
       <div>
         <div v-if="props.detail?.order?.buyer_confirmed_at" class="action">
@@ -32,7 +35,7 @@
         </div>
         <div v-else-if="showCreateOrder" class="action">
           <div class="primary-button">
-            <button class="primary-button" @click="$emit('create-order')">
+            <button class="primary-button" @click="$emit('order')">
               完成交易
             </button>
           </div>
@@ -56,7 +59,7 @@
 
     <Transition name="drop">
       <div v-show="showMore" class="show-more">
-        <TradeControlItem
+        <ChatTradeControlItem
           :id="props.detail?.order?.id || 0"
           :exchange-rate="detail?.order?.exchange_rate || 0"
           party="seller"
@@ -67,7 +70,7 @@
           :new-order="newOrderDetail?.amount_paid ? newOrderDetail : undefined"
           :payment-count="detail?.order?.total_seller_payments || 0"
         />
-        <TradeControlItem
+        <ChatTradeControlItem
           :id="props.detail?.order?.id || 0"
           :exchange-rate="detail?.order?.exchange_rate || 0"
           party="buyer"
@@ -82,7 +85,7 @@
         />
       </div>
     </Transition>
-    <TradeControlBottom
+    <ChatTradeControlBottom
       :detail="detail"
       :is-visible="showMore"
       @click="onShowMore"
@@ -93,9 +96,10 @@
 <script setup lang="ts">
 import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
-import TradeControlItem from "./TradeControlItem.vue";
-import TradeControlBottom from "./TradeControlBottom.vue";
 import type { OrderDetail } from "~/types/order";
+const route = useRoute();
+
+const roomID = +route.params.id;
 
 const props = defineProps<{
   detail?: ChatDetail;
@@ -110,7 +114,7 @@ const showCreateOrder = computed(() => {
 });
 
 const emit = defineEmits<{
-  (e: "create-order"): void;
+  (e: "order"): void;
   (e: "confirm-order-payment"): void;
   (e: "confirm-order"): void;
   (e: "request-support"): void;

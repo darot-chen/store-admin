@@ -6,7 +6,7 @@
       width: size ?? '2.375rem',
       height: size ?? '2.375rem',
     }"
-    @click="emit('clicked')"
+    @click="emit('click')"
   >
     <img v-if="imageSource" class="rounded-full" :src="getS3Url(imageSource)" />
     <p v-else>{{ name!.charAt(0).toUpperCase() }}</p>
@@ -21,7 +21,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  clicked: [];
+  (e: "click"): void;
 }>();
 </script>
 

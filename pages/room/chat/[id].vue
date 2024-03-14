@@ -6,7 +6,7 @@
         :detail="chatDetail"
         :new-order-detail="newOrderDetail"
         :show-confirm-button="showConfirmOrder"
-        @create-order="navigateTo(`create-order/${roomID}`)"
+        @order="onOrderClick"
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
@@ -40,6 +40,7 @@
         :is-selected="c.id.toString() === msgId"
         :profile="c.user?.profile_key"
         @confirm="onConfirmOrder"
+        @reject="onRejectOrder"
       />
       <div ref="bottomEl" />
     </div>
@@ -88,25 +89,27 @@
 </template>
 
 <script setup lang="ts">
+import { showDialog, showFailToast, showSuccessToast } from "vant";
 import {
+  addChat,
   getChat,
   getChatDetail,
   joinPublicChatRoom,
+  requestSupport,
   uploadImage,
   uploadVideo,
-  addChat,
-  requestSupport,
   getChatMessageById,
 } from "~/api/chat";
+import { buyerRejectOrder, completeOrder, confirmOrder } from "~/api/order";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
+import { SOCKET_EVENT } from "~/constants/socket";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
-import { showDialog, showFailToast, showSuccessToast } from "vant";
 import { ChatRoomType } from "~/types/chatRoom";
-import { completeOrder, confirmOrder } from "~/api/order";
 import { OrderStatus, type OrderDetail } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const pageStore = usePageStore();
 
@@ -157,7 +160,7 @@ const messagePayload = ref<{
 onMounted(() => {
   init();
 
-  $evOn("new_chat_received", async (d: any) => {
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;
 
     if (d.data.type === ChatType.Action) {
@@ -171,10 +174,14 @@ onMounted(() => {
       chatDetail.value = d.data?.order && d.data.order;
     }
 
+    if (d.data.message === CHAT_ACTIONS.ORDER_UPDATED) {
+      chatDetail.value = d.data?.order && d.data.order;
+    }
+
     addChatAndSort(d.data);
   });
 
-  $evOn("order_status_updated", (d: any) => {
+  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d: any) => {
     if (d.data?.id !== chatDetail.value?.order?.id) return;
 
     if (
@@ -194,7 +201,7 @@ onMounted(() => {
     }
   });
 
-  $evOn("order_payment_confirmed", (d) => {
+  $evOn(SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED, (d) => {
     if (d.data?.order?.id !== chatDetail.value?.order?.id) return;
 
     if (chatDetail.value && chatDetail.value.order) {
@@ -221,9 +228,9 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   pageStore.$reset();
-  $evOff("order_status_updated");
-  $evOff("order_payment_confirmed");
-  $evOff("new_chat_received");
+  $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
+  $evOff(SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED);
+  $evOff(SOCKET_EVENT.ORDER_STATUS_UPDATED);
 });
 
 definePageMeta({
@@ -258,6 +265,22 @@ function onRequestSupport() {
   });
 }
 
+async function onRejectOrder() {
+  if (!chatDetail.value?.order) return;
+
+  try {
+    await buyerRejectOrder(chatDetail.value.order.id);
+    showDialog({
+      title: t("successfully_sent"),
+      message: t("order_rejected_message"),
+    }).then(() => {
+      lastItemId.value = 0;
+    });
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}
+
 async function onConfirmOrder() {
   if (!chatDetail.value?.order) return;
 
@@ -271,6 +294,25 @@ async function onConfirmOrder() {
     });
   } catch (error: any) {
     showFailToast(error?.message);
+  }
+}
+
+function onOrderClick() {
+  const isRevisable =
+    chatDetail.value?.order?.status === OrderStatus.REJECTED ||
+    chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
+
+  const path = `order/${roomID}`;
+
+  if (isRevisable) {
+    router.push({
+      path,
+      query: {
+        revisable: "true",
+      },
+    });
+  } else {
+    router.push(path);
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="more-detail relative flex h-fit flex-col">
+  <div v-bind="$attrs" class="more-detail relative flex h-fit flex-col">
     <div style="padding: 0.5rem">
       <div class="amount">
         <div class="label">

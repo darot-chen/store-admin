@@ -32,6 +32,7 @@
   "edit": "Edit",
   "successfully_sent": "Successfully Sent",
   "order_confirmed_message": "Wait for the other party to click to confirm",
+  "order_rejected_message": "Reject order successfully",
   "please_confirm_complete_transaction": "Please Confirm that Transaction is Completed",
   "after_complete_transaction": "After confirming that the transaction is completed, is it necessary to complete the transaction if it cannot be reversed?",
   "buyer_confirm_order": "Buyer has confirmed the order",
@@ -58,5 +59,12 @@
   "name_has_left_the_chat": "{name} has left the chat",
   "merchant real-time transaction exchange rate": "Merchant real-time transaction exchange rate",
   "new_order_create": "New Order Created",
-  "new_ticket_created": "New Ticcket Created"
+  "new_ticket_created": "New Ticcket Created",
+  "order_updated": "Seller has updated order",
+  "seller_cancel_order": "Seller has cancelled order",
+  "buyer_reject_order": "Buyer has rejected order",
+  "reject": "Reject",
+  "confirm": "Confirm",
+  "confirm_sending": "Confirm sending?",
+  "reject_sending": "Reject sending?"
 }
