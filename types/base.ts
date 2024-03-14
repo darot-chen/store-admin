@@ -39,7 +39,7 @@ export enum SocketType {
   EVENT = "event",
 }
 
-export type SocketMessage<T = any> = {
+export type SocketMessageData<T = any> = {
   event: SOCKET_EVENT;
   data: T;
 };

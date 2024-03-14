@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { IsValidSocketEvent } from "~/constants/socket";
 import { useAuthStore } from "./stores/auth";
-import type { SocketMessage } from "./types/base";
+import type { SocketMessageData } from "./types/base";
 import "./utils/extension";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
@@ -36,7 +36,7 @@ const { open, close } = useSocket(socketUrl || "", {
 
 const { $evEmit } = useNuxtApp();
 
-function handleOnMessage(data: SocketMessage<any>) {
+function handleOnMessage(data: SocketMessageData<any>) {
   if (!IsValidSocketEvent(data.event)) {
     // eslint-disable-next-line no-console
     console.error("unknown websocket event name");

@@ -1,13 +1,13 @@
 import mitt from "mitt";
 import type { SOCKET_EVENT } from "~/constants/socket";
-import type { SocketMessage } from "~/types/base";
+import type { SocketMessageData } from "~/types/base";
 import type { Chat } from "~/types/chat";
 import type { Order, OrderPaymentConfirmedType } from "~/types/order";
 
 type SocketEvents = {
-  [SOCKET_EVENT.NEW_CHAT_RECEIVED]: SocketMessage<Chat>;
-  [SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED]: SocketMessage<OrderPaymentConfirmedType>;
-  [SOCKET_EVENT.ORDER_STATUS_UPDATED]: SocketMessage<Order>;
+  [SOCKET_EVENT.NEW_CHAT_RECEIVED]: SocketMessageData<Chat>;
+  [SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED]: SocketMessageData<OrderPaymentConfirmedType>;
+  [SOCKET_EVENT.ORDER_STATUS_UPDATED]: SocketMessageData<Order>;
 };
 
 export default defineNuxtPlugin(() => {
