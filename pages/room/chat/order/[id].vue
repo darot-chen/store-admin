@@ -385,6 +385,16 @@ onMounted(async () => {
       chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
 
     if (route.query.revisable && !isOrderConfirmingOrRejected) {
+      payload.value.buyer_id = +buyers.value[0].value;
+      payload.value.seller_currency_id =
+        chatDetail.value.business?.currency_id ?? 0;
+
+      if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
+        payload.value.buyer_currency_id = currencyStore.data[1].id;
+      } else {
+        payload.value.buyer_currency_id = currencyStore.data[0].id;
+      }
+
       router.replace(route.path);
     } else if (
       (isRevisable.value && isOrderConfirmingOrRejected.value) ||
@@ -436,16 +446,6 @@ onMounted(async () => {
             member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
         };
       });
-
-    payload.value.buyer_id = +buyers.value[0].value;
-    payload.value.seller_currency_id =
-      chatDetail.value.business?.currency_id ?? 0;
-
-    if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
-      payload.value.buyer_currency_id = currencyStore.data[1].id;
-    } else {
-      payload.value.buyer_currency_id = currencyStore.data[0].id;
-    }
 
     await getExchangeRate();
   } catch (error) {
