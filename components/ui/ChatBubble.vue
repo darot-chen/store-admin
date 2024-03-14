@@ -11,6 +11,7 @@
           v-if="(showProfile || profile) && chatType === 'incoming'"
           :image-source="profile"
           :name="name"
+          size="2.375rem"
         />
         <Icon
           v-if="chatType === 'incoming'"
