@@ -74,3 +74,12 @@ export const getOrders = async (id: number, params: GetOrderParams) => {
 
   return data;
 };
+
+export const reviseOrder = async (orderId: number, payload: CreateOrder) => {
+  const { data } = await useAxiosInstance().put<Order>(
+    `${url}/${orderId}`,
+    payload
+  );
+
+  return data;
+};

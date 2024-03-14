@@ -56,6 +56,9 @@ onMounted(async () => {
   if (at) {
     token = atob(at);
     storage.setAccessToken(token);
+
+    await sleep(10);
+    router.replace(route.path);
   } else {
     token = storage.getAccessToken();
   }
@@ -67,12 +70,6 @@ onMounted(async () => {
   open(getWebSocketUrl());
 
   loading.value = false;
-
-  await sleep(10);
-
-  router.replace({
-    query: {},
-  });
 });
 
 onUnmounted(() => {

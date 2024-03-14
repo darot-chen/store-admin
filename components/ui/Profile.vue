@@ -52,7 +52,7 @@
         :image-source="refUser.profile_key"
         :name="refUser.name"
         size="80px"
-        @clicked="
+        @click="
           () => {
             fileInput?.click();
           }
@@ -80,7 +80,6 @@
 
 <script setup lang="ts">
 import type { User } from "~/types/user";
-import { ref, toRef } from "vue";
 import { updateName, uploadProfileImage } from "~/api/user";
 import { showFailToast, showSuccessToast } from "vant";
 import imageCompression from "browser-image-compression";

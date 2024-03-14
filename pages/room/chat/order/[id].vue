@@ -23,6 +23,10 @@
               title="请选择需方负责人"
               class="text-[17px]"
               :model-value="payload?.buyer_id.toString()"
+              :disabled="
+                (isRevisable && isOrderConfirmingOrRejected) ||
+                isOrderConfirmingOrRejected
+              "
               :option="buyers"
               @update:model-value="
                 (value) => {
@@ -185,7 +189,7 @@
         <UiButton
           class="px-[42px] py-[7px]"
           title="确认"
-          @click="onCreateOrder"
+          @click="onOrderClick"
         />
       </div>
     </div>
@@ -200,14 +204,14 @@
 <script setup lang="ts">
 import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
-import { createOrder } from "~/api/order";
+import { createOrder, reviseOrder } from "~/api/order";
 import { getRate } from "~/api/rate";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { PAYMENT_METHODS } from "~/constants/options/payment-method";
 import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail } from "~/types/chat";
 import type { Option } from "~/types/common";
-import { CommissionType, type CreateOrder } from "~/types/order";
+import { CommissionType, OrderStatus, type CreateOrder } from "~/types/order";
 import type { Rate, RateParams } from "~/types/rate";
 
 const pageStore = usePageStore();
@@ -224,6 +228,8 @@ const buyers = ref<Option[]>([]);
 const exchangeRate = ref<Rate[]>([]);
 const isLoading = ref(true);
 const showRealtimeExchangeRate = ref(false);
+const isRevisable = ref(route.query.revisable === "true");
+const isOrderConfirmingOrRejected = ref(false);
 
 const fee = ref<{
   otherFee: number;
@@ -297,16 +303,31 @@ function onToggleExchangeRate(v: boolean) {
   }
 }
 
-async function onCreateOrder() {
+async function onOrderClick() {
   try {
-    const preparedPayload = {
+    const preparedPayload: CreateOrder = {
       ...payload.value,
       exchange_rate: Number(fee.value?.selected_rate?.price) ?? 1,
       handling_fee_percentage: fee.value.handlingFeePercentage,
       other_expense: fee.value.otherFee,
     };
-    const res = await createOrder(preparedPayload);
-    navigateTo(`/room/chat/${res.chat_room_id}`);
+
+    if (
+      (isRevisable.value && isOrderConfirmingOrRejected.value) ||
+      isOrderConfirmingOrRejected.value
+    ) {
+      const orderId = chatDetail.value?.order?.id || 0;
+
+      if (!orderId) {
+        throw new Error("订单ID不存在");
+      }
+
+      await reviseOrder(orderId, preparedPayload);
+      return navigateTo(`/room/chat/${roomId}`);
+    }
+
+    await createOrder(preparedPayload);
+    navigateTo(`/room/chat/${roomId}`);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
   }
@@ -351,14 +372,61 @@ function onSwapCurrency() {
 
 onMounted(async () => {
   try {
-    const data = await Promise.all([
+    const [getDetail, getMember] = await Promise.all([
       getChatDetail(roomId),
       getChatRoomMembers(roomId),
       currencyStore.getCurrencyOptions(),
     ]);
 
-    chatDetail.value = data[0];
-    members.value = data[1];
+    chatDetail.value = getDetail;
+    members.value = getMember;
+
+    isOrderConfirmingOrRejected.value =
+      chatDetail.value?.order?.status === OrderStatus.REJECTED ||
+      chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
+
+    if (route.query.revisable && !isOrderConfirmingOrRejected) {
+      router.replace(route.path);
+    } else if (
+      (isRevisable.value && isOrderConfirmingOrRejected.value) ||
+      isOrderConfirmingOrRejected.value
+    ) {
+      payload.value = {
+        chat_room_id: roomId,
+        amount: chatDetail.value.order?.amount_to_be_paid ?? 0,
+        title: chatDetail.value.order?.title ?? "",
+        duration: chatDetail.value.order?.duration ?? "",
+        note: chatDetail.value.order?.note ?? "",
+        commission_type:
+          chatDetail.value.order?.commission_type ?? CommissionType.BUYER,
+        buyer_id: chatDetail.value.order?.buyer_id ?? 0,
+        seller_currency_id: chatDetail.value.order?.seller_currency.id ?? 0,
+        buyer_currency_id: chatDetail.value.order?.buyer_currency?.id ?? 0,
+        exchange_rate: chatDetail.value.order?.exchange_rate ?? 0,
+        handling_fee_percentage:
+          chatDetail.value.order?.handling_fee_percentage ?? 0,
+        other_expense: chatDetail.value.order?.other_expense ?? 0,
+      };
+
+      fee.value = {
+        otherFee: chatDetail.value.order?.other_expense ?? 0,
+        selected_rate: {
+          id: "0",
+          baseCurrency: chatDetail.value.order?.buyer_currency?.code ?? "USDT",
+          quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
+          nickName: "",
+          price: chatDetail.value.order?.exchange_rate.toString() ?? "1",
+        },
+        handlingFeePercentage:
+          chatDetail.value.order?.handling_fee_percentage ?? 0,
+      };
+
+      router.replace({
+        query: {
+          revisable: "true",
+        },
+      });
+    }
 
     buyers.value = members.value
       .filter((member) => member.user_id !== authStore.user?.id)
@@ -402,7 +470,7 @@ onMounted(async () => {
 
 .total-title {
   overflow: hidden;
-  color: var(--Gray-Dark-5, #9b9b9b);
+  color: #9b9b9b;
   text-overflow: ellipsis;
   font-size: 12px;
   line-height: 22px;

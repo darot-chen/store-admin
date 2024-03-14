@@ -6,6 +6,8 @@ export enum OrderStatus {
   SUCCESS = "success",
   CONFIRMING = "confirming",
   PROCESSING = "processing",
+  REJECTED = "rejected",
+  CANCELLED = "cancelled",
 }
 
 export enum CommissionType {
@@ -42,38 +44,43 @@ export type ConfirmOrder = {
 
 export type Order = {
   id: number;
-  created_at: string;
-  updated_at?: string;
-  deleted_at?: string;
+  created_at: Date;
+  updated_at: Date;
+  deleted_at: string | null;
   business_id: number;
   chat_room_id: number;
   seller_id: number;
   buyer_id: number;
-  currency_id: number;
+  seller_currency_id: number;
+  buyer_currency_id: number;
   status: OrderStatus;
+  title: string;
+  duration: string | null;
+  commission_paid_by: CommissionType;
+  note: string | null;
+  deadline_at: string | null;
+  amount: number;
+  amount_to_be_paid: number;
+  amount_paid: number;
   quantity_to_be_given: number;
   quantity_given: number;
-  exchange_rate: number;
-  handling_fee_percentage: number;
-  amount_paid: number;
-  amount_to_be_paid: number;
+  base_currency: string;
+  quote_currency: string;
+  commission_type: CommissionType;
   buyer_commission_percentage: number;
   seller_commission_percentage: number;
   total_commission: number;
+  handling_fee_percentage: number;
+  exchange_rate: number;
+  other_expense: number;
+  seller_confirmed_at: Date;
+  buyer_confirmed_at: string | null;
+  seller_completed_at: string | null;
+  buyer_completed_at: string | null;
+  seller_currency: Currency;
+  buyer_currency: Currency;
   total_seller_payments: number;
   total_buyer_payments: number;
-  other_expense: number;
-  buyer_guaranteed_amount?: number;
-  buyer_guaranteed_currency_id?: number;
-  seller_guaranteed_amount?: number;
-  seller_guaranteed_currency_id?: number;
-  note?: string;
-  seller_confirmed_at?: string;
-  buyer_confirmed_at?: string;
-  seller_completed_at?: string;
-  buyer_completed_at: string;
-  buyer_currency?: Currency;
-  seller_currency: Currency;
 };
 
 export type OrderDetail = {

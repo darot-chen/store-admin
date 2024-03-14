@@ -6,7 +6,7 @@
         :detail="chatDetail"
         :new-order-detail="newOrderDetail"
         :show-confirm-button="showConfirmOrder"
-        @create-order="navigateTo(`create-order/${roomID}`)"
+        @order="onOrderClick"
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
@@ -105,6 +105,7 @@ import { OrderStatus, type OrderDetail } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 const pageStore = usePageStore();
 
@@ -283,6 +284,25 @@ async function onConfirmOrder() {
     });
   } catch (error: any) {
     showFailToast(error?.message);
+  }
+}
+
+function onOrderClick() {
+  const isRevisable =
+    chatDetail.value?.order?.status === OrderStatus.REJECTED ||
+    chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
+
+  const path = `order/${roomID}`;
+
+  if (isRevisable) {
+    router.push({
+      path,
+      query: {
+        revisable: "true",
+      },
+    });
+  } else {
+    router.push(path);
   }
 }
 

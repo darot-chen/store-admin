@@ -107,7 +107,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { getChatMessages } from "~/api/chat";
 import { ChatType, type ChatMessage } from "~/types/chat";
 

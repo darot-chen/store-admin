@@ -1,19 +1,19 @@
 <template>
   <div class="container py-[12px]">
     <div class="detail mx-[12px] items-center">
-      <FeeInfo
+      <CreateOrderFeeInfo
         v-model="componentProps.handlingFeePercentage"
         :type="FeeTypeEnum.HANDLING_FEE_PERCENTAGE"
         @click="onClick"
       />
       <UiDivider />
-      <FeeInfo
+      <CreateOrderFeeInfo
         v-model="componentProps.rate.price"
         :type="FeeTypeEnum.RATE"
         @click="onClick"
       />
       <UiDivider />
-      <FeeInfo
+      <CreateOrderFeeInfo
         v-model="componentProps.otherFee"
         :type="FeeTypeEnum.OTHER_FEE"
         @click="onClick"
@@ -79,7 +79,6 @@
 
 <script setup lang="ts">
 import type { Rate } from "~/types/rate";
-import FeeInfo from "./FeeInfo.vue";
 import { FeeTypeEnum, type FeeType } from "~/types/common";
 
 const feeType = ref<FeeType>(FeeTypeEnum.HANDLING_FEE_PERCENTAGE);
