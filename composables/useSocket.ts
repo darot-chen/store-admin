@@ -1,11 +1,11 @@
-import type { SocketMessageData } from "~/types/base";
+import type { SocketMessage } from "~/types/base";
 
 type Options = {
   autoConnect?: boolean;
   autoReconnect?: boolean;
   maxRetries?: number;
   reconnectTimeout?: number;
-  onMessage?: (ws: WebSocket, data: SocketMessageData<unknown>) => void;
+  onMessage?: (ws: WebSocket, data: SocketMessage<unknown>) => void;
   onError?: (ws: WebSocket, error: Event) => void;
   onOpen?: (ws: WebSocket, ev: Event) => void;
   onClose?: (code: number, reason: string) => void;

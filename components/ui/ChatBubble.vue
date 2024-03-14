@@ -106,6 +106,23 @@
       "
     />
 
+    <UiTag
+      v-if="text === CHAT_ACTIONS.SELLER_CANCEL"
+      :title="$t('seller_cancel_order')"
+    />
+
+    <UiTag
+      v-if="text === CHAT_ACTIONS.BUYER_REJECT"
+      :title="$t('buyer_reject_order')"
+    />
+
+    <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
+      <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
+        <ChatOrderCreated :order="order" :detail="detail" />
+      </ChatSystem>
+      <UiTag class="mt-3" :title="$t('order_updated')" />
+    </template>
+
     <ChatSystem
       v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
       :timestamp="timestamp"
@@ -136,8 +153,8 @@
         showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
       ]"
     >
-      <UiButtonLink title="取消" @click="onCancel" />
-      <UiButtonLink title="确认" @click="onConfirm" />
+      <UiButtonLink :title="$t('reject')" @click="onReject" />
+      <UiButtonLink :title="$t('confirm')" @click="onConfirm" />
     </div>
   </div>
 </template>
@@ -163,12 +180,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "confirm"): void;
+  (e: "reject"): void;
 }>();
+
+const { t } = useI18n();
 
 function onConfirm() {
   if (props.showButton) {
     showConfirmDialog({
-      title: "确认",
+      // title: "确认",
+      title: t("confirm"),
       message: "确认发送？",
     })
       .then(() => {
@@ -178,11 +199,17 @@ function onConfirm() {
   }
 }
 
-function onCancel() {
-  showDialog({
-    title: "发送成功",
-    message: "等待对方点击确认。",
-  }).then(() => {});
+function onReject() {
+  if (props.showButton) {
+    showDialog({
+      title: t("reject"),
+      message: "拒绝发送？",
+    })
+      .then(() => {
+        emit("reject");
+      })
+      .catch(() => {});
+  }
 }
 
 function onPreview(v: string) {

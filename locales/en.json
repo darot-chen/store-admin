@@ -58,5 +58,12 @@
   "name_has_left_the_chat": "{name} has left the chat",
   "merchant real-time transaction exchange rate": "Merchant real-time transaction exchange rate",
   "new_order_create": "New Order Created",
-  "new_ticket_created": "New Ticcket Created"
+  "new_ticket_created": "New Ticcket Created",
+  "order_updated": "Seller has updated order",
+  "seller_cancel_order": "Seller has cancelled order",
+  "buyer_reject_order": "Buyer has rejected order",
+  "reject": "Reject",
+  "confirm": "Confirm",
+  "confirm_sending": "Confirm sending?",
+  "reject_sending": "Reject sending?"
 }

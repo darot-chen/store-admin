@@ -58,5 +58,12 @@
   "name_has_left_the_chat": "{name} 已经离开聊天",
   "merchant real-time transaction exchange rate": "商家实时交易汇率",
   "new_order_create": "已创建新订单",
-  "new_ticket_created": "已创建新票证"
+  "new_ticket_created": "已创建新票证",
+  "order_updated": "卖方已更新订单",
+  "seller_cancel_order": "卖方已取消订单",
+  "buyer_reject_order": "买方拒绝订单",
+  "reject": "拒绝",
+  "confirm": "确认",
+  "confirm_sending": "确认发送?",
+  "reject_sending": "拒绝发送?"
 }

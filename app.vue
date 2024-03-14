@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { SOCKET_EVENT } from "~/constants/socket";
+import { IsValidSocketEvent } from "~/constants/socket";
 import { useAuthStore } from "./stores/auth";
-import type { SocketMessageData } from "./types/base";
+import type { SocketMessage } from "./types/base";
 import "./utils/extension";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
@@ -36,18 +36,14 @@ const { open, close } = useSocket(socketUrl || "", {
 
 const { $evEmit } = useNuxtApp();
 
-function handleOnMessage(data: SocketMessageData<any>) {
-  switch (data.event) {
-    case SOCKET_EVENT.NEW_CHAT_RECEIVED:
-      $evEmit("new_chat_received", data);
-      break;
-    case SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED:
-      $evEmit("order_payment_confirmed", data);
-      break;
-    case SOCKET_EVENT.ORDER_STATUS_UPDATED:
-      $evEmit("order_status_updated", data);
-      break;
+function handleOnMessage(data: SocketMessage<any>) {
+  if (!IsValidSocketEvent(data.event)) {
+    // eslint-disable-next-line no-console
+    console.error("unknown websocket event name");
+    return;
   }
+
+  $evEmit(data.event, data);
 }
 
 setLocaleCookie(local || "zh");

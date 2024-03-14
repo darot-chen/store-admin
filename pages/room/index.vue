@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { getPublicChatRoom } from "~/api/chat";
+import { SOCKET_EVENT } from "~/constants/socket";
 import type { ChatRoom } from "~/types/chatRoom";
 
 const roomType = ref<string>("private");
@@ -65,7 +66,7 @@ function handleScroll(event: Event) {
 
 onMounted(() => {
   fetchChatRooms();
-  $evOn("new_chat_received", async (d: any) => {
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     const index = chatRooms.value.findIndex(
       (c) => c.id === d?.data?.chat_room?.id
     );

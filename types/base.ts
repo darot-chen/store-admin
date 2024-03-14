@@ -1,3 +1,5 @@
+import type { SOCKET_EVENT } from "~/constants/socket";
+
 export enum HTTPMethod {
   GET = "GET",
   POST = "POST",
@@ -37,7 +39,7 @@ export enum SocketType {
   EVENT = "event",
 }
 
-export type SocketMessageData<T = any> = {
-  event: string;
+export type SocketMessage<T = any> = {
+  event: SOCKET_EVENT;
   data: T;
 };
