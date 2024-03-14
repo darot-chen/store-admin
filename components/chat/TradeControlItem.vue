@@ -115,7 +115,7 @@ const debouncedScrollHandler = useDebounceFn((event: UIEvent) => {
   }
 }, 300);
 
-function getFormattedTime(date: string): string {
+const getFormattedTime = (date: string): string => {
   if (!date) return "no date";
 
   const formattedDate = new Date(date);
@@ -130,7 +130,7 @@ function getFormattedTime(date: string): string {
   const wantedFormat = `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`;
 
   return wantedFormat;
-}
+};
 
 const onClicked = () => {
   isVisible.value = !isVisible.value;

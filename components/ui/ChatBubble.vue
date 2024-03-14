@@ -302,10 +302,10 @@ function onPreview(v: string) {
 }
 
 .flash-outgoing {
-  animation: flashBackground 3s linear;
+  animation: flashBackground 1.5s linear;
 }
 
 .flash-incoming {
-  animation: flashBackgroundIncoming 3s linear;
+  animation: flashBackgroundIncoming 1.5s linear;
 }
 </style>

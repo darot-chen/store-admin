@@ -297,7 +297,7 @@ async function onFetchChatWithMSGId() {
 
   upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
   isUpperChatHasNext.value = descChats.meta.has_next;
-  lowerCursor.value = ascChat.results[ascChat.results.length]?.id;
+  lowerCursor.value = ascChat.results[ascChat.results.length - 1]?.id;
   isLowerChatHasNext.value = ascChat.meta.has_next;
 
   const chatResult = [
@@ -448,13 +448,17 @@ async function fetchChatWithParam(
   return result;
 }
 
-async function onScroll(e: Event) {
+const onScroll = useDebounceFn(async (e: Event) => {
   const target = e.target as HTMLDivElement;
   const scrollTop = target.scrollTop;
   const prevScrollHeight = target.scrollHeight ?? 0;
   const prevScrollTop = target.scrollTop ?? 0;
   const clientHeight = target.clientHeight ?? 0;
   const scrollHeight = target.scrollHeight ?? 0;
+
+  const element = document.getElementById(
+    `chat_${chats.value[0]?.id}`
+  ) as HTMLElement | null;
 
   function scrollAnimatedFrame() {
     requestAnimationFrame(async () => {
@@ -471,15 +475,19 @@ async function onScroll(e: Event) {
 
   if (scrollTop === 0) {
     if (msgId) {
-      if (!isUpperChatHasNext.value) return;
+      if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
+
       fetchingMoreChat.value = true;
       const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
-      chats.value.unshift(...descChats.results);
+
       upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
+      chats.value.unshift(...descChats.results.reverse());
 
       isUpperChatHasNext.value = descChats.meta.has_next;
       fetchingMoreChat.value = false;
-      scrollAnimatedFrame();
+      await sleep(100);
+      element?.scrollIntoView({ behavior: "instant", block: "end" });
+
       return;
     }
 
@@ -492,11 +500,11 @@ async function onScroll(e: Event) {
 
   if (scrollTop + clientHeight >= scrollHeight) {
     if (!msgId) return;
-    if (!isLowerChatHasNext.value) return;
+    if (!isLowerChatHasNext.value && !fetchingMoreChat.value) return;
     fetchingMoreChat.value = true;
     const ascChats = await fetchChatWithParam("asc", lowerCursor.value, 10);
-    chats.value.push(...ascChats.results);
     lowerCursor.value = ascChats.results[ascChats.results.length - 1].id;
+    chats.value.push(...ascChats.results);
     isLowerChatHasNext.value = ascChats.meta.has_next;
     fetchingMoreChat.value = false;
     return;
@@ -518,7 +526,7 @@ async function onScroll(e: Event) {
     }
   }
   fetchingMoreChat.value = false;
-}
+}, 300);
 
 async function onSubmit() {
   if (messagePayload.value.message.trim() === "") return;
