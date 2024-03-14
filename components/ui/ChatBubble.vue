@@ -11,6 +11,7 @@
           v-if="(showProfile || profile) && chatType === 'incoming'"
           :image-source="profile"
           :name="name"
+          size="2.375rem"
         />
         <Icon
           v-if="chatType === 'incoming'"
@@ -147,6 +148,7 @@ import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type ChatDetail } from "~/types/chat";
 import { type Order } from "~/types/order";
+import { rejectOrder } from "~/api/order";
 
 const props = defineProps<{
   chatType: "incoming" | "outgoing";
@@ -178,7 +180,10 @@ function onConfirm() {
   }
 }
 
-function onCancel() {
+async function onCancel() {
+  if (!props.order?.id) return;
+  await rejectOrder(props.order!.id);
+
   showDialog({
     title: "发送成功",
     message: "等待对方点击确认。",

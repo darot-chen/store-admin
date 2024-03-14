@@ -58,3 +58,11 @@ export const getOrders = async (id: number, params: GetOrderParams) => {
 
   return data;
 };
+
+export const rejectOrder = async (orderId: number) => {
+  const { data } = await useAxiosInstance().post<APIMeta>(
+    `${url}/${orderId}/reject`
+  );
+
+  return data;
+};
