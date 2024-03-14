@@ -268,7 +268,8 @@ const debounceCalcAmount = useDebounceFn(() => {
         payload.value.amount *
           (1 / Number(fee.value.selected_rate.price)) *
           handlingFee +
-        fee.value.otherFee * Number(fee.value.selected_rate.price)
+        fee.value.otherFee +
+        Number(fee.value.selected_rate.price)
       ).toFixed(2)
     );
   } else if (fee.value.selected_rate?.price) {
