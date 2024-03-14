@@ -7,7 +7,7 @@ export enum CHAT_ACTIONS {
   ORDER_SUCCESS = "order_success",
   BUYER_CONFIRM_ORDER = "buyer_confirm_order",
   NEW_TICKET_CREATED = "new_ticket_created",
-  ORDER_UPDATED = "order_updated", // seller update order
-  SELLER_CANCEL = "seller_cancel", // seller cancel
-  BUYER_REJECT = "buyer_reject", // user reject
+  ORDER_UPDATED = "order_updated",
+  SELLER_CANCEL = "seller_cancel",
+  BUYER_REJECT = "buyer_reject",
 }
