@@ -47,7 +47,14 @@
               chatType === 'incoming' ? 'incoming-content' : 'outgoing-content',
             ]"
           >
-            <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
+            <p
+              v-if="type === ChatType.Text"
+              class="whitespace-pre-wrap"
+              :class="{
+                'bg-fuchsia-300': isSelected,
+                'text-fuchsia-900': isSelected,
+              }"
+            >
               {{ text }}
             </p>
             <NuxtImg
@@ -168,6 +175,7 @@ const props = defineProps<{
   showButton?: boolean;
   detail?: ChatDetail;
   order?: Order;
+  isSelected?: boolean;
 }>();
 
 const emit = defineEmits<{
