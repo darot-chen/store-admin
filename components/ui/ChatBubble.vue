@@ -7,20 +7,11 @@
       ]"
     >
       <div class="inline-flex items-end">
-        <div
+        <UiGradientProfile
           v-if="(showProfile || profile) && chatType === 'incoming'"
-          :class="!profile && 'bg-avatar'"
-          :style="{
-            background: generateLinearGradient(name),
-          }"
-        >
-          <img
-            v-if="profile"
-            class="w-[2.375rem] rounded-full"
-            src="/images/bs-logo.png"
-          />
-          <p v-else>{{ name.charAt(0).toUpperCase() }}</p>
-        </div>
+          :image-source="profile"
+          :name="name"
+        />
         <Icon
           v-if="chatType === 'incoming'"
           name="ChatTail"
