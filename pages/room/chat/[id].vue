@@ -38,6 +38,7 @@
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
         :detail="c.type === ChatType.Action ? chatDetail : undefined"
         :is-selected="c.id.toString() === msgId"
+        :profile="c.user?.profile_key"
         @confirm="onConfirmOrder"
       />
       <div ref="bottomEl" />
