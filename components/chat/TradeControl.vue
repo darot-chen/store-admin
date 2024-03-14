@@ -3,10 +3,13 @@
     <div class="flex items-center justify-between">
       <div class="total">
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
-        <div class="flex flex-row items-center">
+        <button
+          class="flex cursor-pointer flex-row items-center"
+          @click="navigateTo(`order-detail/${roomID}`)"
+        >
           <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
           <Icon name="Clock" class="ml-2" />
-        </div>
+        </button>
       </div>
       <div>
         <div v-if="props.detail?.order?.buyer_confirmed_at" class="action">
@@ -94,6 +97,9 @@
 import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
 import type { OrderDetail } from "~/types/order";
+const route = useRoute();
+
+const roomID = +route.params.id;
 
 const props = defineProps<{
   detail?: ChatDetail;
