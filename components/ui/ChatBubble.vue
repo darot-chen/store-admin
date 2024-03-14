@@ -23,6 +23,10 @@
       <div
         :class="[
           chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
+          {
+            'flash-outgoing': chatType === 'outgoing' ? isSelected : false,
+            'flash-incoming': chatType === 'incoming' ? isSelected : false,
+          },
         ]"
       >
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
@@ -37,6 +41,9 @@
             :class="[
               'px-[0.38rem]',
               chatType === 'incoming' ? 'incoming-content' : 'outgoing-content',
+              {
+                'flash-incoming': chatType === 'incoming' ? isSelected : false,
+              },
             ]"
           >
             <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
@@ -177,6 +184,7 @@ const props = defineProps<{
   showButton?: boolean;
   detail?: ChatDetail;
   order?: Order;
+  isSelected?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -292,5 +300,39 @@ function onPreview(v: string) {
   align-items: center;
   font-weight: bolder;
   color: white;
+}
+
+@keyframes flashBackground {
+  0% {
+    background-color: black;
+  }
+  50% {
+    background-color: black;
+  }
+  100% {
+    background-color: #50a7ea;
+  }
+}
+@keyframes flashBackgroundIncoming {
+  0% {
+    background-color: black;
+    color: white;
+  }
+  50% {
+    background-color: black;
+    color: white;
+  }
+  100% {
+    background-color: white;
+    color: black;
+  }
+}
+
+.flash-outgoing {
+  animation: flashBackground 1.5s linear;
+}
+
+.flash-incoming {
+  animation: flashBackgroundIncoming 1.5s linear;
 }
 </style>

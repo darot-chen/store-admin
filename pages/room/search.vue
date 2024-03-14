@@ -33,9 +33,9 @@
     >
       <UiCircularLoading size="24" />
     </div>
-    <div v-else class="mt-[70px]">
+    <div v-else>
       <div v-if="searchItems.length === 0">
-        <div class="flex justify-center">No data</div>
+        <div class="flex h-full items-center justify-center">No data</div>
       </div>
       <div
         v-for="room in searchItems"
@@ -46,7 +46,7 @@
         <div class="rounded-md bg-white">
           <NuxtLink
             class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
-            :to="`/room/chat/${room.chat_room.id}`"
+            :to="`/room/chat/${room.chat_room.id}?msgId=${room.id}`"
           >
             <div class="flex gap-2">
               <div
