@@ -16,11 +16,13 @@
       class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-auto pt-2"
       @scroll="onScroll"
     >
-      <div v-show="fetchingMoreChat" class="flex justify-center">
-        {{ $t("loading") }}
-      </div>
+      <UiCircularLoading
+        v-show="fetchingMoreChat"
+        class="flex justify-center"
+      />
       <UiChatBubble
         v-for="c in chats"
+        :id="'chat_' + c.id"
         :key="c.id"
         :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
         :text="c.message"
@@ -92,6 +94,7 @@ import {
   uploadVideo,
   addChat,
   requestSupport,
+  getChatMessageById,
 } from "~/api/chat";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
@@ -106,6 +109,7 @@ const authStore = useAuthStore();
 const pageStore = usePageStore();
 
 const roomID = +route.params.id;
+const msgId = route.query.msgId;
 
 const bottomEl = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
@@ -121,6 +125,11 @@ const showConfirmationPopup = ref<boolean>(false);
 const prevDetail = ref<ChatDetail>();
 const newOrderDetail = ref<OrderDetail>();
 const { t } = useI18n();
+
+const upperCursor = ref<number>();
+const isUpperChatHasNext = ref<boolean>();
+const lowerCursor = ref<number>();
+const isLowerChatHasNext = ref<boolean>();
 
 const showConfirmOrder = computed(() => {
   return (
@@ -265,8 +274,59 @@ async function onConfirmOrder() {
 
 async function init() {
   loading.value = true;
-  await fetchChats();
+
+  if (typeof msgId === "string") {
+    onFetchChatWithMSGId();
+  } else {
+    await fetchChats();
+  }
   loading.value = false;
+}
+
+async function onFetchChatWithMSGId() {
+  if (typeof msgId !== "string") return;
+
+  const searchChat = await getChatMessageById(msgId);
+
+  const [descChats, ascChat] = await Promise.all([
+    fetchChatWithParam("desc", searchChat.id),
+    fetchChatWithParam("asc", searchChat.id),
+  ]);
+
+  upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
+  isUpperChatHasNext.value = descChats.meta.has_next;
+  lowerCursor.value = ascChat.results[ascChat.results.length]?.id;
+  isLowerChatHasNext.value = ascChat.meta.has_next;
+
+  const chatResult = [
+    ...[searchChat],
+    ...descChats.results,
+    ...ascChat.results,
+  ];
+
+  const detail = await getChatDetail(roomID);
+
+  hasJoined.value = detail.is_a_member ?? false;
+  chatDetail.value = detail ?? undefined;
+  let title = detail?.business?.title ?? "";
+  if (detail?.lobby_no) {
+    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+  }
+  pageStore.setTitle(title ?? "");
+
+  const sortedChatResult = chatResult.sort((a, b) => a.id - b.id);
+
+  chats.value = sortedChatResult;
+
+  await sleep(100);
+
+  const chatElement = document.getElementById(
+    `chat_${msgId}`
+  ) as HTMLElement | null;
+
+  if (chatElement) {
+    chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 }
 
 async function onConfirmPayment() {
@@ -372,41 +432,79 @@ function addChatAndSort(newChat: Chat) {
 
   sleepScrollToBottom();
 }
+async function fetchChatWithParam(
+  orderBy?: "asc" | "desc",
+  cursor?: number,
+  limit?: number
+) {
+  const result = await getChat(roomID, {
+    last: cursor ?? lastItemId.value,
+    limit: limit ?? 15,
+    order_by: orderBy,
+  });
+
+  return result;
+}
 
 async function onScroll(e: Event) {
   const target = e.target as HTMLDivElement;
   const scrollTop = target.scrollTop;
   const prevScrollHeight = target.scrollHeight ?? 0;
   const prevScrollTop = target.scrollTop ?? 0;
+  const clientHeight = target.clientHeight ?? 0;
+  const scrollHeight = target.scrollHeight ?? 0;
 
-  if (scrollTop === 0) {
-    await fetchMoreChats();
+  function scrollAnimatedFrame() {
+    requestAnimationFrame(async () => {
+      await nextTick(() => {
+        target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
 
-    if (target?.scrollHeight) {
-      const currentScrollHeight = target.scrollHeight ?? 0;
-
-      requestAnimationFrame(async () => {
-        await nextTick(() => {
-          target.scrollTop =
-            currentScrollHeight - prevScrollHeight + prevScrollTop;
-
-          target.style.overflow = "hidden";
-          requestAnimationFrame(() => {
-            target.style.overflow = "scroll";
-          });
+        target.style.overflow = "hidden";
+        requestAnimationFrame(() => {
+          target.style.overflow = "scroll";
         });
       });
+    });
+  }
+
+  if (scrollTop === 0) {
+    if (msgId) {
+      if (!isUpperChatHasNext.value) return;
+      fetchingMoreChat.value = true;
+      const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
+      chats.value.unshift(...descChats.results);
+      upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
+
+      isUpperChatHasNext.value = descChats.meta.has_next;
+      fetchingMoreChat.value = false;
+      scrollAnimatedFrame();
+      return;
     }
+
+    await fetchMoreChats();
+
+    if (scrollHeight) {
+      scrollAnimatedFrame();
+    }
+  }
+
+  if (scrollTop + clientHeight >= scrollHeight) {
+    if (!msgId) return;
+    if (!isLowerChatHasNext.value) return;
+    fetchingMoreChat.value = true;
+    const ascChats = await fetchChatWithParam("asc", lowerCursor.value, 10);
+    chats.value.push(...ascChats.results);
+    lowerCursor.value = ascChats.results[ascChats.results.length - 1].id;
+    isLowerChatHasNext.value = ascChats.meta.has_next;
+    fetchingMoreChat.value = false;
+    return;
   }
 
   async function fetchMoreChats() {
     if (!hasMore.value || firstLoad.value) return;
     fetchingMoreChat.value = true;
 
-    const chatRes = await getChat(roomID, {
-      last: lastItemId.value,
-      limit: 15,
-    });
+    const chatRes = await fetchChatWithParam();
 
     chats.value.unshift(...chatRes.results.reverse());
 

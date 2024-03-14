@@ -17,6 +17,10 @@ export type GetMessagePayload = Cursor & {
   query: string;
 };
 
+export type GetChatMessageByIdPayload = Cursor & {
+  msgId: number;
+};
+
 export type Chat = {
   id: number;
   created_at: string;
