@@ -17,7 +17,7 @@
 defineProps<{
   imageSource?: string;
   name: string;
-  size: string;
+  size?: string;
 }>();
 
 const emit = defineEmits<{
