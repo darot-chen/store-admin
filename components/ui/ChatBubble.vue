@@ -188,7 +188,6 @@ const { t } = useI18n();
 function onConfirm() {
   if (props.showButton) {
     showConfirmDialog({
-      // title: "确认",
       title: t("confirm"),
       message: "确认发送？",
     })
