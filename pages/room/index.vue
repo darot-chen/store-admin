@@ -83,6 +83,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  $evOn("new_chat_received", () => {});
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, () => {});
 });
 </script>
