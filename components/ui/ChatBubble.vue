@@ -107,6 +107,23 @@
       "
     />
 
+    <UiTag
+      v-if="text === CHAT_ACTIONS.SELLER_CANCEL"
+      :title="$t('seller_cancel_order')"
+    />
+
+    <UiTag
+      v-if="text === CHAT_ACTIONS.BUYER_REJECT"
+      :title="$t('buyer_reject_order')"
+    />
+
+    <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
+      <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
+        <ChatOrderCreated :order="order" :detail="detail" />
+      </ChatSystem>
+      <UiTag class="mt-3" :title="$t('order_updated')" />
+    </template>
+
     <ChatSystem
       v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
       :timestamp="timestamp"
@@ -137,8 +154,8 @@
         showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
       ]"
     >
-      <UiButtonLink title="取消" @click="onCancel" />
-      <UiButtonLink title="确认" @click="onConfirm" />
+      <UiButtonLink :title="$t('reject')" @click="onReject" />
+      <UiButtonLink :title="$t('confirm')" @click="onConfirm" />
     </div>
   </div>
 </template>
@@ -148,7 +165,6 @@ import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type ChatDetail } from "~/types/chat";
 import { type Order } from "~/types/order";
-import { rejectOrder } from "~/api/order";
 
 const props = defineProps<{
   chatType: "incoming" | "outgoing";
@@ -165,13 +181,16 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "confirm"): void;
+  (e: "reject"): void;
 }>();
+
+const { t } = useI18n();
 
 function onConfirm() {
   if (props.showButton) {
     showConfirmDialog({
-      title: "确认",
-      message: "确认发送？",
+      title: t("confirm"),
+      message: t("confirm_sending"),
     })
       .then(() => {
         emit("confirm");
@@ -180,14 +199,17 @@ function onConfirm() {
   }
 }
 
-async function onCancel() {
-  if (!props.order?.id) return;
-  await rejectOrder(props.order!.id);
-
-  showDialog({
-    title: "发送成功",
-    message: "等待对方点击确认。",
-  }).then(() => {});
+function onReject() {
+  if (props.showButton) {
+    showDialog({
+      title: t("reject"),
+      message: t("reject_sending"),
+    })
+      .then(() => {
+        emit("reject");
+      })
+      .catch(() => {});
+  }
 }
 
 function onPreview(v: string) {

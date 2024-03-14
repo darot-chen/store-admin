@@ -39,6 +39,22 @@
     <p v-if="text === CHAT_ACTIONS.NEW_TICKET_CREATED">
       {{ $t("new_ticket_created") }}
     </p>
+
+    <p v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
+      {{ $t("new_ticket_created") }}
+    </p>
+
+    <p v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
+      {{ $t("order_updated") }}
+    </p>
+
+    <p v-if="text === CHAT_ACTIONS.SELLER_CANCEL">
+      {{ $t("seller_cancel_order") }}
+    </p>
+
+    <p v-if="text === CHAT_ACTIONS.BUYER_REJECT">
+      {{ $t("buyer_reject_order") }}
+    </p>
   </div>
 </template>
 

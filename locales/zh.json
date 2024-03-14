@@ -31,6 +31,7 @@
   "chat_search_place_holder": "搜索消息或用户",
   "successfully_sent": "发送成功",
   "order_confirmed_message": "等待对方点击确认",
+  "order_rejected_message": "成功拒绝订单",
   "please_confirm_complete_transaction": "请确定要完成交易",
   "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？",
   "edit": "编辑",
@@ -58,5 +59,12 @@
   "name_has_left_the_chat": "{name} 已经离开聊天",
   "merchant real-time transaction exchange rate": "商家实时交易汇率",
   "new_order_create": "已创建新订单",
-  "new_ticket_created": "已创建新票证"
+  "new_ticket_created": "已创建新票证",
+  "order_updated": "卖方已更新订单",
+  "seller_cancel_order": "卖方已取消订单",
+  "buyer_reject_order": "买方拒绝订单",
+  "reject": "拒绝",
+  "confirm": "确认",
+  "confirm_sending": "确认发送?",
+  "reject_sending": "拒绝发送?"
 }

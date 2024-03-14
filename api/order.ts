@@ -32,6 +32,22 @@ export const confirmOrder = async (orderId: number) => {
   return data;
 };
 
+export const buyerRejectOrder = async (orderId: number) => {
+  const { data } = await useAxiosInstance().post<APIMeta>(
+    `${url}/${orderId}/reject`
+  );
+
+  return data;
+};
+
+export const sellerCancelOrder = async (orderId: number) => {
+  const { data } = await useAxiosInstance().delete<APIMeta>(
+    `${url}/${orderId}`
+  );
+
+  return data;
+};
+
 export const confirmPayment = async (orderId: number) => {
   const { data } = await useAxiosInstance().put<APIMeta>(
     `${url}/payments/${orderId}/confirm`
@@ -54,14 +70,6 @@ export const getOrders = async (id: number, params: GetOrderParams) => {
     {
       params,
     }
-  );
-
-  return data;
-};
-
-export const rejectOrder = async (orderId: number) => {
-  const { data } = await useAxiosInstance().post<APIMeta>(
-    `${url}/${orderId}/reject`
   );
 
   return data;
