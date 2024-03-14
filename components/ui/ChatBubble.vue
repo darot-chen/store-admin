@@ -11,6 +11,7 @@
           v-if="(showProfile || profile) && chatType === 'incoming'"
           :image-source="profile"
           :name="name"
+          size="2.375rem"
         />
         <Icon
           v-if="chatType === 'incoming'"
@@ -189,7 +190,7 @@ function onConfirm() {
   if (props.showButton) {
     showConfirmDialog({
       title: t("confirm"),
-      message: "确认发送？",
+      message: t("confirm_sending"),
     })
       .then(() => {
         emit("confirm");
@@ -202,7 +203,7 @@ function onReject() {
   if (props.showButton) {
     showDialog({
       title: t("reject"),
-      message: "拒绝发送？",
+      message: t("reject_sending"),
     })
       .then(() => {
         emit("reject");

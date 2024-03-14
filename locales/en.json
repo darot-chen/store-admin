@@ -32,6 +32,7 @@
   "edit": "Edit",
   "successfully_sent": "Successfully Sent",
   "order_confirmed_message": "Wait for the other party to click to confirm",
+  "order_rejected_message": "Reject order successfully",
   "please_confirm_complete_transaction": "Please Confirm that Transaction is Completed",
   "after_complete_transaction": "After confirming that the transaction is completed, is it necessary to complete the transaction if it cannot be reversed?",
   "buyer_confirm_order": "Buyer has confirmed the order",

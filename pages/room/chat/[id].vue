@@ -261,7 +261,7 @@ async function onRejectOrder() {
     await buyerRejectOrder(chatDetail.value.order.id);
     showDialog({
       title: t("successfully_sent"),
-      message: t("order_confirmed_message"),
+      message: t("order_rejected_message"),
     }).then(() => {
       lastItemId.value = 0;
     });
