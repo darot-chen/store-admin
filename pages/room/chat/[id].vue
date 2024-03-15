@@ -289,12 +289,12 @@ function onCountPayment(type: "buyer" | "seller") {
 }
 
 function onHeaderReplyClick(id: number) {
-  msgId = id.toString();
   const chatElement = document.getElementById(
     `chat_${id}`
   ) as HTMLElement | null;
 
   if (!chatElement) {
+    msgId = id.toString();
     onFetchChatWithMSGId(id.toString());
     return;
   }
@@ -519,6 +519,8 @@ async function sleepScrollToBottom() {
 
 async function onScrollToBottom() {
   if (bottomEl.value) {
+    console.log(msgId);
+
     if (msgId) {
       lastItemId.value = 0;
       hasMore.value = false;
