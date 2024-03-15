@@ -43,11 +43,15 @@ export const getChat = async (roomId: number, params: Cursor) => {
 };
 
 export const getChatMessageById = async (roomId: string) => {
-  const { data } = await useAxiosInstance().get<Chat>(
-    `chat-messages/${roomId}`
-  );
+  try {
+    const { data } = await useAxiosInstance().get<Chat>(
+      `chat-messages/${roomId}`
+    );
 
-  return data;
+    return data;
+  } catch (error) {
+    return undefined;
+  }
 };
 
 export const getChatDetail = async (roomId: number) => {

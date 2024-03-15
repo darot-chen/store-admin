@@ -71,7 +71,7 @@ onMounted(() => {
       (c) => c.id === d?.data?.chat_room?.id
     );
     if (index) {
-      chatRooms.value[index].latest_message = d.data;
+      chatRooms.value[index].latest_message = d?.data;
       chatRooms.value[index].total_unread += 1;
 
       chatRooms.value.unshift(chatRooms.value.splice(index, 1)[0]);

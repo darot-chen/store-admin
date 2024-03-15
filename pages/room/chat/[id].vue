@@ -13,7 +13,8 @@
       />
     </div>
     <div
-      class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-auto pt-2"
+      id="chat-container"
+      class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-scroll pt-2"
       @scroll="onScroll"
     >
       <UiCircularLoading
@@ -43,9 +44,36 @@
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
+        @on-header-reply-click="onHeaderReplyClick"
+      />
+
+      <UiCircularLoading
+        v-show="fetchingMoreLowerChat"
+        class="flex justify-center"
       />
       <div ref="bottomEl" />
     </div>
+    <button
+      v-show="showScrollButton"
+      class="fixed right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
+      :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
+      @click="onScrollToBottom"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 14l-7 7m0 0l-7-7m7 7V3"
+        />
+      </svg>
+    </button>
     <div class="sticky bottom-0 w-full">
       <div v-if="replyMsgId" class="bg-white py-2 pl-6">
         <ChatReply
@@ -131,7 +159,7 @@ const authStore = useAuthStore();
 const pageStore = usePageStore();
 
 const roomID = +route.params.id;
-const msgId = route.query.msgId;
+let msgId = route.query.msgId;
 
 const bottomEl = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
@@ -142,6 +170,8 @@ const replyMsgId = ref<number | undefined>(undefined);
 const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
+const fetchingMoreLowerChat = ref<boolean>(false);
+const showScrollButton = ref<boolean>(false);
 const chatDetail = ref<ChatDetail>();
 const isUploading = ref<boolean>(false);
 const showConfirmationPopup = ref<boolean>(false);
@@ -273,6 +303,19 @@ function onCountPayment(type: "buyer" | "seller") {
   }
 }
 
+function onHeaderReplyClick(id: number) {
+  const chatElement = document.getElementById(
+    `chat_${id}`
+  ) as HTMLElement | null;
+
+  if (!chatElement) {
+    msgId = id.toString();
+    onFetchChatWithMSGId(id.toString());
+    return;
+  }
+  chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 function onRequestSupport() {
   showDialog({
     title: t("report"),
@@ -352,17 +395,17 @@ async function init() {
   loading.value = true;
 
   if (typeof msgId === "string") {
-    onFetchChatWithMSGId();
+    onFetchChatWithMSGId(msgId);
   } else {
     await fetchChats();
   }
   loading.value = false;
 }
 
-async function onFetchChatWithMSGId() {
-  if (typeof msgId !== "string") return;
+async function onFetchChatWithMSGId(id: string) {
+  const searchChat = await getChatMessageById(id);
 
-  const searchChat = await getChatMessageById(msgId);
+  if (!searchChat) return;
 
   const [descChats, ascChat] = await Promise.all([
     fetchChatWithParam("desc", searchChat.id),
@@ -401,7 +444,7 @@ async function onFetchChatWithMSGId() {
   ) as HTMLElement | null;
 
   if (chatElement) {
-    chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+    chatElement?.scrollIntoView({ behavior: "instant", block: "center" });
   }
 }
 
@@ -489,6 +532,23 @@ async function sleepScrollToBottom() {
   scrollToBottom();
 }
 
+async function onScrollToBottom() {
+  if (bottomEl.value) {
+    if (msgId) {
+      lastItemId.value = 0;
+      hasMore.value = false;
+      chats.value.length = 0;
+      upperCursor.value = 0;
+      isUpperChatHasNext.value = false;
+      lowerCursor.value = 0;
+      isLowerChatHasNext.value = false;
+      msgId = null;
+      await fetchChats();
+    }
+    bottomEl.value.scrollIntoView();
+  }
+}
+
 function scrollToBottom() {
   if (bottomEl.value) {
     if (firstLoad.value) {
@@ -524,64 +584,69 @@ async function fetchChatWithParam(
 
 const onScroll = useDebounceFn(async (e: Event) => {
   const target = e.target as HTMLDivElement;
-  const scrollTop = target.scrollTop;
+  const scrollTop = target?.scrollTop;
   const prevScrollHeight = target.scrollHeight ?? 0;
   const prevScrollTop = target.scrollTop ?? 0;
   const clientHeight = target.clientHeight ?? 0;
-  const scrollHeight = target.scrollHeight ?? 0;
 
-  const element = document.getElementById(
-    `chat_${chats.value[0]?.id}`
-  ) as HTMLElement | null;
+  const atTop = scrollTop === 0;
+
+  const atBottom =
+    scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
+
+  const atBottomForScrollBottom =
+    scrollTop + clientHeight >= prevScrollHeight - 20;
+  showScrollButton.value = !atBottomForScrollBottom;
 
   function scrollAnimatedFrame() {
-    requestAnimationFrame(async () => {
-      await nextTick(() => {
-        target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
-
-        target.style.overflow = "hidden";
-        requestAnimationFrame(() => {
-          target.style.overflow = "scroll";
+    const scrollHeight = target.scrollHeight ?? 0;
+    if (scrollHeight) {
+      requestAnimationFrame(async () => {
+        await nextTick(() => {
+          target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
+          target.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            target.style.overflow = "scroll";
+          });
         });
       });
-    });
+    }
   }
 
-  if (scrollTop === 0) {
+  if (atTop) {
     if (msgId) {
       if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
 
-      fetchingMoreChat.value = true;
-      const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
-
-      upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
-      chats.value.unshift(...descChats.results.reverse());
-
-      isUpperChatHasNext.value = descChats.meta.has_next;
-      fetchingMoreChat.value = false;
-      await sleep(100);
-      element?.scrollIntoView({ behavior: "instant", block: "end" });
-
+      await fetchChatWithId();
+      scrollAnimatedFrame();
       return;
     }
 
     await fetchMoreChats();
-
-    if (scrollHeight) {
-      scrollAnimatedFrame();
-    }
+    scrollAnimatedFrame();
   }
 
-  if (scrollTop + clientHeight >= scrollHeight) {
+  if (atBottom) {
     if (!msgId) return;
     if (!isLowerChatHasNext.value && !fetchingMoreChat.value) return;
-    fetchingMoreChat.value = true;
+    fetchingMoreLowerChat.value = true;
     const ascChats = await fetchChatWithParam("asc", lowerCursor.value, 10);
     lowerCursor.value = ascChats.results[ascChats.results.length - 1].id;
     chats.value.push(...ascChats.results);
     isLowerChatHasNext.value = ascChats.meta.has_next;
-    fetchingMoreChat.value = false;
+    fetchingMoreLowerChat.value = false;
     return;
+  }
+
+  async function fetchChatWithId() {
+    fetchingMoreChat.value = true;
+    const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
+
+    chats.value.unshift(...descChats.results.reverse());
+
+    upperCursor.value = descChats.results[0]?.id;
+    isUpperChatHasNext.value = descChats.meta.has_next;
+    fetchingMoreChat.value = false;
   }
 
   async function fetchMoreChats() {
@@ -629,3 +694,10 @@ async function onRateSeller() {
   }
 }
 </script>
+
+<style lang="css">
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+</style>

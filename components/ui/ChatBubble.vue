@@ -33,7 +33,11 @@
         ]"
       >
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <ChatReply v-if="chat?.reply_message" :chat="chat" />
+          <ChatReply
+            v-if="chat?.reply_message"
+            :chat="chat"
+            @on-header-click="(id) => emit('on-header-reply-click', id)"
+          />
           <p
             v-if="chatType === 'incoming'"
             class="incoming-name px-[0.38rem]"
@@ -200,6 +204,7 @@ const emit = defineEmits<{
   (e: "reply"): void;
   (e: "cancel-reply"): void;
   (e: "reject"): void;
+  (e: "on-header-reply-click", id: number): void;
 }>();
 
 const { t } = useI18n();
