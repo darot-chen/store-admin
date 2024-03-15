@@ -99,3 +99,8 @@ export type OrderPaymentConfirmedType = {
   order: Order;
   orderPayment: OrderDetail;
 };
+
+export type RateSeller = {
+  score: number;
+  comment: string;
+};
