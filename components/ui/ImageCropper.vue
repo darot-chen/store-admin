@@ -1,42 +1,61 @@
 <template>
-  <div class="flex flex-col">
-    <Cropper
-      ref="cropper"
-      :src="imageSrc"
-      class="h-96"
-      :stencil-component="CircleStencil"
-    />
-    <van-button
-      :loading="isLoading"
-      type="primary"
-      class="w-full"
-      :style="{
-        'border-top-left-radius': '0px',
-        'border-top-right-radius': '0px',
-      }"
-      @click="handleClick"
+  <div v-if="show" ref="modal" class="relative w-[90%] max-w-md">
+    <button
+      v-if="loading"
+      class="absolute right-2 top-1 z-50"
+      @click="$emit('update:show', false)"
     >
-      Upload
-    </van-button>
+      <Icon name="X" color="#fff" size="20" />
+    </button>
+    <div v-bind="$attrs">
+      <Cropper
+        ref="cropperRef"
+        :src="src"
+        :stencil-component="CircleStencil"
+        @ready="() => (loading = true)"
+      />
+      <VanButton
+        v-if="loading"
+        :loading="isLoading"
+        type="primary"
+        class="w-full"
+        @click="onConfirm"
+      >
+        {{ $t("upload") }}
+      </VanButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { CircleStencil, Cropper } from "vue-advanced-cropper";
-import "vue-advanced-cropper/dist/style.css";
+
+const cropperRef = ref(null);
+const modal = ref(null);
+const loading = ref(false);
 
 defineProps<{
-  imageSrc: string | ArrayBuffer | null | undefined;
+  src: string;
+  show: boolean;
   isLoading: boolean;
 }>();
 
+useClickAway(modal, () => {
+  emit("update:show", false);
+});
+
 const emit = defineEmits<{
-  cropImage: [cropper: Ref];
+  (e: "cropImage", cropperRef: Ref): void;
+  (e: "update:src", src: string): void;
+  (e: "update:show", show: boolean): void;
 }>();
 
-const cropper = ref();
-
-const handleClick = () => {
-  emit("cropImage", cropper);
+const onConfirm = () => {
+  emit("cropImage", cropperRef);
 };
+
+onUnmounted(() => {
+  cropperRef.value = null;
+  emit("update:src", "");
+});
 </script>

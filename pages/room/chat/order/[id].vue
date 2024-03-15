@@ -40,9 +40,7 @@
           <div
             class="relative w-full rounded-[10px] border-[0.5px] border-[#0000001a] py-[7px]"
           >
-            <div
-              class="relative grid grid-cols-2 divide-x-[0.5px] divide-[#0000001a]"
-            >
+            <div class="relative grid grid-cols-2">
               <div class="border-r-[0.5px] border-[#0000001a] pr-[8px]">
                 <div class="p-[5px]">
                   <CreateOrderCurrency
@@ -80,14 +78,16 @@
                   </div>
                 </div>
               </div>
-
-              <button
-                class="absolute left-1/2 top-1/2 mt-[0.8rem] flex -translate-x-1/2 -translate-y-1/2 transform items-center rounded-[4px] border-[0.8px] border-[#0000001a] bg-white p-0.5"
-                @click="onSwapCurrency"
+              <div
+                class="absolute left-1/2 top-1/2 mt-[1rem] -translate-x-1/2 -translate-y-1/2"
               >
-                <Icon name="Swap" color="#0000004D" size="10" />
-              </button>
-
+                <button
+                  class="flex items-center rounded-[4px] border-[0.8px] border-[#0000001a] bg-white p-1"
+                  @click="onSwapCurrency"
+                >
+                  <Icon name="Swap" color="#0000004D" size="16" />
+                </button>
+              </div>
               <div class="pl-[8px]">
                 <div class="p-[5px]">
                   <CreateOrderCurrency

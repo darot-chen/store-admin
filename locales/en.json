@@ -66,5 +66,7 @@
   "reject": "Reject",
   "confirm": "Confirm",
   "confirm_sending": "Confirm sending?",
-  "reject_sending": "Reject sending?"
+  "reject_sending": "Reject sending?",
+  "upload": "Upload",
+  "save": "Save"
 }

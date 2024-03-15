@@ -1,62 +1,11 @@
 <template>
-  <div class="flex flex-col items-center gap-[7px]">
-    <VanPopup v-model:show="isEditPopupVisible" position="bottom" round>
-      <VanCellGroup inset>
-        <VanField
-          v-model="userNameRef"
-          center
-          clearable
-          autofocus
-          label="Name"
-          :placeholder="user.name"
-        >
-          <template #button>
-            <VanButton
-              :disabled="userNameRef.trim().length === 0"
-              size="small"
-              type="primary"
-              :loading="isLoading"
-              loading-type="spinner"
-              @click="onSavedUsername"
-            >
-              Save
-            </VanButton>
-          </template>
-        </VanField>
-      </VanCellGroup>
-    </VanPopup>
-
-    <VanPopup
-      v-model:show="isEditProfilePopupVisible"
-      round
-      :closeable="!isUpdateProfileLoading"
-      :close-on-click-overlay="false"
-    >
-      <UiImageCropper
-        :image-src="previewImage"
-        :is-loading="isUpdateProfileLoading"
-        @crop-image="cropImage"
-      />
-    </VanPopup>
+  <div class="relative flex flex-col items-center gap-[7px]">
     <div>
-      <input
-        :key="previewImage?.toString()"
-        ref="fileInput"
-        type="file"
-        accept="image/*"
-        style="display: none"
-        @change="uploadImage"
-      />
-
       <UiGradientProfile
         :image-source="refUser.profile_key"
         :name="refUser.name"
         size="80px"
-        @click="
-          () => {
-            fileInput?.click();
-          }
-        "
+        @click="fileInput?.click()"
       />
     </div>
     <div class="relative inline-flex items-center gap-[10px]">
@@ -76,6 +25,53 @@
       </p>
     </div>
   </div>
+
+  <VanPopup v-model:show="isEditPopupVisible" position="bottom" round>
+    <VanCellGroup inset>
+      <VanField
+        v-model="userNameRef"
+        center
+        clearable
+        autofocus
+        label="Name"
+        :placeholder="user.name"
+      >
+        <template #button>
+          <VanButton
+            :disabled="userNameRef.trim().length === 0"
+            size="small"
+            type="primary"
+            :loading="isLoading"
+            loading-type="spinner"
+            @click="onSavedUsername"
+          >
+            {{ $t("save") }}
+          </VanButton>
+        </template>
+      </VanField>
+    </VanCellGroup>
+  </VanPopup>
+
+  <div
+    v-if="previewImage && isEditProfilePopupVisible"
+    class="absolute inset-0 z-50 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.5)]"
+  >
+    <UiImageCropper
+      v-model:show="isEditProfilePopupVisible"
+      v-model:src="previewImage"
+      :is-loading="isUpdateProfileLoading"
+      @crop-image="cropImage"
+    />
+  </div>
+
+  <input
+    :key="previewImage?.toString()"
+    ref="fileInput"
+    type="file"
+    accept="image/*"
+    class="hidden"
+    @change="uploadImage"
+  />
 </template>
 
 <script setup lang="ts">
@@ -96,27 +92,30 @@ const fileInput = ref();
 const userNameRef = ref("");
 const isLoading = ref(false);
 const isUpdateProfileLoading = ref(false);
-const previewImage = ref<string | ArrayBuffer | null | undefined>();
+const previewImage = ref<string>();
 
 const uploadImage = (e: any) => {
   const image = e.target?.files[0];
-  const reader = new FileReader();
-  reader.readAsDataURL(image);
-  reader.onload = (e) => {
-    previewImage.value = e.target?.result;
-  };
+  if (image) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImage.value = e.target?.result?.toString();
+    };
+    reader.readAsDataURL(image);
+  }
+  image.value = null;
   isEditProfilePopupVisible.value = true;
 };
 
-const cropImage = async (cropper: Ref) => {
-  if (cropper.value) {
-    const { canvas } = cropper.value.getResult();
+const cropImage = async (cropperRef: Ref) => {
+  if (cropperRef.value) {
+    const { canvas } = cropperRef.value.getResult();
     const croppedImg = canvas.toDataURL("image/jpg");
-    await onUploaded(croppedImg);
+    await onUpload(croppedImg);
   }
 };
 
-const onUploaded = async (croppedImg: string) => {
+const onUpload = async (croppedImg: string) => {
   isUpdateProfileLoading.value = true;
 
   if (typeof croppedImg !== "string") return;

@@ -15,6 +15,9 @@ export default defineNuxtConfig({
     "nuxt-icon",
     "@nuxt/image",
   ],
+  build: {
+    transpile: ["vue-advanced-cropper"],
+  },
   image: {
     providers: {
       s3: {

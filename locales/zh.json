@@ -66,5 +66,7 @@
   "reject": "拒绝",
   "confirm": "确认",
   "confirm_sending": "确认发送?",
-  "reject_sending": "拒绝发送?"
+  "reject_sending": "拒绝发送?",
+  "upload": "上传",
+  "save": "节省"
 }
