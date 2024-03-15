@@ -4,6 +4,13 @@
       'flex items-center justify-between px-2 py-1',
       replying ? 'replying-layout' : 'layout',
     ]"
+    @click="
+      () => {
+        if (replying) return;
+
+        emits('on-header-click', chat?.reply_message?.id || 0);
+      }
+    "
   >
     <div>
       <div v-if="chat?.reply_message">
@@ -45,6 +52,7 @@ defineProps<{
 
 const emits = defineEmits<{
   (e: "cancel"): void;
+  (e: "on-header-click", id: number): void;
 }>();
 </script>
 
