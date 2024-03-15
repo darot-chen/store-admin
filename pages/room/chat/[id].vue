@@ -13,7 +13,8 @@
       />
     </div>
     <div
-      class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-auto pt-2"
+      id="chat-container"
+      class="mx-1 flex flex-grow flex-col gap-[1rem] overflow-scroll pt-2"
       @scroll="onScroll"
     >
       <UiCircularLoading
@@ -54,7 +55,7 @@
     </div>
     <button
       v-show="showScrollButton"
-      class="fixed right-14 rounded-full bg-blue-500 p-2 text-white shadow-lg"
+      class="fixed right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
       :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
       @click="onScrollToBottom"
     >
@@ -168,6 +169,7 @@ const isUploading = ref<boolean>(false);
 const showConfirmationPopup = ref<boolean>(false);
 const prevDetail = ref<ChatDetail>();
 const newOrderDetail = ref<OrderDetail>();
+
 const { t } = useI18n();
 
 const upperCursor = ref<number>();
@@ -429,7 +431,7 @@ async function onFetchChatWithMSGId(id: string) {
   ) as HTMLElement | null;
 
   if (chatElement) {
-    chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+    chatElement?.scrollIntoView({ behavior: "instant", block: "center" });
   }
 }
 
@@ -519,8 +521,6 @@ async function sleepScrollToBottom() {
 
 async function onScrollToBottom() {
   if (bottomEl.value) {
-    console.log(msgId);
-
     if (msgId) {
       lastItemId.value = 0;
       hasMore.value = false;
@@ -571,58 +571,49 @@ async function fetchChatWithParam(
 
 const onScroll = useDebounceFn(async (e: Event) => {
   const target = e.target as HTMLDivElement;
-  const scrollTop = target.scrollTop;
+  const scrollTop = target?.scrollTop;
   const prevScrollHeight = target.scrollHeight ?? 0;
   const prevScrollTop = target.scrollTop ?? 0;
   const clientHeight = target.clientHeight ?? 0;
-  const scrollHeight = target.scrollHeight ?? 0;
 
-  const atBottom = scrollTop + clientHeight >= scrollHeight - 20;
-  showScrollButton.value = !atBottom;
+  const atTop = scrollTop === 0;
 
-  const element = document.getElementById(
-    `chat_${chats.value[0]?.id}`
-  ) as HTMLElement | null;
+  const atBottom =
+    scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
+
+  const atBottomForScrollBottom =
+    scrollTop + clientHeight >= prevScrollHeight - 20;
+  showScrollButton.value = !atBottomForScrollBottom;
 
   function scrollAnimatedFrame() {
-    requestAnimationFrame(async () => {
-      await nextTick(() => {
-        target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
-
-        target.style.overflow = "hidden";
-        requestAnimationFrame(() => {
-          target.style.overflow = "scroll";
+    const scrollHeight = target.scrollHeight ?? 0;
+    if (scrollHeight) {
+      requestAnimationFrame(async () => {
+        await nextTick(() => {
+          target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
+          target.style.overflow = "hidden";
+          requestAnimationFrame(() => {
+            target.style.overflow = "scroll";
+          });
         });
       });
-    });
+    }
   }
 
-  if (scrollTop === 0) {
+  if (atTop) {
     if (msgId) {
       if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
 
-      fetchingMoreChat.value = true;
-      const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
-
-      upperCursor.value = descChats.results[descChats.results.length - 1]?.id;
-      chats.value.unshift(...descChats.results.reverse());
-
-      isUpperChatHasNext.value = descChats.meta.has_next;
-      fetchingMoreChat.value = false;
-      await sleep(100);
-      element?.scrollIntoView({ behavior: "instant", block: "end" });
-
+      await fetchChatWithId();
+      scrollAnimatedFrame();
       return;
     }
 
     await fetchMoreChats();
-
-    if (scrollHeight) {
-      scrollAnimatedFrame();
-    }
+    scrollAnimatedFrame();
   }
 
-  if (scrollTop + clientHeight + 2 >= scrollHeight) {
+  if (atBottom) {
     if (!msgId) return;
     if (!isLowerChatHasNext.value && !fetchingMoreChat.value) return;
     fetchingMoreLowerChat.value = true;
@@ -632,6 +623,17 @@ const onScroll = useDebounceFn(async (e: Event) => {
     isLowerChatHasNext.value = ascChats.meta.has_next;
     fetchingMoreLowerChat.value = false;
     return;
+  }
+
+  async function fetchChatWithId() {
+    fetchingMoreChat.value = true;
+    const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
+
+    chats.value.unshift(...descChats.results.reverse());
+
+    upperCursor.value = descChats.results[0]?.id;
+    isUpperChatHasNext.value = descChats.meta.has_next;
+    fetchingMoreChat.value = false;
   }
 
   async function fetchMoreChats() {
@@ -662,3 +664,10 @@ async function onSubmit() {
   sleepScrollToBottom();
 }
 </script>
+
+<style lang="css">
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+</style>
