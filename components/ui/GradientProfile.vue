@@ -15,9 +15,9 @@
 
 <script setup lang="ts">
 defineProps<{
-  imageSource?: string;
   name: string;
   size?: string;
+  imageSource?: string;
 }>();
 
 const emit = defineEmits<{

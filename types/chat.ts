@@ -17,6 +17,19 @@ export type GetMessagePayload = Cursor & {
   query: string;
 };
 
+export type ReplyMessage = {
+  id: number;
+  created_at: string;
+  chat_room_id: number;
+  user_id: number;
+  type: ChatType;
+  message: string;
+  admin_id?: number;
+  order_id?: string;
+  user: User | null;
+  admin: Admin | null;
+};
+
 export type GetChatMessageByIdPayload = Cursor & {
   msgId: number;
 };
@@ -25,13 +38,14 @@ export type Chat = {
   id: number;
   created_at: string;
   chat_room_id: number;
-  admin_id?: number;
   user_id: number;
-  order_id?: number;
   type: ChatType;
   message: string;
   user: User | null;
   admin: Admin | null;
+  admin_id?: number;
+  order_id?: number;
+  reply_message?: ReplyMessage;
   order?: Order;
 };
 
@@ -44,9 +58,9 @@ export type ChatDetail = {
   business_id: number;
   type: ChatRoomType;
   closed_at: string;
-  business?: Business;
   lobby_no: number;
   is_a_member: boolean;
+  business?: Business;
   support_ticket?: SupportTicket;
   order?: Order;
 };

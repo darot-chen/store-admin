@@ -1,5 +1,8 @@
 <template>
-  <div v-if="type !== ChatType.Action" class="inline-flex flex-col justify-end">
+  <div
+    v-if="type !== ChatType.Action"
+    :class="['inline-flex flex-col justify-end']"
+  >
     <div
       :class="[
         'flex w-full items-end',
@@ -30,6 +33,7 @@
         ]"
       >
         <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
+          <ChatReply v-if="chat?.reply_message" :chat="chat" />
           <p
             v-if="chatType === 'incoming'"
             class="incoming-name px-[0.38rem]"
@@ -77,6 +81,9 @@
             {{ formatDate(timestamp) }}
           </p>
         </div>
+      </div>
+      <div class="px-2" @click="emit('reply')">
+        <Icon name="Edit" color="#ffff" size="20" />
       </div>
     </div>
   </div>
@@ -170,16 +177,17 @@
 <script setup lang="ts">
 import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
-import { ChatType, type ChatDetail } from "~/types/chat";
+import { ChatType, type ChatDetail, type Chat } from "~/types/chat";
 import { type Order } from "~/types/order";
 
 const props = defineProps<{
   chatType: "incoming" | "outgoing";
   type: ChatType;
   text: string;
-  profile?: string;
   timestamp: string;
   name: string;
+  chat?: Chat;
+  profile?: string;
   showProfile?: boolean;
   showButton?: boolean;
   detail?: ChatDetail;
@@ -189,6 +197,8 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: "confirm"): void;
+  (e: "reply"): void;
+  (e: "cancel-reply"): void;
   (e: "reject"): void;
 }>();
 
@@ -244,8 +254,6 @@ function onPreview(v: string) {
   line-clamp: 1;
   overflow: hidden;
   padding-top: 0.75rem;
-  leading-trim: both;
-  text-edge: cap;
   text-overflow: ellipsis;
   font-size: 0.9375rem;
   font-weight: 600;

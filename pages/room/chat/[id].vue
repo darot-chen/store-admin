@@ -39,12 +39,21 @@
         :detail="c.type === ChatType.Action ? chatDetail : undefined"
         :is-selected="c.id.toString() === msgId"
         :profile="c.user?.profile_key"
+        :chat="c"
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
+        @reply="onReply(c.id)"
       />
       <div ref="bottomEl" />
     </div>
     <div class="sticky bottom-0 w-full">
+      <div v-if="replyMsgId" class="bg-white py-2 pl-6">
+        <ChatReply
+          :chat="chats.find((c) => c.id === replyMsgId)"
+          :replying="true"
+          @cancel="onCancelReply"
+        />
+      </div>
       <ChatInput
         v-if="hasJoined"
         v-model="messagePayload.message"
@@ -121,6 +130,7 @@ const loading = ref<boolean>(false);
 const chats = ref<Chat[]>([]);
 const hasJoined = ref<boolean>(false);
 const lastItemId = ref<number>(0);
+const replyMsgId = ref<number | undefined>(undefined);
 const hasMore = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const fetchingMoreChat = ref<boolean>(false);
@@ -295,6 +305,14 @@ async function onConfirmOrder() {
   } catch (error: any) {
     showFailToast(error?.message);
   }
+}
+
+function onReply(id: number) {
+  replyMsgId.value = id;
+}
+
+function onCancelReply() {
+  replyMsgId.value = undefined;
 }
 
 function onOrderClick() {
@@ -573,9 +591,10 @@ const onScroll = useDebounceFn(async (e: Event) => {
 async function onSubmit() {
   if (messagePayload.value.message.trim() === "") return;
 
-  await addChat(roomID, messagePayload.value.message.trim());
+  await addChat(roomID, messagePayload.value.message.trim(), replyMsgId.value);
 
   messagePayload.value.message = "";
+  replyMsgId.value = undefined;
   sleepScrollToBottom();
 }
 </script>

@@ -56,11 +56,16 @@ export const getChatDetail = async (roomId: number) => {
   return data;
 };
 
-export const addChat = async (roomId: number, message: string) => {
+export const addChat = async (
+  roomId: number,
+  message: string,
+  replyMsgId?: number
+) => {
   const { data } = await useAxiosInstance().post<Chat>(
     `${url}/${roomId}/chat`,
     {
       message,
+      reply_message_id: replyMsgId,
     }
   );
 
