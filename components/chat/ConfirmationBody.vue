@@ -31,7 +31,10 @@
     <div class="flex justify-between py-[5px]">
       <p class="title">{{ $t("service_quality") }}</p>
       <p class="value">
-        <UiRate :value="4" />
+        <UiRate
+          :score="props.score"
+          @update:score="(s) => $emit('update:score', s)"
+        />
       </p>
     </div>
   </div>
@@ -40,8 +43,13 @@
 <script setup lang="ts">
 import type { ChatDetail } from "~/types/chat";
 
-defineProps<{
+const props = defineProps<{
   data: ChatDetail;
+  score: number;
+}>();
+
+defineEmits<{
+  (e: "update:score", value: number): void;
 }>();
 </script>
 

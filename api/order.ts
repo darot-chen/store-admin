@@ -4,6 +4,7 @@ import type {
   GetOrderParams,
   Order,
   OrderDetail,
+  RateSeller,
 } from "~/types/order";
 import type { CursorResponse } from "~/types/pagination";
 
@@ -78,6 +79,15 @@ export const getOrders = async (id: number, params: GetOrderParams) => {
 export const reviseOrder = async (orderId: number, payload: CreateOrder) => {
   const { data } = await useAxiosInstance().put<Order>(
     `${url}/${orderId}`,
+    payload
+  );
+
+  return data;
+};
+
+export const rateSeller = async (orderId: number, payload: RateSeller) => {
+  const { data } = await useAxiosInstance().post<APIMeta>(
+    `${url}/${orderId}/rate-seller`,
     payload
   );
 
