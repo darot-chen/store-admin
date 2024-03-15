@@ -2,10 +2,15 @@
   <div class="flex-col gap-[4.24px]">
     <div class="popup-footer">
       <textarea
+        :value="comment"
         placeholder="请输入（选修的）"
         class="popup-footer-input h-[60px] w-full rounded-[7px] p-[8px] text-[8px] leading-[13px]"
+        @input="
+          (e) =>
+            $emit('update:comment', (e.target as HTMLInputElement)?.value || '')
+        "
       />
-      <button class="button-submit" @click="$emit('click')">
+      <button class="button-submit" @click="$emit('submit')">
         <p>{{ $t("submit") }}</p>
       </button>
     </div>
@@ -14,9 +19,20 @@
 </template>
 
 <script setup lang="ts">
-defineEmits<{
-  (e: "click"): void;
+const props = defineProps<{
+  comment: string;
 }>();
+const comment = ref<string>(props.comment);
+
+defineEmits<{
+  (e: "submit"): void;
+  (e: "update:comment", value: string): void;
+}>();
+
+watch(
+  () => props.comment,
+  (v) => (comment.value = v)
+);
 </script>
 
 <style scoped>

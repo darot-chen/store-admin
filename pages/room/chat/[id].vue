@@ -79,14 +79,17 @@
       v-model:show="showConfirmationPopup"
       title="交易成功"
       type="success"
-      @confirm="onConfirmOrder"
     >
       <ChatConfirmationBody
         v-if="prevDetail && prevDetail?.order"
+        v-model:score="rateScore"
         :data="prevDetail"
       />
       <template #footer>
-        <ChatConfirmationFooter @click="onConfirmOrder" />
+        <ChatConfirmationFooter
+          v-model:comment="rateComment"
+          @submit="onRateSeller"
+        />
       </template>
     </UiPopupConfirmation>
   </div>
@@ -109,7 +112,12 @@ import {
   uploadVideo,
   getChatMessageById,
 } from "~/api/chat";
-import { buyerRejectOrder, completeOrder, confirmOrder } from "~/api/order";
+import {
+  buyerRejectOrder,
+  completeOrder,
+  confirmOrder,
+  rateSeller,
+} from "~/api/order";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { SOCKET_EVENT } from "~/constants/socket";
 import { ChatType, type Chat, type ChatDetail } from "~/types/chat";
@@ -139,6 +147,9 @@ const isUploading = ref<boolean>(false);
 const showConfirmationPopup = ref<boolean>(false);
 const prevDetail = ref<ChatDetail>();
 const newOrderDetail = ref<OrderDetail>();
+const rateScore = ref<number>(0);
+const rateComment = ref<string>("");
+const orderID = ref<number | undefined>();
 const { t } = useI18n();
 
 const upperCursor = ref<number>();
@@ -175,6 +186,9 @@ onMounted(() => {
 
     if (d.data.type === ChatType.Action) {
       chatDetail.value = await getChatDetail(roomID);
+      if (chatDetail.value.order?.id) {
+        orderID.value = chatDetail.value.order?.id;
+      }
     }
 
     if (
@@ -596,5 +610,22 @@ async function onSubmit() {
   messagePayload.value.message = "";
   replyMsgId.value = undefined;
   sleepScrollToBottom();
+}
+
+async function onRateSeller() {
+  if (!orderID.value) return;
+
+  try {
+    await rateSeller(orderID.value, {
+      score: rateScore.value,
+      comment: rateComment.value,
+    });
+  } catch (error: any) {
+    showFailToast(error);
+  } finally {
+    showConfirmationPopup.value = false;
+    rateScore.value = 0;
+    rateComment.value = "";
+  }
 }
 </script>
