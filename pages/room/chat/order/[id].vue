@@ -242,11 +242,10 @@ const fee = ref<{
   otherFee: number;
   selected_rate?: Rate;
   handlingFeePercentage: number;
-  status: OrderStatus;
+  status?: OrderStatus;
   order_id: number;
 }>({
   order_id: 0,
-  status: OrderStatus.UNKNOWN,
   otherFee: 0,
   handlingFeePercentage: 20,
 });
@@ -400,8 +399,6 @@ onMounted(async () => {
       currencyStore.getCurrencyOptions(),
     ]);
 
-    console.log(getDetail);
-
     chatDetail.value = getDetail;
     members.value = getMember;
 
@@ -445,7 +442,7 @@ onMounted(async () => {
       fee.value = {
         order_id: chatDetail.value.order?.id ?? 0,
         otherFee: chatDetail.value.order?.other_expense ?? 0,
-        status: chatDetail.value.order?.status ?? OrderStatus.UNKNOWN,
+        status: chatDetail.value.order?.status,
         selected_rate: {
           id: "0",
           baseCurrency: chatDetail.value.order?.buyer_currency?.code ?? "USDT",
