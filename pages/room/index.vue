@@ -20,7 +20,7 @@ import type { ChatRoom } from "~/types/chatRoom";
 
 const roomType = ref<string>("private");
 
-const { $evOn } = useNuxtApp();
+const { $evOn, $evOff } = useNuxtApp();
 
 const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
@@ -83,6 +83,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, () => {});
+  $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
 });
 </script>
