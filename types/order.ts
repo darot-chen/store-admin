@@ -8,6 +8,7 @@ export enum OrderStatus {
   PROCESSING = "processing",
   REJECTED = "rejected",
   CANCELLED = "cancelled",
+  UNKNOWN = "unknown",
 }
 
 export enum CommissionType {
