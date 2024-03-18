@@ -187,7 +187,14 @@
           <p class="total-amount">{{ payload.amount }}</p>
         </div>
         <UiButton
-          class="px-[42px] py-[7px]"
+          v-show="fee.status === OrderStatus.CONFIRMING"
+          class="mr-3 px-[20px] py-[7px]"
+          :title="$t('cancel')"
+          type="secondary"
+          @click="onCancelOrderClick"
+        />
+        <UiButton
+          class="px-[20px] py-[7px]"
           title="确认"
           @click="onOrderClick"
         />
@@ -204,7 +211,7 @@
 <script setup lang="ts">
 import { showFailToast } from "vant";
 import { getChatDetail, getChatRoomMembers } from "~/api/chat";
-import { createOrder, reviseOrder } from "~/api/order";
+import { createOrder, reviseOrder, sellerCancelOrder } from "~/api/order";
 import { getRate } from "~/api/rate";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { PAYMENT_METHODS } from "~/constants/options/payment-method";
@@ -235,7 +242,10 @@ const fee = ref<{
   otherFee: number;
   selected_rate?: Rate;
   handlingFeePercentage: number;
+  status?: OrderStatus;
+  order_id: number;
 }>({
+  order_id: 0,
   otherFee: 0,
   handlingFeePercentage: 20,
 });
@@ -299,6 +309,18 @@ function onToggleExchangeRate(v: boolean) {
 
   if (v === false) {
     getExchangeRate();
+  }
+}
+
+async function onCancelOrderClick() {
+  try {
+    const result = await sellerCancelOrder(fee.value.order_id);
+
+    if (result.message === "Success") {
+      navigateTo(`/room/chat/${roomId}`);
+    }
+  } catch (error: any) {
+    showFailToast(error?.message ?? "");
   }
 }
 
@@ -418,7 +440,9 @@ onMounted(async () => {
       };
 
       fee.value = {
+        order_id: chatDetail.value.order?.id ?? 0,
         otherFee: chatDetail.value.order?.other_expense ?? 0,
+        status: chatDetail.value.order?.status,
         selected_rate: {
           id: "0",
           baseCurrency: chatDetail.value.order?.buyer_currency?.code ?? "USDT",

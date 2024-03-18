@@ -68,7 +68,8 @@
 
 <script setup lang="ts">
 import { getOrders } from "~/api/order";
-import type { OrderDetail } from "~/types/order";
+import { SOCKET_EVENT } from "~/constants/socket";
+import { OrderStatus, type OrderDetail } from "~/types/order";
 
 const props = defineProps<{
   paidAmount: number;
@@ -80,6 +81,8 @@ const props = defineProps<{
   newOrder?: OrderDetail;
   exchangeRate: number;
 }>();
+
+const { $evOn, $evOff } = useNuxtApp();
 
 const isLoading = ref(false);
 const cursorId = ref(0);
@@ -102,6 +105,20 @@ watch(
 
 onMounted(() => {
   fetchOrders(props.party);
+
+  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d: any) => {
+    if (
+      d.data?.status === OrderStatus.SUCCESS &&
+      d.data?.seller_completed_at &&
+      d.data?.buyer_completed_at
+    ) {
+      orders.value.length = 0;
+    }
+  });
+});
+
+onBeforeUnmount(() => {
+  $evOff(SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED);
 });
 
 const debouncedScrollHandler = useDebounceFn((event: UIEvent) => {
