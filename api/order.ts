@@ -93,3 +93,14 @@ export const rateSeller = async (orderId: number, payload: RateSeller) => {
 
   return data;
 };
+
+export const getOrderDetail = async (
+  orderId: number,
+  params: GetOrderParams
+) => {
+  const { data } = await useAxiosInstance().get<Order>(`${url}/${orderId}`, {
+    params,
+  });
+
+  return data;
+};

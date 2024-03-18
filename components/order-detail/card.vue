@@ -8,24 +8,36 @@
       <div class="!mb-4 flex items-center gap-x-2">
         <Icon name="cryptocurrency-color:usdc" size="32" color="#3e73c4" />
         <div>
-          <p class="text-[16px]">500,000.00</p>
-          <p class="text-[8px]">≈ 510,000.00 USD</p>
+          <p class="text-[16px]">{{ order?.amount }}</p>
+          <p class="text-[8px]">≈ {{ order?.amount_to_be_paid }} USD</p>
         </div>
       </div>
       <div class="flex w-full gap-x-3 text-[11px]">
-        <p>费率：20% | 汇率：0.98</p>
-        <p>其他费: 0u</p>
+        <p>
+          费率：{{ order?.handling_fee_percentage }}% | 汇率：{{
+            order?.exchange_rate
+          }}
+        </p>
+        <p>其他费: {{ order?.total_commission }}u</p>
       </div>
       <div class="flex w-full gap-x-3 text-[11px]">
         <p>平台佣金: USDT 51.00</p>
-        <p>佣金支付方: 供方付</p>
+        <p>
+          佣金支付方: {{ isSeller(order?.seller_id!) ? "供方付" : "买家付款" }}
+        </p>
       </div>
       <div class="wallet-badge absolute -right-3 top-0 pl-4 pr-2">
-        <p class="w-[72px] text-center">担保订单：BS000001</p>
+        <p class="w-[72px] text-center">担保订单：<br />{{ order?.id }}</p>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import type { Order } from "~/types/order";
+
+defineProps<{ order?: Order }>();
+</script>
 
 <style scoped>
 .wallet-badge {

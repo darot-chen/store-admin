@@ -5,7 +5,12 @@
         <h2>交易总额 {{ detail?.order?.seller_currency?.code || "USDT" }}</h2>
         <button
           class="flex cursor-pointer flex-row items-center"
-          @click="navigateTo(`order-detail/${roomID}`)"
+          @click="
+            () => {
+              if (detail?.order?.id)
+                navigateTo(`order-detail/${detail?.order?.id}`);
+            }
+          "
         >
           <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
           <Icon name="Clock" class="ml-2" />
@@ -97,9 +102,6 @@
 import { showConfirmDialog } from "vant";
 import type { ChatDetail } from "~/types/chat";
 import type { OrderDetail } from "~/types/order";
-const route = useRoute();
-
-const roomID = +route.params.id;
 
 const props = defineProps<{
   detail?: ChatDetail;

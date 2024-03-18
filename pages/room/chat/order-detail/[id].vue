@@ -1,15 +1,15 @@
 <template>
   <div>
-    <OrderDetailCard />
+    <OrderDetailCard :order="orderDetail" />
     <!-- Button List -->
     <div class="flex justify-center gap-x-2 text-[11px] text-white">
-      <div
-        v-for="(title, index) in titles"
-        :key="index"
-        class="my-2 rounded-md bg-[#50A7EA] px-2 py-1"
-      >
-        {{ title }}
+      <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">
+        {{ formatDate(orderDetail?.created_at.toString(), "YYYY年MM月DD日") }}
       </div>
+      <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">
+        订单 {{ orderId }}
+      </div>
+      <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">全部流水</div>
     </div>
     <!-- Issue/Deposit Titles -->
     <div class="my-2 h-[2px] bg-[#E0E6EB]"></div>
@@ -53,9 +53,14 @@
 </template>
 
 <script setup lang="ts">
-const pageStore = usePageStore();
+import { getOrderDetail } from "~/api/order";
+import type { Order } from "~/types/order";
 
-const titles: string[] = ["2022年8月25日", "订单BS000002", "全部流水"];
+const orderDetail = ref<Order>();
+const pageStore = usePageStore();
+const route = useRoute();
+
+const orderId: number = +route.params.id;
 
 type Transaction = {
   date: string;
@@ -101,6 +106,16 @@ const orderTransactions: OrderTransaction[] = [
     },
   },
 ];
+
+async function fetchOrderDetail() {
+  orderDetail.value = await getOrderDetail(orderId, {
+    party: "buyer",
+    limit: 10,
+    last: 0,
+  });
+}
+
+fetchOrderDetail();
 
 onMounted(() => {
   pageStore.setTitle("宣示账单");
