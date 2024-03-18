@@ -25,6 +25,10 @@ import type { User } from "~/types/user";
 const user = ref<User>();
 const selectedTab = ref<Option>(PROFILE_TAB_OPTIONS[0]);
 
+definePageMeta({
+  keepalive: true,
+});
+
 const profileBottomItems: Cell[] = [
   {
     title: "纠纷处理中",

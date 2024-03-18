@@ -406,22 +406,16 @@ onMounted(async () => {
       chatDetail.value?.order?.status === OrderStatus.REJECTED ||
       chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
 
-    if (route.query.revisable && !isOrderConfirmingOrRejected) {
-      payload.value.buyer_id = +buyers.value[0].value;
-      payload.value.seller_currency_id =
-        chatDetail.value.business?.currency_id ?? 0;
-
-      if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
-        payload.value.buyer_currency_id = currencyStore.data[1].id;
-      } else {
-        payload.value.buyer_currency_id = currencyStore.data[0].id;
-      }
-
-      router.replace(route.path);
-    } else if (
-      (isRevisable.value && isOrderConfirmingOrRejected.value) ||
-      isOrderConfirmingOrRejected.value
-    ) {
+    buyers.value = members.value
+      .filter((member) => member.user_id !== authStore.user?.id)
+      .map((member) => {
+        return {
+          label: member?.user?.name ?? member?.admin?.name ?? "",
+          value:
+            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
+        };
+      });
+    if (isRevisable.value && isOrderConfirmingOrRejected.value) {
       payload.value = {
         chat_room_id: roomId,
         amount: chatDetail.value.order?.amount_to_be_paid ?? 0,
@@ -459,17 +453,21 @@ onMounted(async () => {
           revisable: "true",
         },
       });
+    } else {
+      payload.value.buyer_id = +buyers.value[0].value;
+      payload.value.seller_currency_id =
+        chatDetail.value.business?.currency_id ?? 0;
+
+      if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
+        payload.value.buyer_currency_id = currencyStore.data[1].id;
+      } else {
+        payload.value.buyer_currency_id = currencyStore.data[0].id;
+      }
     }
 
-    buyers.value = members.value
-      .filter((member) => member.user_id !== authStore.user?.id)
-      .map((member) => {
-        return {
-          label: member?.user?.name ?? member?.admin?.name ?? "",
-          value:
-            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
-        };
-      });
+    router.replace({
+      query: {},
+    });
 
     await getExchangeRate();
   } catch (error) {
