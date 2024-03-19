@@ -66,11 +66,13 @@ function handleScroll(event: Event) {
 
 onMounted(() => {
   fetchChatRooms();
+
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     const index = chatRooms.value.findIndex(
-      (c) => c.id === d?.data?.chat_room?.id
+      (room) => room.id === d?.data.chat_room_id
     );
-    if (index) {
+
+    if (index >= 0) {
       chatRooms.value[index].latest_message = d?.data;
       chatRooms.value[index].total_unread += 1;
 

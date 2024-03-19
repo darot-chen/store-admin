@@ -69,7 +69,11 @@
   "reject_sending": "Reject sending?",
   "upload": "Upload",
   "save": "Save",
+  "save_edit": "Save",
   "cancel": "Cancel",
   "name": "Name",
-  "search": "Search"
+  "search": "Search",
+  "validation": {
+    "max_length": "最大长度 {length}"
+  }
 }

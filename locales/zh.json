@@ -68,8 +68,12 @@
   "confirm_sending": "确认发送?",
   "reject_sending": "拒绝发送?",
   "upload": "上传",
-  "save": "保存",
+  "save": "节省",
+  "save_edit": "保存",
   "cancel": "取消",
   "name": "姓名",
-  "search": "搜索"
+  "search": "搜索",
+  "validation": {
+    "max_length": "最大长度 {length}"
+  }
 }
