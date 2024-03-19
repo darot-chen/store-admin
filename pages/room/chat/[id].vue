@@ -76,7 +76,7 @@
       </svg>
     </button>
     <div class="sticky bottom-0 w-full">
-      <div v-if="replyMsgId" class="bg-white py-2 pl-6">
+      <div v-if="replyMsgId" class="bg-white py-2">
         <ChatReply
           :chat="chats.find((c) => c.id === replyMsgId)"
           :replying="true"
