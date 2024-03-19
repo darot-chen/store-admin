@@ -39,3 +39,13 @@ export const sleep = (ms: number): Promise<{ timeout: boolean }> => {
     }, ms);
   });
 };
+
+export const isSeller = (sellerId: number): boolean => {
+  const authStore = useAuthStore();
+  return authStore.user?.id === sellerId;
+};
+
+export const isBuyer = (buyerId: number): boolean => {
+  const authStore = useAuthStore();
+  return authStore.user?.id === buyerId;
+};

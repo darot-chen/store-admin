@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { getOrders } from "~/api/order";
+import { getOrdersPayment } from "~/api/order";
 import { SOCKET_EVENT } from "~/constants/socket";
 import { OrderStatus, type OrderDetail } from "~/types/order";
 
@@ -158,7 +158,7 @@ async function fetchOrders(party: string) {
     isLoading.value = true;
   }
 
-  const res = await getOrders(props.id, {
+  const res = await getOrdersPayment(props.id, {
     last: cursorId.value,
     party,
     limit: 10,
