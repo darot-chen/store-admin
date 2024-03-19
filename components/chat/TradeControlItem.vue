@@ -1,44 +1,43 @@
 <template>
   <div v-bind="$attrs" class="more-detail relative flex h-fit flex-col">
     <div style="padding: 0.5rem">
-      <div class="amount">
+      <div class="amount mb-1">
         <div class="label">
           <p class="remaining-title">
             {{ "已入款 / 应入款" + " (" + `${paymentCount ?? 0}` + "笔)" }}
           </p>
         </div>
         <div class="flex">
-          <p class="remaining-paid">
-            {{ paidAmount }}
-          </p>
-          <p class="remaining">
-            {{ `/${totalAmount} ${currency}` }}
+          <p class="remaining-paid">{{ paidAmount.toVFixed(2) }}</p>
+          <p class="remaining !text-[12px]">
+            {{ `/${totalAmount.toVFixed(2)}${currency}` }}
           </p>
         </div>
-        <p class="remaining" style="font-size: 13px">
-          未下发 {{ (totalAmount - paidAmount).toVFixed(2) }}
-          {{ props?.currency || "USDT" }}
-        </p>
+        <div class="remaining flex">
+          <p class="text-[10px]">未下发</p>
+          <p class="px-1 !text-[15px]">
+            {{ (totalAmount - paidAmount).toVFixed(2) }}
+          </p>
+          <p>{{ props?.currency || "USDT" }}</p>
+        </div>
       </div>
 
       <div v-if="isVisible" class="mx-1 flex flex-col">
-        <div class="divider my-2 h-0 border-t">
-          <UiDivider />
-        </div>
+        <div class="divider mt-1 h-0 border-t"></div>
         <div
           style="height: 100px"
-          class="gap-[1rem] overflow-auto pt-1"
+          class="gap-[1rem] overflow-auto pt-0"
           @scroll="debouncedScrollHandler"
         >
           <div v-for="(order, index) in orders" :key="index">
             <div class="paid-detail my-2 flex w-auto flex-row">
               <p class="time">
-                {{ getFormattedTime(order.created_at) }}
+                {{ formatDate(order.created_at, "hh:mm:ss") }}
               </p>
-              <p class="ml-1">
-                {{ order.quantity_given ?? order.amount_paid }}
+              <p class="ml-1 !text-[14px]">
+                {{ (order.quantity_given ?? order.amount_paid).toFixed(2) }}
               </p>
-              <p v-show="currency !== 'USDT'" class="u">
+              <p v-show="currency !== 'USDT'" class="u !pl-0.5">
                 ({{
                   (
                     (order.quantity_given ?? order.amount_paid) / exchangeRate
@@ -132,23 +131,6 @@ const debouncedScrollHandler = useDebounceFn((event: UIEvent) => {
   }
 }, 300);
 
-const getFormattedTime = (date: string): string => {
-  if (!date) return "no date";
-
-  const formattedDate = new Date(date);
-  const hours = formattedDate.getHours();
-  const minutes = formattedDate.getMinutes();
-  const seconds = formattedDate.getSeconds();
-
-  const formattedHours = String(hours).padStart(2, "0");
-  const formattedMinutes = String(minutes).padStart(2, "0");
-  const formattedSeconds = String(seconds).padStart(2, "0");
-
-  const wantedFormat = `${formattedHours} : ${formattedMinutes} : ${formattedSeconds}`;
-
-  return wantedFormat;
-};
-
 const onClicked = () => {
   isVisible.value = !isVisible.value;
 };
@@ -189,9 +171,10 @@ async function fetchOrders(party: string) {
 }
 .remaining {
   color: #b7b7b7;
-  font-size: 10px;
+  font-size: 12px;
   font-style: normal;
-  font-weight: 700;
+  font-family: "DIN ALTERNATE";
+  font-weight: 600;
   line-height: 100%;
   margin-top: 3px;
   margin-left: 1px;
@@ -199,9 +182,10 @@ async function fetchOrders(party: string) {
 
 .remaining-paid {
   color: #212121;
-  font-size: 13px;
+  font-size: 15px;
   font-style: normal;
-  font-weight: 700;
+  font-family: "DIN ALTERNATE";
+  font-weight: 600;
   line-height: 100%;
 }
 
@@ -209,23 +193,24 @@ async function fetchOrders(party: string) {
   color: #b7b7b7;
   font-size: 12px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
+  font-family: "DIN ALTERNATE";
 }
 
 .paid-detail .time {
   color: #868686;
-  font-size: 6px;
+  font-size: 9px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 400;
   line-height: normal;
 }
 
 .paid-detail .u {
   color: #868686;
-  font-size: 12px;
+  font-size: 14px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: normal;
 }
 

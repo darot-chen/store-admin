@@ -14,7 +14,9 @@
             }
           "
         >
-          <p>{{ detail?.order?.amount_to_be_paid || 0 }}</p>
+          <p class="din-alternate-text">
+            {{ detail?.order?.amount_to_be_paid || 0 }}
+          </p>
           <Icon name="Clock" class="ml-2" />
         </button>
       </div>
