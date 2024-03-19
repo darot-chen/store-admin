@@ -103,6 +103,6 @@ const orderTransactions: OrderTransaction[] = [
 ];
 
 onMounted(() => {
-  pageStore.setTitle("宣示账单");
+  pageStore.setTitle("显示账单");
 });
 </script>
