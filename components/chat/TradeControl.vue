@@ -8,7 +8,9 @@
           @click="
             () => {
               if (detail?.order?.id)
-                navigateTo(`order-detail/${detail?.order?.id}`);
+                navigateTo(
+                  `order-detail/${detail?.order?.id}?lobbyTitle=${lobbyTitle}`
+                );
             }
           "
         >
@@ -107,6 +109,7 @@ const props = defineProps<{
   detail?: ChatDetail;
   showConfirmButton?: boolean;
   newOrderDetail?: OrderDetail;
+  lobbyTitle: string;
 }>();
 
 const authStore = useAuthStore();

@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <OrderDetailCard :order="orderDetail" />
+  <div v-if="!loading">
+    <OrderDetailCard :order="order" :lobby-title="lobbyTitle" />
     <!-- Button List -->
     <div class="flex justify-center gap-x-2 text-[11px] text-white">
       <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">
-        {{ formatDate(orderDetail?.created_at.toString(), "YYYY年MM月DD日") }}
+        {{ formatDate(order?.created_at.toString(), "YYYY年MM月DD日") }}
       </div>
       <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">
-        订单 {{ orderId }}
+        订单 {{ formatOrderId(order?.id || 0) }}
       </div>
       <div class="my-2 rounded-md bg-[#50A7EA] px-2 py-1">全部流水</div>
     </div>
@@ -15,109 +15,100 @@
     <div class="my-2 h-[2px] bg-[#E0E6EB]"></div>
     <div class="my-3 flex justify-center">
       <div class="flex w-1/2 items-center justify-center">
-        <p class="text-[10px] font-bold">（2笔）</p>
+        <p class="text-[10px] font-bold">
+          （{{ sellerOrderPayments.length }}笔）
+        </p>
         <p class="text-[14px] text-red-500">下发</p>
       </div>
       <div class="flex w-1/2 items-center justify-start">
         <p class="text-[14px] text-green-500">入款</p>
-        <p class="text-[10px] font-bold">（3笔）</p>
+        <p class="text-[10px] font-bold">
+          （{{ buyerOrderPayments.length }}笔）
+        </p>
       </div>
     </div>
     <div class="my-2 h-[2px] bg-[#E0E6EB]"></div>
     <!-- Transaction List -->
-    <div
-      v-for="(trans, index) in orderTransactions"
-      :key="index"
-      class="flex border-b-2 px-4 py-4"
-    >
-      <!-- Issue -->
-      <div v-if="!trans.issue" class="w-1/2"></div>
-      <OrderDetailTransaction
-        v-else
-        type="issue"
-        :date="trans.issue?.date ?? ''"
-        :amount="trans.issue?.amount ?? 0"
-        :exchange-amount="trans.issue?.exchangeAmount ?? 0"
-      />
-      <!-- Deposit -->
-      <div v-if="!trans.deposit" class="w-1/2"></div>
-      <OrderDetailTransaction
-        v-else
-        type="deposit"
-        :date="trans.deposit?.date ?? ''"
-        :amount="trans.deposit?.amount ?? 0"
-        :exchange-amount="trans.deposit?.exchangeAmount ?? 0"
-      />
+    <div class="flex">
+      <!-- Seller -->
+      <div class="w-1/2">
+        <OrderDetailTransaction
+          v-for="payment in sellerOrderPayments"
+          :key="payment.id"
+          type="issue"
+          :currency="order?.base_currency || ''"
+          :date="formatDate(payment.created_at, 'hh:mm:ss') || ''"
+          :amount="payment.amount_paid ?? 0"
+          :exchange-amount="payment.amount_paid ?? 0"
+        />
+      </div>
+      <!-- Buyer -->
+      <div class="w-1/2">
+        <OrderDetailTransaction
+          v-for="payment in buyerOrderPayments"
+          :key="payment.id"
+          type="deposit"
+          :currency="order?.quote_currency || ''"
+          :date="formatDate(payment.created_at, 'hh:mm:ss') || ''"
+          :amount="payment.quantity_given ?? 0"
+          :exchange-amount="payment.quantity_given ?? 0"
+        />
+      </div>
     </div>
   </div>
+  <UiCircularLoading
+    v-else
+    class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+    size="40"
+  />
 </template>
 
 <script setup lang="ts">
-import { getOrderDetail } from "~/api/order";
-import type { Order } from "~/types/order";
+import { showFailToast } from "vant";
+import { getOrderDetail, getOrdersPayment } from "~/api/order";
+import type { Order, OrderDetail } from "~/types/order";
+import { formatOrderId } from "~/utils/formatOrderId";
 
-const orderDetail = ref<Order>();
+const loading = ref<boolean>(false);
+
+const order = ref<Order>();
+const sellerOrderPayments = ref<OrderDetail[]>([]);
+const buyerOrderPayments = ref<OrderDetail[]>([]);
 const pageStore = usePageStore();
 const route = useRoute();
 
 const orderId: number = +route.params.id;
-
-type Transaction = {
-  date: string;
-  amount: number;
-  exchangeAmount: number;
-};
-
-type OrderTransaction = {
-  issue?: Transaction;
-  deposit?: Transaction;
-};
-
-const orderTransactions: OrderTransaction[] = [
-  {
-    issue: {
-      date: "15:25:59",
-      amount: 228000.0,
-      exchangeAmount: 223529.41,
-    },
-    deposit: {
-      date: "15:25:00",
-      amount: 200000.0,
-      exchangeAmount: 20400,
-    },
-  },
-  {
-    deposit: {
-      date: "15:24:00",
-      amount: 200000.0,
-      exchangeAmount: 20400,
-    },
-  },
-  {
-    issue: {
-      date: "15:24:59",
-      amount: 180000.0,
-      exchangeAmount: 176470.59,
-    },
-    deposit: {
-      date: "15:25:00",
-      amount: 228000.0,
-      exchangeAmount: 232560.58,
-    },
-  },
-];
+const lobbyTitle: string = route.query.lobbyTitle as string;
 
 async function fetchOrderDetail() {
-  orderDetail.value = await getOrderDetail(orderId, {
+  order.value = await getOrderDetail(orderId, {
     party: "buyer",
     limit: 10,
     last: 0,
   });
 }
 
-fetchOrderDetail();
+async function fetchOrderPayments(isSeller: boolean) {
+  const res = await getOrdersPayment(orderId, {
+    last: 0,
+    party: isSeller ? "seller" : "buyer",
+    limit: 10,
+  });
 
-onMounted(() => {
+  return res.results;
+}
+
+onMounted(async () => {
   pageStore.setTitle("宣示账单");
+  loading.value = true;
+  try {
+    await fetchOrderDetail();
+    buyerOrderPayments.value = await fetchOrderPayments(false);
+    sellerOrderPayments.value = await fetchOrderPayments(true);
+  } catch (error: any) {
+    showFailToast(error?.message);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>

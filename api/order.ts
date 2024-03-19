@@ -65,7 +65,7 @@ export const completeOrder = async (orderId: number) => {
   return data;
 };
 
-export const getOrders = async (id: number, params: GetOrderParams) => {
+export const getOrdersPayment = async (id: number, params: GetOrderParams) => {
   const { data } = await useAxiosInstance().get<CursorResponse<OrderDetail[]>>(
     `${url}/${id}/payments`,
     {
