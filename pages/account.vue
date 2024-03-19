@@ -4,7 +4,7 @@
     <UiSwitch v-model="selectedTab" :options="PROFILE_TAB_OPTIONS" />
     <div class="inline-flex justify-between gap-[6px]">
       <UiCard title="成功交易数次" icon="Check2" value="367" color="#007AFF" />
-      <UiCard title="总交易额" icon="List" value="商户信用度" color="#007AFF" />
+      <UiCard title="交易总额" icon="List" value="商户信用度" color="#007AFF" />
       <UiCard
         title="商户信用度"
         icon="PersonCheck"

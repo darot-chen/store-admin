@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="flex flex-col justify-between">
-      <UiDivider class="m-0 mb-[5px] w-full border-t border-[#CCC]" />
+      <UiDivider class="mb-[5px] h-0 w-full border-t border-[#CCC]" />
       <p class="font-500 place-self-center text-xs text-black">
         Jan,2 2024 at 6:00 in the morning
       </p>
