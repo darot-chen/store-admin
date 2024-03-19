@@ -33,7 +33,7 @@
         center
         clearable
         autofocus
-        label="Name"
+        :label="$t('name')"
         :placeholder="user.name"
       >
         <template #button>
