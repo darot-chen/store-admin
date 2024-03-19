@@ -45,7 +45,7 @@
             loading-type="spinner"
             @click="onSavedUsername"
           >
-            {{ $t("save") }}
+            {{ $t("save_edit") }}
           </VanButton>
         </template>
       </VanField>
