@@ -98,10 +98,6 @@ async function fetchOrderPayments(isSeller: boolean) {
   return res.results;
 }
 
-<<<<<<< HEAD
-onMounted(() => {
-  pageStore.setTitle("显示账单");
-=======
 onMounted(async () => {
   pageStore.setTitle("宣示账单");
   loading.value = true;
@@ -114,6 +110,5 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
->>>>>>> 759c6c56b6e78b25a684e9252209a8f8fd05af09
 });
 </script>
