@@ -1,5 +1,5 @@
 <template>
-  <div class="flex w-1/2 grow items-center">
+  <div class="flex w-full grow items-center border-b-2 px-4 py-2">
     <Icon
       :name="
         type === 'issue'
@@ -15,7 +15,7 @@
         {{ type === "issue" ? "下发" : "" }} {{ amount }}
       </p>
       <p class="text-[10px] text-gray-400">
-        {{ exchangeAmount }} {{ type === "issue" ? "USD" : "USDT" }}
+        {{ exchangeAmount }} {{ currency }}
       </p>
     </div>
     <Icon name="solar:link-bold-duotone" size="10" color="#3BA9EC" />
@@ -26,6 +26,7 @@
 defineProps<{
   type: "issue" | "deposit";
   date: string;
+  currency: string;
   amount: number;
   exchangeAmount: number;
 }>();

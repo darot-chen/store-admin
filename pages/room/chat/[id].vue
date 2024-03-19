@@ -3,6 +3,7 @@
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
+        :lobby-title="title"
         :detail="chatDetail"
         :new-order-detail="newOrderDetail"
         :show-confirm-button="showConfirmOrder"
@@ -163,6 +164,7 @@ const pageStore = usePageStore();
 const roomID = +route.params.id;
 let msgId = route.query.msgId;
 
+const title = ref<string>("");
 const bottomEl = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
 const chats = ref<Chat[]>([]);
@@ -429,11 +431,11 @@ async function onFetchChatWithMSGId(id: string) {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  let title = detail?.business?.title ?? "";
+  title.value = detail?.business?.title ?? "";
   if (detail?.lobby_no) {
-    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+    title.value = `${title.value} ${t("lobby_no")} ${detail.lobby_no}`;
   }
-  pageStore.setTitle(title ?? "");
+  pageStore.setTitle(title.value ?? "");
 
   const sortedChatResult = chatResult.sort((a, b) => a.id - b.id);
 
@@ -506,11 +508,11 @@ async function fetchChats() {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  let title = detail?.business?.title ?? "";
+  title.value = detail?.business?.title ?? "";
   if (detail?.lobby_no) {
-    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+    title.value = `${title.value} ${t("lobby_no")} ${detail.lobby_no}`;
   }
-  pageStore.setTitle(title ?? "");
+  pageStore.setTitle(title.value ?? "");
 
   const chatRes = await getChat(roomID, {
     last: lastItemId.value,
