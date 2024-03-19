@@ -70,5 +70,9 @@
   "upload": "Upload",
   "save": "Save",
   "cancel": "Cancel",
-  "name": "Name"
+  "name": "Name",
+  "validation": {
+    "max_length": "最大长度 {length}"
+  }
 }
+
