@@ -30,13 +30,13 @@
             class="primary-button"
             @click="onConfirmPayment"
           >
-            发起报备
+            完成交易
           </button>
         </div>
         <div v-else-if="showCreateOrder" class="action">
           <div class="primary-button">
             <button class="primary-button" @click="$emit('order')">
-              完成交易
+              发起报备
             </button>
           </div>
         </div>
