@@ -75,5 +75,7 @@
   "search": "搜索",
   "validation": {
     "max_length": "最大长度 {length}"
-  }
+  },
+  "confirm_sending_order": "确认",
+  "confirm_sending_order_message": "确认发送？"
 }

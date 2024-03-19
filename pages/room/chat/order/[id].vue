@@ -395,11 +395,11 @@ async function getExchangeRate() {
     base_currency:
       currencyStore.data.find(
         (currency) => currency.id === payload.value.buyer_currency_id
-      )?.code ?? "USDT",
+      )?.code ?? "",
     quote_currency:
       currencyStore.data.find(
         (currency) => currency.id === payload.value.seller_currency_id
-      )?.code ?? "CNY",
+      )?.code ?? "",
   };
 
   try {
@@ -487,9 +487,9 @@ onMounted(async () => {
     } else {
       payload.value.buyer_id = +buyers.value[0].value;
       payload.value.seller_currency_id =
-        chatDetail.value.business?.currency_id ?? 0;
+        chatDetail.value.business?.currency_id ?? 1;
 
-      if (currencyStore.data[0].id === chatDetail.value.business?.currency_id) {
+      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
         payload.value.buyer_currency_id = currencyStore.data[1].id;
       } else {
         payload.value.buyer_currency_id = currencyStore.data[0].id;

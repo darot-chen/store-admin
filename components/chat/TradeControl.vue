@@ -144,8 +144,8 @@ function onConfirmPayment() {
 function onConfirmOrder() {
   if (props.showConfirmButton) {
     showConfirmDialog({
-      title: "确认",
-      message: "确认发送？",
+      title: t("confirm_sending_order"),
+      message: t("confirm_sending_order_message"),
       cancelButtonColor: "#DE3A3A",
     }).then(() => {
       emit("confirm-order");

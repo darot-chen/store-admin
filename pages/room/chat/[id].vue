@@ -355,12 +355,7 @@ async function onConfirmOrder() {
 
   try {
     await confirmOrder(chatDetail.value.order.id);
-    showDialog({
-      title: t("successfully_sent"),
-      message: t("order_confirmed_message"),
-    }).then(() => {
-      lastItemId.value = 0;
-    });
+    lastItemId.value = 0;
   } catch (error: any) {
     showFailToast(error?.message);
   }
@@ -570,6 +565,7 @@ function addChatAndSort(newChat: Chat) {
 
   sleepScrollToBottom();
 }
+
 async function fetchChatWithParam(
   orderBy?: "asc" | "desc",
   cursor?: number,
