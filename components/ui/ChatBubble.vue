@@ -25,69 +25,79 @@
       </div>
       <div
         :class="[
-          chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
-          {
-            'flash-outgoing': chatType === 'outgoing' ? isSelected : false,
-            'flash-incoming': chatType === 'incoming' ? isSelected : false,
-          },
+          'flex items-center',
+          chatType === 'incoming' ? '' : 'flex-row-reverse',
         ]"
       >
-        <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <ChatReply
-            v-if="chat?.reply_message"
-            :chat="chat"
-            @on-header-click="(id) => emit('on-header-reply-click', id)"
-          />
-          <p
-            v-if="chatType === 'incoming'"
-            class="incoming-name px-[0.38rem]"
-            :style="{ color: generateColorForName(name) }"
-          >
-            {{ name }}
-          </p>
-          <div
-            :class="[
-              'px-[0.38rem]',
-              chatType === 'incoming' ? 'incoming-content' : 'outgoing-content',
-              {
-                'flash-incoming': chatType === 'incoming' ? isSelected : false,
-              },
-            ]"
-          >
-            <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
-              {{ text }}
-            </p>
-            <NuxtImg
-              v-else-if="type === ChatType.Image"
-              :placeholder="[200, 20]"
-              width="200"
-              height="400"
-              provider="s3"
-              :src="text"
-              class="rounded-sm pt-2"
-              @click="onPreview(text)"
+        <div
+          :class="[
+            chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
+            {
+              'flash-outgoing': chatType === 'outgoing' ? isSelected : false,
+              'flash-incoming': chatType === 'incoming' ? isSelected : false,
+            },
+          ]"
+        >
+          <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
+            <ChatReply
+              v-if="chat?.reply_message"
+              :chat="chat"
+              @on-header-click="(id) => emit('on-header-reply-click', id)"
             />
-            <video
-              v-else-if="type === ChatType.Video"
-              class="max-h-[400] max-w-[200] rounded-sm pt-2"
-              controls
+            <p
+              v-if="chatType === 'incoming'"
+              class="incoming-name px-[0.38rem]"
+              :style="{ color: generateColorForName(name) }"
             >
-              <source :src="getS3Url(text)" />
-            </video>
+              {{ name }}
+            </p>
+            <div
+              :class="[
+                'px-[0.38rem]',
+                chatType === 'incoming'
+                  ? 'incoming-content'
+                  : 'outgoing-content',
+                {
+                  'flash-incoming':
+                    chatType === 'incoming' ? isSelected : false,
+                },
+              ]"
+            >
+              <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
+                {{ text }}
+              </p>
+              <NuxtImg
+                v-else-if="type === ChatType.Image"
+                :placeholder="[200, 20]"
+                width="200"
+                height="400"
+                provider="s3"
+                :src="text"
+                class="rounded-sm pt-2"
+                @click="onPreview(text)"
+              />
+              <video
+                v-else-if="type === ChatType.Video"
+                class="max-h-[400] max-w-[200] rounded-sm pt-2"
+                controls
+              >
+                <source :src="getS3Url(text)" />
+              </video>
+            </div>
+            <p
+              :class="[
+                chatType === 'incoming'
+                  ? 'incoming-timestamp'
+                  : 'outgoing-timestamp',
+              ]"
+            >
+              {{ formatDate(timestamp) }}
+            </p>
           </div>
-          <p
-            :class="[
-              chatType === 'incoming'
-                ? 'incoming-timestamp'
-                : 'outgoing-timestamp',
-            ]"
-          >
-            {{ formatDate(timestamp) }}
-          </p>
         </div>
-      </div>
-      <div class="px-2" @click="emit('reply')">
-        <Icon name="Edit" color="#ffff" size="20" />
+        <div class="px-2" @click="emit('reply')">
+          <Icon name="Reply" color="#6C808C" size="16" />
+        </div>
       </div>
     </div>
   </div>
