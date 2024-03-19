@@ -49,3 +49,7 @@ export const isBuyer = (buyerId: number): boolean => {
   const authStore = useAuthStore();
   return authStore.user?.id === buyerId;
 };
+
+export const formatOrderId = (orderId: number) => {
+  return `BS${orderId.toString().padStart(6, "0")}`;
+};

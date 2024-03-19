@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="relative flex h-full flex-col">
+  <div v-if="!loading" class="flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
@@ -54,29 +54,27 @@
       />
       <div ref="bottomEl" />
     </div>
-    <Transition name="ease" mode="out-in">
-      <button
-        v-show="showScrollButton"
-        class="absolute right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
-        :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
-        @click="onScrollToBottom"
+    <button
+      v-show="showScrollButton"
+      class="fixed right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
+      :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
+      @click="onScrollToBottom"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </svg>
-      </button>
-    </Transition>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 14l-7 7m0 0l-7-7m7 7V3"
+        />
+      </svg>
+    </button>
     <div class="sticky bottom-0 w-full">
       <div v-if="replyMsgId" class="bg-white py-2 pl-6">
         <ChatReply
@@ -572,7 +570,6 @@ function addChatAndSort(newChat: Chat) {
 
   sleepScrollToBottom();
 }
-
 async function fetchChatWithParam(
   orderBy?: "asc" | "desc",
   cursor?: number,
@@ -704,20 +701,5 @@ async function onRateSeller() {
 .stop-scrolling {
   height: 100%;
   overflow: hidden;
-}
-
-.ease-enter-active,
-.ease-leave-active {
-  transition: opacity 0.3s;
-}
-
-.ease-enter-from,
-.ease-leave-to {
-  opacity: 0;
-}
-
-.ease-enter-to,
-.ease-leave-from {
-  opacity: 1;
 }
 </style>

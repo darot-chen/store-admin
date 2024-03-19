@@ -67,7 +67,6 @@
 import { showFailToast } from "vant";
 import { getOrderDetail, getOrdersPayment } from "~/api/order";
 import type { Order, OrderDetail } from "~/types/order";
-import { formatOrderId } from "~/utils/formatOrderId";
 
 const loading = ref<boolean>(false);
 
@@ -99,7 +98,7 @@ async function fetchOrderPayments(isSeller: boolean) {
 }
 
 onMounted(async () => {
-  pageStore.setTitle("宣示账单");
+  pageStore.setTitle("显示账单");
   loading.value = true;
   try {
     await fetchOrderDetail();
