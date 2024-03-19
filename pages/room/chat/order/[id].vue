@@ -141,10 +141,30 @@
           >
             <div class="w-full px-[16px]">
               <UiFormWrapper title="交易内容" class="py-[11px]">
-                <UiInput :model-value="payload.title" />
+                <VanField
+                  v-model="payload.title"
+                  placeholder="交易内容"
+                  class="text-input"
+                  type="text"
+                  input-align="right"
+                  error-message-align="right"
+                  clearable
+                  clear-trigger="always"
+                  :error-message="titleErrorMessage"
+                  @blur="validateTitleLength"
+                />
               </UiFormWrapper>
               <UiFormWrapper title="交易时间" class="py-[11px]">
-                <UiInput :model-value="payload.duration" />
+                <VanField
+                  v-model="payload.duration"
+                  placeholder="交易时间"
+                  class="text-input"
+                  type="text"
+                  input-align="right"
+                  error-message-align="right"
+                  clearable
+                  clear-trigger="always"
+                />
               </UiFormWrapper>
               <UiFormWrapper title="佣金" class="py-[11px]">
                 <UiDropdown
@@ -189,6 +209,7 @@
         <UiButton
           class="px-[42px] py-[7px]"
           title="确认"
+          :disabled="titleErrorMessage != ''"
           @click="onOrderClick"
         />
       </div>
@@ -219,6 +240,7 @@ const route = useRoute();
 const router = useRouter();
 const currencyStore = useCurrencyStore();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const roomId = +route.params.id;
 
@@ -230,6 +252,7 @@ const isLoading = ref(true);
 const showRealtimeExchangeRate = ref(false);
 const isRevisable = ref(route.query.revisable === "true");
 const isOrderConfirmingOrRejected = ref(false);
+const titleErrorMessage = ref("");
 
 const fee = ref<{
   otherFee: number;
@@ -292,6 +315,14 @@ const debounceCalcAmount = useDebounceFn(() => {
     );
   }
 }, 500);
+
+function validateTitleLength() {
+  if (payload.value.title && payload.value.title?.length > 10) {
+    titleErrorMessage.value = t("validation.max_length", { length: 10 });
+  } else {
+    titleErrorMessage.value = "";
+  }
+}
 
 function onToggleExchangeRate(v: boolean) {
   showRealtimeExchangeRate.value = v;
@@ -486,5 +517,10 @@ onMounted(async () => {
 .fee-input {
   border-radius: 10px;
   border: 0.5px solid rgba(120, 122, 141, 0.25);
+}
+
+.text-input {
+  width: 60%;
+  @apply bg-[#f5f5f5] px-0 py-1 text-[14px];
 }
 </style>
