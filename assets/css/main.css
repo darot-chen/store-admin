@@ -92,3 +92,7 @@ body {
   border: none;
   box-shadow: unset !important;
 }
+
+.din-alternate-text {
+  font-family: "DIN ALTERNATE";
+}
