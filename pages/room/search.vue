@@ -111,9 +111,10 @@ import { getChatMessages } from "~/api/chat";
 import { ChatType, type ChatMessage } from "~/types/chat";
 
 const pageStore = usePageStore();
+const { t } = useI18n();
 
 onMounted(() => {
-  pageStore.setTitle("Search");
+  pageStore.setTitle(t("search"));
 
   nextTick(() => {
     inputRef.value?.focus();
