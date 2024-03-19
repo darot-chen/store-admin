@@ -21,18 +21,37 @@
         </div>
         <p>{{ detail?.order?.exchange_rate || 0 }}</p>
       </div>
+      <div
+        v-show="(detail?.order?.other_expense || 0) > 0"
+        class="flex flex-row items-center"
+      >
+        <UiDivider
+          orientation="vertical"
+          class="mx-5 h-6"
+          size="2xs"
+          style="background-color: #b7b7b7"
+        />
+        <div class="flex flex-col">
+          <div class="flex flex-row items-center">
+            <p class="label">其他费</p>
+            <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
+          </div>
+          <p>{{ detail?.order?.other_expense.toVFixed(2) || 0 }}</p>
+        </div>
+      </div>
       <UiDivider
         orientation="vertical"
         class="mx-5 h-6"
         size="2xs"
         style="background-color: #b7b7b7"
       />
+
       <div class="flex flex-col">
         <div class="flex flex-row items-center">
           <p class="label">净余担保金额</p>
           <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
         </div>
-        <p>{{ detail?.order?.other_expense || 0 }}U</p>
+        <p>{{ detail?.business?.available_fund.toVFixed(2) || 0 }}U</p>
       </div>
     </div>
     <div class="mb-2 mr-2 flex">

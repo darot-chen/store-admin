@@ -1,8 +1,9 @@
 <template>
-  <div v-if="!loading" class="flex h-full flex-col">
+  <div v-if="!loading" class="relative flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
+        :lobby-title="title"
         :detail="chatDetail"
         :new-order-detail="newOrderDetail"
         :show-confirm-button="showConfirmOrder"
@@ -53,27 +54,29 @@
       />
       <div ref="bottomEl" />
     </div>
-    <button
-      v-show="showScrollButton"
-      class="fixed right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
-      :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
-      @click="onScrollToBottom"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+    <Transition name="ease" mode="out-in">
+      <button
+        v-show="showScrollButton"
+        class="absolute right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
+        :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
+        @click="onScrollToBottom"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 14l-7 7m0 0l-7-7m7 7V3"
-        />
-      </svg>
-    </button>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
+      </button>
+    </Transition>
     <div class="sticky bottom-0 w-full">
       <div v-if="replyMsgId" class="bg-white py-2 pl-6">
         <ChatReply
@@ -161,6 +164,7 @@ const pageStore = usePageStore();
 const roomID = +route.params.id;
 let msgId = route.query.msgId;
 
+const title = ref<string>("");
 const bottomEl = ref<HTMLDivElement | null>(null);
 const loading = ref<boolean>(false);
 const chats = ref<Chat[]>([]);
@@ -427,11 +431,11 @@ async function onFetchChatWithMSGId(id: string) {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  let title = detail?.business?.title ?? "";
+  title.value = detail?.business?.title ?? "";
   if (detail?.lobby_no) {
-    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+    title.value = `${title.value} ${t("lobby_no")} ${detail.lobby_no}`;
   }
-  pageStore.setTitle(title ?? "");
+  pageStore.setTitle(title.value ?? "");
 
   const sortedChatResult = chatResult.sort((a, b) => a.id - b.id);
 
@@ -504,11 +508,11 @@ async function fetchChats() {
 
   hasJoined.value = detail.is_a_member ?? false;
   chatDetail.value = detail ?? undefined;
-  let title = detail?.business?.title ?? "";
+  title.value = detail?.business?.title ?? "";
   if (detail?.lobby_no) {
-    title = `${title} ${t("lobby_no")} ${detail.lobby_no}`;
+    title.value = `${title.value} ${t("lobby_no")} ${detail.lobby_no}`;
   }
-  pageStore.setTitle(title ?? "");
+  pageStore.setTitle(title.value ?? "");
 
   const chatRes = await getChat(roomID, {
     last: lastItemId.value,
@@ -568,6 +572,7 @@ function addChatAndSort(newChat: Chat) {
 
   sleepScrollToBottom();
 }
+
 async function fetchChatWithParam(
   orderBy?: "asc" | "desc",
   cursor?: number,
@@ -699,5 +704,20 @@ async function onRateSeller() {
 .stop-scrolling {
   height: 100%;
   overflow: hidden;
+}
+
+.ease-enter-active,
+.ease-leave-active {
+  transition: opacity 0.3s;
+}
+
+.ease-enter-from,
+.ease-leave-to {
+  opacity: 0;
+}
+
+.ease-enter-to,
+.ease-leave-from {
+  opacity: 1;
 }
 </style>
