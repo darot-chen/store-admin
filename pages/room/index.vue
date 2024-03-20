@@ -1,7 +1,6 @@
 <template>
   <div class="flex h-full flex-col gap-5 bg-[#FFFFFFBF]" @scroll="handleScroll">
     <ChatSearch class="px-3" />
-
     <UiCircularLoading
       v-if="loading"
       size="40"

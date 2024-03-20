@@ -7,7 +7,6 @@
         v-model:rate="fee.selected_rate"
         @change="debounceCalcAmount"
       />
-
       <div class="relative mx-[12px] rounded-[10px]">
         <div
           class="flex flex-col items-center gap-[16px] rounded-[10px] bg-white p-[1rem]"
