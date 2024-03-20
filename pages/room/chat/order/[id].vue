@@ -465,18 +465,29 @@ onMounted(async () => {
       };
 
       fee.value = {
-        order_id: chatDetail.value.business?.id ?? 0,
-        otherFee: chatDetail.value.business?.other_fee ?? 0,
+        order_id: chatDetail.value.order?.id ?? 0,
+        otherFee:
+          chatDetail.value.order?.other_expense ??
+          chatDetail.value.business?.other_fee ??
+          0,
         status: chatDetail.value.order?.status,
         selected_rate: {
           id: "0",
-          baseCurrency: chatDetail.value.business?.default_currency ?? "USDT",
+          baseCurrency:
+            chatDetail.value.order?.buyer_currency.code ??
+            chatDetail.value.business?.default_currency ??
+            "USDT",
           quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
           nickName: "",
-          price: chatDetail.value.business?.exchange_rate?.toString() ?? "1",
+          price:
+            chatDetail.value.order?.exchange_rate.toString() ??
+            chatDetail.value.business?.exchange_rate?.toString() ??
+            "0",
         },
         handlingFeePercentage:
-          chatDetail.value.business?.handling_fee_percentage ?? 0,
+          chatDetail.value.order?.handling_fee_percentage ??
+          chatDetail.value.business?.handling_fee_percentage ??
+          20,
       };
 
       router.replace({
