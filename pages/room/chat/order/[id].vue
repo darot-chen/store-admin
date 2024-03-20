@@ -470,8 +470,8 @@ onMounted(async () => {
         status: chatDetail.value.order?.status,
         selected_rate: {
           id: "0",
-          baseCurrency: chatDetail.value.order?.buyer_currency?.code ?? "USDT",
-          quoteCurrency: chatDetail.value.business?.default_currency ?? "CNY",
+          baseCurrency: chatDetail.value.business?.default_currency ?? "USDT",
+          quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
           nickName: "",
           price: chatDetail.value.business?.exchange_rate?.toString() ?? "1",
         },
