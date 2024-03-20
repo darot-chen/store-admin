@@ -3,25 +3,16 @@
     <label
       v-for="(option, index) in options"
       :key="index"
-      class="checkbox gap-2"
+      class="checkbox gap-2 rounded-[9px]"
+      :class="{
+        'bg-[#F3F3F3] text-[#8E8E93]': modelValue !== index,
+        'bg-[#0A7AFF] text-[#FFF]': modelValue === index,
+      }"
       @click="$emit('update:modelValue', index)"
     >
-      <div class="flex items-center">
-        <input
-          type="radio"
-          style="height: 20px; width: 20px"
-          :checked="modelValue === index"
-        />
-        <Icon
-          v-if="modelValue === index"
-          name="Check"
-          class="absolute"
-          size="14"
-          style="margin-left: 3px"
-        />
+      <div class="px-[20px] py-[6px] text-center" :style="{}">
+        <p class="text-[14px]">{{ option.label }}</p>
       </div>
-
-      <p class="text-[14px] text-[#8e8e93]">{{ option.label }}</p>
     </label>
   </div>
 </template>

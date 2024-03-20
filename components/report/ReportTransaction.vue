@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-[20px] flex flex-col gap-[24px] bg-white px-[20px] py-[20px]">
+  <div class="flex flex-col gap-[24px] bg-white px-[20px] py-[20px]">
     <div class="flex flex-row justify-between">
       <div class="flex flex-col">
         <p class="font-400 text-base text-[#818086]">本周交易总额</p>
@@ -37,7 +37,9 @@
       <p class="font-500 place-self-center text-xs text-black">
         Jan,2 2024 at 6:00 in the morning
       </p>
-      <Line :data="data" :options="options" />
+      <div class="text-left">
+        <Line :data="data" :options="options" />
+      </div>
       <div class="flex flex-row items-center justify-around">
         <div class="flex flex-col items-center">
           <p class="font-500 text-sm text-[#818086]">交易总额</p>

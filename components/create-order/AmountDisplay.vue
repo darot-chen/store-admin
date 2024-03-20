@@ -6,13 +6,13 @@
         :type="FeeTypeEnum.HANDLING_FEE_PERCENTAGE"
         @click="onClick"
       />
-      <UiDivider />
+      <UiDivider type="vertical" />
       <CreateOrderFeeInfo
         v-model="componentProps.rate.price"
         :type="FeeTypeEnum.RATE"
         @click="onClick"
       />
-      <UiDivider />
+      <UiDivider type="vertical" />
       <CreateOrderFeeInfo
         v-model="componentProps.otherFee"
         :type="FeeTypeEnum.OTHER_FEE"

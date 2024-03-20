@@ -12,7 +12,7 @@
       <p v-if="!showRealtimeExchangeRate" class="text-[#50A7EA]">
         {{ $t("merchant real-time transaction exchange rate") }}
       </p>
-      <button class="border-r pr-[10px]">
+      <button class="pr-[10px]">
         <Icon name="Info" color="#C5DBF0" />
       </button>
     </div>

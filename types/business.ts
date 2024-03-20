@@ -14,4 +14,8 @@ export type Business = {
   available_fund: number;
   owner: User;
   commission: number;
+  handling_fee_percentage: number | null;
+  exchange_rate: number | null;
+  other_fee: number | null;
+  default_currency: string | null;
 };
