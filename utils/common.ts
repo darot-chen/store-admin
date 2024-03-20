@@ -53,3 +53,40 @@ export const isBuyer = (buyerId: number): boolean => {
 export const formatOrderId = (orderId: number) => {
   return `BS${orderId.toString().padStart(6, "0")}`;
 };
+
+export const scrollAnimatedFrame = (
+  target: HTMLDivElement,
+  prevScrollHeight: number,
+  prevScrollTop: number
+) => {
+  const scrollHeight = target.scrollHeight ?? 0;
+  if (scrollHeight) {
+    requestAnimationFrame(async () => {
+      await nextTick(() => {
+        target.scrollTop = prevScrollTop + (scrollHeight - prevScrollHeight);
+        target.style.overflow = "hidden";
+        requestAnimationFrame(() => {
+          target.style.overflow = "scroll";
+        });
+      });
+    });
+  }
+};
+
+export const getScrollData = (target: HTMLDivElement) => {
+  const scrollTop = target?.scrollTop;
+  const prevScrollHeight = target.scrollHeight ?? 0;
+  const prevScrollTop = target.scrollTop ?? 0;
+  const clientHeight = target.clientHeight ?? 0;
+
+  return { scrollTop, prevScrollHeight, prevScrollTop, clientHeight, target };
+};
+
+export const scrollToChatId = async (id: number) => {
+  await nextTick(() => {
+    const lastDom = document.getElementById(`chat_${id}`);
+    if (lastDom) {
+      lastDom.scrollIntoView({ block: "start" });
+    }
+  });
+};

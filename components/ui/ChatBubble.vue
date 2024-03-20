@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="type !== ChatType.Action"
+    v-bind="$attrs"
     :class="['inline-flex flex-col justify-end']"
   >
     <div
@@ -42,7 +43,7 @@
             <ChatReply
               v-if="chat?.reply_message"
               :chat="chat"
-              @on-header-click="(id) => emit('on-header-reply-click', id)"
+              @on-header-click="(id) => emit('header-reply', id)"
             />
             <p
               v-if="chatType === 'incoming'"
@@ -214,7 +215,7 @@ const emit = defineEmits<{
   (e: "reply"): void;
   (e: "cancel-reply"): void;
   (e: "reject"): void;
-  (e: "on-header-reply-click", id: number): void;
+  (e: "header-reply", id: number): void;
 }>();
 
 const { t } = useI18n();

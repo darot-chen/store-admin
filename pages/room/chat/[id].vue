@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="flex h-full flex-col">
+  <div v-if="!loading" class="relative flex h-full flex-col">
     <div class="sticky top-0 z-10 w-full">
       <ChatTradeControl
         v-if="showTradeControl"
@@ -20,12 +20,13 @@
     >
       <UiCircularLoading
         v-show="fetchingMoreChat"
-        class="flex justify-center"
+        class="absolute right-0 flex w-full justify-center"
       />
+
       <UiChatBubble
         v-for="c in chats"
-        :id="'chat_' + c.id"
-        :key="c.id"
+        :id="`chat_${c.id}`"
+        :key="`key_chat_${c.id}`"
         :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
         :text="c.message"
         :timestamp="c.created_at"
@@ -45,36 +46,38 @@
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
-        @on-header-reply-click="onHeaderReplyClick"
+        @header-reply="onHeaderReplyClick"
       />
 
       <UiCircularLoading
         v-show="fetchingMoreLowerChat"
-        class="flex justify-center"
+        class="absolute right-0 flex w-full justify-center"
       />
       <div ref="bottomEl" />
     </div>
-    <button
-      v-show="showScrollButton"
-      class="fixed right-5 rounded-full bg-blue-500 p-2 text-white shadow-lg"
-      :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
-      @click="onScrollToBottom"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
+    <Transition name="fade" mode="out-in">
+      <button
+        v-show="showScrollButton"
+        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-2 text-white shadow-lg"
+        :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
+        @click="onScrollToBottom"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 14l-7 7m0 0l-7-7m7 7V3"
-        />
-      </svg>
-    </button>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 14l-7 7m0 0l-7-7m7 7V3"
+          />
+        </svg>
+      </button>
+    </Transition>
     <div class="sticky bottom-0 w-full">
       <div v-if="replyMsgId" class="bg-white py-2">
         <ChatReply
@@ -580,90 +583,57 @@ async function fetchChatWithParam(
   return result;
 }
 
-const onScroll = useDebounceFn(async (e: Event) => {
-  const target = e.target as HTMLDivElement;
-  const scrollTop = target?.scrollTop;
-  const prevScrollHeight = target.scrollHeight ?? 0;
-  const prevScrollTop = target.scrollTop ?? 0;
-  const clientHeight = target.clientHeight ?? 0;
+async function fetchMoreTopChat() {
+  if (!hasMore.value || firstLoad.value) return;
+  fetchingMoreChat.value = true;
+  try {
+    const res = await fetchChatWithParam();
+    chats.value.splice(0, 0, ...res.results.reverse());
 
-  const atTop = scrollTop === 0;
-
-  const atBottom =
-    scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
-
-  const atBottomForScrollBottom =
-    scrollTop + clientHeight >= prevScrollHeight - 20;
-  showScrollButton.value = !atBottomForScrollBottom;
-
-  function scrollAnimatedFrame() {
-    const scrollHeight = target.scrollHeight ?? 0;
-    if (scrollHeight) {
-      requestAnimationFrame(async () => {
-        await nextTick(() => {
-          target.scrollTop = scrollHeight - prevScrollHeight + prevScrollTop;
-          target.style.overflow = "hidden";
-          requestAnimationFrame(() => {
-            target.style.overflow = "scroll";
-          });
-        });
-      });
+    if (res.meta.has_next) {
+      lastItemId.value = res.results[0].id;
+      hasMore.value = true;
+    } else {
+      hasMore.value = false;
     }
+  } catch (error: any) {
+    showFailToast(error);
+  } finally {
+    fetchingMoreChat.value = false;
   }
+}
 
-  if (atTop) {
-    if (msgId) {
-      if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
+async function fetchChatWithId() {
+  fetchingMoreChat.value = true;
+  try {
+    const res = await fetchChatWithParam("desc", upperCursor.value, 10);
+    chats.value.splice(0, 0, ...res.results.reverse());
 
-      await fetchChatWithId();
-      scrollAnimatedFrame();
-      return;
-    }
-
-    await fetchMoreChats();
-    scrollAnimatedFrame();
+    upperCursor.value = res.results[0]?.id;
+    isUpperChatHasNext.value = res.meta.has_next;
+    fetchingMoreChat.value = false;
+  } catch (error: any) {
+    showFailToast(error);
+  } finally {
+    fetchingMoreChat.value = false;
   }
+}
 
-  if (atBottom) {
-    if (!msgId) return;
-    if (!isLowerChatHasNext.value && !fetchingMoreChat.value) return;
+async function fetchMoreBottomChat() {
+  if (!msgId || !isLowerChatHasNext.value || fetchingMoreChat.value) return;
+
+  try {
     fetchingMoreLowerChat.value = true;
     const ascChats = await fetchChatWithParam("asc", lowerCursor.value, 10);
     lowerCursor.value = ascChats.results[ascChats.results.length - 1].id;
     chats.value.push(...ascChats.results);
     isLowerChatHasNext.value = ascChats.meta.has_next;
+  } catch (error: any) {
+    showFailToast(error);
+  } finally {
     fetchingMoreLowerChat.value = false;
-    return;
   }
-
-  async function fetchChatWithId() {
-    fetchingMoreChat.value = true;
-    const descChats = await fetchChatWithParam("desc", upperCursor.value, 10);
-
-    chats.value.unshift(...descChats.results.reverse());
-
-    upperCursor.value = descChats.results[0]?.id;
-    isUpperChatHasNext.value = descChats.meta.has_next;
-    fetchingMoreChat.value = false;
-  }
-
-  async function fetchMoreChats() {
-    if (!hasMore.value || firstLoad.value) return;
-    fetchingMoreChat.value = true;
-
-    const chatRes = await fetchChatWithParam();
-
-    chats.value.unshift(...chatRes.results.reverse());
-
-    if (chatRes.meta.has_next) {
-      lastItemId.value = chatRes.results[0].id;
-      hasMore.value = true;
-    } else {
-      hasMore.value = false;
-    }
-  }
-  fetchingMoreChat.value = false;
-}, 300);
+}
 
 async function onSubmit() {
   if (messagePayload.value.message.trim() === "") return;
@@ -691,11 +661,54 @@ async function onRateSeller() {
     rateComment.value = "";
   }
 }
+
+const onScroll = useDebounceFn(async (e: Event) => {
+  const lastChat = chats.value[0];
+
+  const { scrollTop, prevScrollHeight, clientHeight } = getScrollData(
+    e.target as HTMLDivElement
+  );
+
+  const atTop = scrollTop === 0;
+  const atBottom =
+    scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
+
+  showScrollButton.value = scrollTop + clientHeight >= prevScrollHeight - 20;
+
+  if (atTop) {
+    if (msgId) {
+      if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
+      await fetchChatWithId();
+      return scrollToChatId(lastChat.id);
+    }
+    await fetchMoreTopChat();
+    scrollToChatId(lastChat.id);
+  }
+
+  if (atBottom) {
+    await fetchMoreBottomChat();
+  }
+}, 100);
 </script>
 
 <style lang="css">
 .stop-scrolling {
   height: 100%;
   overflow: hidden;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
 }
 </style>
