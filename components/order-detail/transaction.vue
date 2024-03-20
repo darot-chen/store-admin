@@ -12,7 +12,7 @@
         </p>
       </div>
       <p class="din-alternate-text text-[11px] text-gray-300">
-        ≈{{ exchangeAmount }} {{ currency }}
+        ≈{{ exchangeAmount.toFixed(2) }} {{ currency }}
       </p>
     </div>
     <div

@@ -1,7 +1,7 @@
 <template>
   <div class="m-4 rounded-b-lg bg-[#EAEFFB]">
     <div
-      class="relative flex h-full flex-col space-y-1 rounded-xl bg-white px-3 pb-3"
+      class="relative flex h-full flex-col space-y-1 overflow-hidden rounded-xl bg-white px-3 pb-3"
     >
       <div class="!mb-7 flex items-center gap-x-2">
         <!-- Amount Transaction -->
@@ -73,25 +73,11 @@
           <span class="pl-2 text-[12px] !text-[#2F4A84]">@moon1688</span>
         </p>
       </div>
-    </div>
-    <div class="flex flex-wrap justify-between gap-y-2 p-3">
       <div
-        class="din-alternate-text flex items-center rounded-lg bg-white px-3 py-1 text-[#50A7EA]"
-      >
-        <p class="text-[12px]">2017年09月17日 ~ 2019年12月18日</p>
-        <p class="mx-2 text-[12px]">|</p>
-        <button>
-          <Icon name="tdesign:calendar" color="#45a9ec" />
-        </button>
-      </div>
-      <div
-        class="flex cursor-pointer items-center rounded-lg border border-[#50A7EA] px-3 py-1 text-[#50A7EA] duration-300 hover:bg-white"
-      >
-        <p class="text-[12px]">担保订单</p>
-        <p class="mx-2 text-[12px]">|</p>
-        <Icon name="ant-design:filter-outlined" color="#45a9ec" />
-      </div>
+        class="absolute -bottom-5 left-7 h-6 w-6 rotate-45 rounded-sm bg-[#EAEFFB]"
+      ></div>
     </div>
+    <OrderDetailFilter />
   </div>
 </template>
 
