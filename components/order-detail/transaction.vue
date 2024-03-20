@@ -1,24 +1,34 @@
 <template>
-  <div class="flex w-full grow items-center border-b-2 px-4 py-2">
-    <Icon
-      :name="
-        type === 'issue'
-          ? 'cryptocurrency-color:usdt'
-          : 'cryptocurrency-color:usdc'
-      "
-      size="24"
-      color="#3e73c4"
-    />
-    <div class="pl-2">
-      <p class="text-[10px] text-gray-400">记账时间 {{ date }}</p>
-      <p class="text-[14px] text-black">
-        {{ type === "issue" ? "下发" : "" }} {{ amount }}
-      </p>
-      <p class="text-[10px] text-gray-400">
-        {{ exchangeAmount }} {{ currency }}
+  <div class="mb-1 w-full border-r">
+    <div
+      class="w-full border-b border-dashed border-[#B7B7B7] bg-white px-6 py-2"
+    >
+      <div class="din-alternate-text flex items-center text-[14px] text-black">
+        <p class="text-[11px] text-[#B7B7B7]">
+          {{ type === "issue" ? "下发" : "" }}
+        </p>
+        <p class="text-[18px] font-bold text-black">
+          {{ amount.toFixed(2) }}
+        </p>
+      </div>
+      <p class="din-alternate-text text-[11px] text-gray-300">
+        ≈{{ exchangeAmount }} {{ currency }}
       </p>
     </div>
-    <Icon name="solar:link-bold-duotone" size="10" color="#3BA9EC" />
+    <div
+      class="relative flex justify-between bg-[#FAFAFA] p-2 text-[10px] text-[#B7B7B7]"
+    >
+      <div
+        class="absolute -left-[6.5px] -top-[7px] h-3 w-3 rounded-full bg-[#EFEEF4]"
+      ></div>
+      <div
+        class="absolute -right-[6.5px] -top-[7px] h-3 w-3 rounded-full bg-[#EFEEF4]"
+      ></div>
+      <p>{{ date }}</p>
+      <button>
+        <Icon name="lucide:message-circle-more" size="12" />
+      </button>
+    </div>
   </div>
 </template>
 
