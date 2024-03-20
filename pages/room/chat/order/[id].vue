@@ -19,6 +19,7 @@
             class="px-[11px] py-[7px] text-[17px]"
           >
             <UiDropdown
+              :is-show-profile="true"
               :hide-show-arrow-down="true"
               title="请选择需方负责人"
               class="text-[17px]"
@@ -65,7 +66,7 @@
                     <input
                       v-model="payload.amount"
                       type="number"
-                      class="w-full text-right text-[24px] font-bold"
+                      class="mr-2 w-full text-right text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
@@ -75,6 +76,7 @@
                         <Icon name="Info" color="#EDEDED" />
                       </button>
                     </div>
+                    <Icon name="Info" color="#EDEDED" />
                   </div>
                 </div>
               </div>
@@ -119,6 +121,7 @@
                         <Icon name="Info" color="#EDEDED" />
                       </button>
                     </div>
+                    <Icon name="Info" color="#EDEDED" />
                   </div>
                 </div>
               </div>
@@ -170,12 +173,13 @@
                 <UiDropdown
                   v-model:model-value="payload.commission_type"
                   :option="COMMISSION_PAY_OPTIONS"
-                  class="text-[12px]"
+                  class="font-500 py-[6.5px] text-[12px]"
+                  title-gap="8px"
                   hide-show-arrow-down
                 >
                   <template #right-icon>
                     <button class="inline-flex items-center justify-center">
-                      <Icon name="X" size="14" color="#cccccc" />
+                      <Icon name="X" size="19" color="#cccccc" />
                     </button>
                   </template>
                 </UiDropdown>
@@ -200,7 +204,7 @@
       </div>
 
       <div
-        class="fixed bottom-0 flex h-[3.818rem] w-full max-w-lg items-center justify-between bg-white px-2 py-[15px]"
+        class="fixed bottom-0 flex w-full max-w-lg items-center justify-between bg-white px-2 py-[15px]"
       >
         <div class="inline-flex w-full gap-[5px] py-[11px] pr-[16px]">
           <p class="total-title">需方应付总额:</p>
@@ -208,13 +212,13 @@
         </div>
         <UiButton
           v-show="fee.status === OrderStatus.CONFIRMING"
-          class="mr-3 px-[20px] py-[7px]"
+          class="mr-3 px-[20px] py-[15px]"
           :title="$t('cancel')"
           type="secondary"
           @click="onCancelOrderClick"
         />
         <UiButton
-          class="px-[20px] py-[7px]"
+          class="px-[20px] py-[15px]"
           title="确认"
           :disabled="titleErrorMessage != ''"
           @click="onOrderClick"

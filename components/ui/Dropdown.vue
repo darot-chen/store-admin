@@ -17,7 +17,17 @@
       :alt="selected.label"
       class="w-[18px] rounded-full"
     />
-    <div class="inline-flex items-center gap-[16px]">
+    <div
+      class="inline-flex items-center"
+      :style="{
+        gap: titleGap ?? '16px',
+      }"
+    >
+      <UiGradientProfile
+        v-show="isShowProfile"
+        :name="selected?.label ?? ''"
+        size="18px"
+      />
       <p class="text-[#393939]">{{ selected?.label }}</p>
       <slot v-if="!!$slots['right-icon']" name="right-icon" />
       <Icon
@@ -57,6 +67,8 @@ const props = defineProps<{
   hideShowArrowDown?: boolean;
   disabled?: boolean;
   title?: string;
+  isShowProfile?: boolean;
+  titleGap?: string;
 }>();
 
 const selected = computed(() => {

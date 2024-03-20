@@ -22,7 +22,11 @@
       fill="none"
       :height="height"
     >
-      <path d="M1 0.25V36.25" :stroke="color" stroke-width="0.5" />
+      <path
+        d="M1 0.25V36.25"
+        stroke-width="0.5"
+        :stroke="color ?? 'url(#paint0_linear_3902_108297)'"
+      />
       <defs>
         <linearGradient
           id="paint0_linear_3902_108297"
@@ -54,7 +58,7 @@ withDefaults(
     width: undefined,
     height: undefined,
     type: "horizontal",
-    color: "black",
+    color: undefined,
     thickness: "0.5",
   }
 );
