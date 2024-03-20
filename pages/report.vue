@@ -8,17 +8,24 @@
         class="bg-white"
         :button-height="'30px'"
       />
-      <UiCheckbox
-        v-model:model-value="selectedCheckboxIndex"
-        :options="REPORT_CHECKBOX_OPTION"
-        @update:model-value="handleSelectedCheckbox"
-      />
+      <div class="flex flex-row items-center justify-between">
+        <UiCheckbox
+          v-model:model-value="selectedCheckboxIndex"
+          class="w-full"
+          :options="REPORT_CHECKBOX_OPTION"
+          @update:model-value="handleSelectedCheckbox"
+        />
+        <div class="ml-[30px] flex flex-row items-center">
+          <UiDivider type="vertical" color="#818086" height="25px" />
+          <Calender class="ml-[10px]" />
+        </div>
+      </div>
     </div>
 
     <ReportTransaction class="mt-[20px]" />
     <div class="mt-[20px] flex flex-col gap-[24px] bg-white py-[15px]">
       <h3 class="px-[12px] text-[16px] text-[#818086]">总交易成功次数</h3>
-      <UiDivider class="mb-[5px] h-0 w-full border-t border-[#CCC]" />
+      <UiDivider type="horizontal" />
       <div class="flex flex-row px-[12px]">
         <p class="w-1/4 text-[14px]">日期</p>
         <p class="w-1/4 text-start text-[14px]">交易人数</p>
