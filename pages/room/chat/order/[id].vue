@@ -65,7 +65,7 @@
                     <input
                       v-model="payload.amount"
                       type="number"
-                      class="mr-2 w-full text-right text-[24px] font-bold"
+                      class="mr-2 w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
@@ -110,9 +110,9 @@
                       <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
                     </button>
                     <input
-                      disabled
-                      class="w-full text-right text-[24px] font-bold disabled:bg-transparent"
                       :value="sellerReceived"
+                      class="w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold disabled:bg-transparent"
+                      disabled
                     />
                     <div class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
