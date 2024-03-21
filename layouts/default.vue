@@ -13,7 +13,7 @@
             <button
               v-if="route.path !== '/account' && route.path !== '/'"
               class="flex items-center gap-2 text-[#007AFF]"
-              @click="navigateTo('/room')"
+              @click="$router.back()"
             >
               <Icon name="Caret" color="#007AFF" size="15" class="rotate-90" />
               <p>{{ $t("back") }}</p>
