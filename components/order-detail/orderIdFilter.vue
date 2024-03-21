@@ -1,11 +1,12 @@
 <template>
   <div>
     <div
-      class="flex cursor-pointer items-center rounded-lg border border-[#50A7EA] px-3 py-1 text-[#50A7EA] duration-300 hover:bg-white"
+      class="din-alternate-text flex cursor-pointer items-center justify-evenly rounded-md border border-[#50A7EA] px-2 py-1 text-[#50A7EA] duration-300 hover:bg-white"
+      :class="isLargeScreen ? 'text-[12px]' : 'text-[11px]'"
       @click="() => (showBottom = true)"
     >
-      <p class="text-[12px]">担保订单</p>
-      <p class="mx-2 text-[12px]">|</p>
+      <p>担保订单</p>
+      <p :class="[isLargeScreen ? 'mx-2' : 'mx-1']">|</p>
       <Icon name="ant-design:filter-outlined" color="#45a9ec" />
     </div>
     <VanPopup v-model:show="showBottom" position="bottom">
@@ -52,6 +53,9 @@
 </template>
 
 <script setup lang="ts">
+import { useMediaQuery } from "@vueuse/core";
+
+const isLargeScreen = useMediaQuery("(min-width: 380px)");
 const showBottom = ref<boolean>(false);
 const selectedIndex = ref(0);
 

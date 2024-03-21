@@ -1,10 +1,11 @@
 <template>
   <div>
     <div
-      class="din-alternate-text flex items-center rounded-lg bg-white px-3 py-1 text-[#50A7EA]"
+      class="din-alternate-text flex items-center rounded-md bg-white px-2 py-1 text-[#50A7EA]"
+      :class="isLargeScreen ? 'text-[12px]' : 'text-[12px]'"
     >
-      <p class="text-[12px]">2017年09月17日 ~ 2019年12月18日</p>
-      <p class="mx-2 text-[12px]">|</p>
+      <p>2017年09月17日 ~ 2019年12月18日</p>
+      <p :class="[isLargeScreen ? 'mx-2' : 'mx-1']">|</p>
       <button @click="() => (showBottom = true)">
         <Icon name="tdesign:calendar" color="#45a9ec" />
       </button>
@@ -73,6 +74,10 @@
 
 <script setup lang="ts">
 import type { PickerOption } from "vant";
+
+import { useMediaQuery } from "@vueuse/core";
+
+const isLargeScreen = useMediaQuery("(min-width: 380px)");
 
 const showBottom = ref<boolean>(false);
 const selectingStartDate = ref<boolean>(true);
