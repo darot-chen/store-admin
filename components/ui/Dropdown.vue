@@ -1,7 +1,10 @@
 <template>
   <button
     v-bind="$attrs"
-    :class="['inline-flex items-center gap-[9px]', disabled && 'disabled']"
+    :class="[
+      'inline-flex items-center gap-[9px]',
+      disabled && 'disabled cursor-not-allowed',
+    ]"
     @click="onClick"
   >
     <Icon
