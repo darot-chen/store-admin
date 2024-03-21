@@ -52,13 +52,6 @@ setLocale(local || "zh");
 onMounted(async () => {
   const at = route.query.at?.toString();
   let token = null;
-  function setAuthToken(token: string) {
-    localStorage.setItem("auth-token", token);
-  }
-
-  setAuthToken(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImV4cCI6MTcxMTQ3MjcxMX0.kocJsP9qWlFcHa-QWxgoH19gLhxHmQ9VE61z43MCyfs"
-  );
 
   if (at) {
     token = atob(at);
