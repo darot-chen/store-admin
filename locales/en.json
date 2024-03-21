@@ -77,5 +77,14 @@
     "max_length": "最大长度 {length}"
   },
   "confirm_sending_order": "Confirm Send Order",
-  "confirm_sending_order_message": "Confirm sending order"
+  "confirm_sending_order_message": "Confirm sending order",
+  "order_status": {
+    "confirming": "Confirming",
+    "processing": "Processing",
+    "success": "Success",
+    "failed": "Failed"
+  },
+  "disputed": "Disputed",
+  "undisputed": "Undisputed",
+  "untitled": "Untitled"
 }

@@ -34,6 +34,7 @@ const profileBottomItems: Cell[] = [
     title: "纠纷处理中",
     icon: "GroupPeople",
     backgroundColor: "#FF453A",
+    onClick: () => navigateTo("/orders-history"),
   },
   {
     title: "分享与邀请",
