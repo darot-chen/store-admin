@@ -77,5 +77,14 @@
     "max_length": "最大长度 {length}"
   },
   "confirm_sending_order": "确认",
-  "confirm_sending_order_message": "确认发送？"
+  "confirm_sending_order_message": "确认发送？",
+  "order_status": {
+    "confirming": "待确认",
+    "processing": "交易中",
+    "success": "交易成功",
+    "failed": "交易失败"
+  },
+  "disputed": "纠纷订单列表",
+  "undisputed": "全部订单",
+  "untitled": "无标题"
 }
