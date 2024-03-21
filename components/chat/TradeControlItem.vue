@@ -30,7 +30,10 @@
           @scroll="debouncedScrollHandler"
         >
           <div v-for="(order, index) in orders" :key="index">
-            <div class="paid-detail my-2 flex w-auto flex-row">
+            <div
+              class="paid-detail my-2 flex w-auto cursor-pointer flex-row"
+              @click="$emit('payment-mgs-click', order.chat_message_id)"
+            >
               <p class="time">
                 {{ formatDate(order.created_at, "hh:mm:ss") }}
               </p>
@@ -79,6 +82,10 @@ const props = defineProps<{
   paymentCount: number;
   newOrder?: OrderDetail;
   exchangeRate: number;
+}>();
+
+defineEmits<{
+  (e: "payment-mgs-click", msgId: number): void;
 }>();
 
 const { $evOn, $evOff } = useNuxtApp();
