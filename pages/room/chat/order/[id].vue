@@ -18,14 +18,15 @@
             class="px-[11px] py-[7px] text-[17px]"
           >
             <UiDropdown
-              :is-show-profile="true"
+              :is-show-profile="buyers.length !== 0"
               :hide-show-arrow-down="true"
               title="请选择需方负责人"
               class="text-[17px]"
               :model-value="payload?.buyer_id.toString()"
               :disabled="
                 (isRevisable && isOrderConfirmingOrRejected) ||
-                isOrderConfirmingOrRejected
+                isOrderConfirmingOrRejected ||
+                buyers.length === 0
               "
               :option="buyers"
               @update:model-value="
@@ -499,7 +500,7 @@ onMounted(async () => {
         },
       });
     } else {
-      payload.value.buyer_id = +buyers.value[0].value;
+      if (buyers.value[0]) payload.value.buyer_id = +buyers.value[0].value;
       payload.value.seller_currency_id =
         chatDetail.value.business?.currency_id ?? 1;
 
@@ -515,8 +516,10 @@ onMounted(async () => {
     });
 
     await getExchangeRate();
-  } catch (error) {
-    router.back();
+  } catch (error: any) {
+    console.log(error);
+    showFailToast(error.message);
+    // router.back();
   } finally {
     pageStore.setTitle("交易确认");
     isLoading.value = false;
