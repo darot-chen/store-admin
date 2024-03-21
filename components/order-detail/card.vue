@@ -77,7 +77,10 @@
         class="absolute -bottom-5 left-7 h-6 w-6 rotate-45 rounded-sm bg-[#EAEFFB]"
       ></div>
     </div>
-    <OrderDetailFilter />
+    <div class="flex flex-wrap justify-between gap-y-2 p-3">
+      <OrderDetailDateFilter />
+      <OrderDetailOrderIdFilter />
+    </div>
   </div>
 </template>
 

@@ -1,38 +1,26 @@
 <template>
   <div>
-    <div class="flex flex-wrap justify-between gap-y-2 p-3">
-      <div
-        class="din-alternate-text flex items-center rounded-lg bg-white px-3 py-1 text-[#50A7EA]"
-      >
-        <p class="text-[12px]">2017年09月17日 ~ 2019年12月18日</p>
-        <p class="mx-2 text-[12px]">|</p>
-        <button @click="() => (showBottom = !showBottom)">
-          <Icon name="tdesign:calendar" color="#45a9ec" />
-        </button>
-      </div>
-      <div
-        class="flex cursor-pointer items-center rounded-lg border border-[#50A7EA] px-3 py-1 text-[#50A7EA] duration-300 hover:bg-white"
-      >
-        <p class="text-[12px]">担保订单</p>
-        <p class="mx-2 text-[12px]">|</p>
-        <Icon name="ant-design:filter-outlined" color="#45a9ec" />
-      </div>
+    <div
+      class="din-alternate-text flex items-center rounded-lg bg-white px-3 py-1 text-[#50A7EA]"
+    >
+      <p class="text-[12px]">2017年09月17日 ~ 2019年12月18日</p>
+      <p class="mx-2 text-[12px]">|</p>
+      <button @click="() => (showBottom = true)">
+        <Icon name="tdesign:calendar" color="#45a9ec" />
+      </button>
     </div>
+
     <VanPopup v-model:show="showBottom" class="rounded-t-xl" position="bottom">
-      <div class="flex justify-between bg-[#F6F6F6] px-7 py-4">
-        <button
-          class="text-[17px] text-[#007AFF]"
-          @click="() => (showBottom = !showBottom)"
-        >
-          关闭
-        </button>
-        <p class="text-[17px] font-bold">选择日期（多选）</p>
-        <button class="text-[17px] font-bold text-[#007AFF]">确认</button>
-      </div>
-      <!-- Tabs -->
+      <UiPopupNavBar
+        title="选择日期（多选）"
+        left-text="关闭"
+        right-text="确认"
+        @left-text-click="() => (showBottom = false)"
+        @right-text-click="() => (showBottom = false)"
+      />
       <div class="relative mb-2 flex justify-between pb-2 pt-4">
         <div
-          class="w-1/2 text-center"
+          class="w-1/2 cursor-pointer text-center"
           :class="selectingStartDate ? 'text-[#007AFF]' : 'text-black'"
           @click="() => (selectingStartDate = true)"
         >
@@ -42,7 +30,7 @@
           </p>
         </div>
         <div
-          class="w-1/2 text-center"
+          class="w-1/2 cursor-pointer text-center"
           :class="!selectingStartDate ? 'text-[#007AFF]' : 'text-black'"
           @click="() => (selectingStartDate = false)"
         >
@@ -93,7 +81,7 @@ const startDateStr = ref<string[]>(dateToListString(new Date()));
 const endDateStr = ref<string[]>(dateToListString(new Date()));
 
 const minDate = new Date(2020, 0, 1);
-const maxDate = new Date(2025, 11, 31);
+const maxDate = new Date();
 
 const formatter = (type: string, option: PickerOption) => {
   if (type === "year") {
@@ -114,10 +102,4 @@ function dateToListString(date: Date) {
 }
 </script>
 
-<style scoped>
-:deep(.van-tab__text) {
-  color: red;
-  overflow: visible;
-  height: 56px;
-}
-</style>
+<style scoped></style>
