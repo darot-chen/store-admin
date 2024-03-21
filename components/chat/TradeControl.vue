@@ -78,6 +78,7 @@
           :currency="detail?.order?.seller_currency?.code || ''"
           :new-order="newOrderDetail?.amount_paid ? newOrderDetail : undefined"
           :payment-count="detail?.order?.total_seller_payments || 0"
+          @payment-mgs-click="(id) => $emit('payment-mgs-click', id)"
         />
         <ChatTradeControlItem
           :id="props.detail?.order?.id || 0"
@@ -91,6 +92,7 @@
             newOrderDetail?.quantity_given ? newOrderDetail : undefined
           "
           :payment-count="detail?.order?.total_buyer_payments || 0"
+          @payment-mgs-click="(id) => $emit('payment-mgs-click', id)"
         />
       </div>
     </Transition>
@@ -125,6 +127,7 @@ const emit = defineEmits<{
   (e: "confirm-order-payment"): void;
   (e: "confirm-order"): void;
   (e: "request-support"): void;
+  (e: "payment-mgs-click", msgId: number): void;
 }>();
 
 const showMore = ref(true);

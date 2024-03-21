@@ -11,6 +11,7 @@
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
+        @payment-mgs-click="(id) => onHeaderReplyClick(id)"
       />
     </div>
     <div
