@@ -228,6 +228,12 @@ const messagePayload = ref<{
   message: "",
 });
 
+function onIncrementUnreadMSG(shouldUpdate: boolean = true) {
+  if (showScrollButton && shouldUpdate) {
+    unReadMsgCount.value++;
+  }
+}
+
 onMounted(() => {
   init();
 
@@ -253,9 +259,8 @@ onMounted(() => {
       chatDetail.value = d.data?.order && d.data.order;
     }
 
-    if (showScrollButton) {
-      unReadMsgCount.value++;
-    }
+    console.log("run 1");
+    onIncrementUnreadMSG(!isSeller(d.data?.user_id));
 
     addChatAndSort(d.data);
   });
@@ -274,9 +279,8 @@ onMounted(() => {
         prevDetail.value.order.seller_completed_at =
           d.data?.seller_completed_at;
         prevDetail.value.order.status = d.data?.status;
-        if (showScrollButton) {
-          unReadMsgCount.value++;
-        }
+        console.log("run 2");
+        onIncrementUnreadMSG();
       }
     }
   });
@@ -294,9 +298,8 @@ onMounted(() => {
         d.data?.order?.seller_confirmed_at;
     }
 
-    if (showScrollButton) {
-      unReadMsgCount.value++;
-    }
+    console.log("run 3");
+    onIncrementUnreadMSG();
 
     const payment = d.data?.orderPayment;
     if (!payment) return;
