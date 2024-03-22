@@ -2,7 +2,7 @@
   <div ref="emojiInput" class="bg-white">
     <form class="input-container" @submit.prevent="debounceSubmit">
       <div class="inline-flex items-center gap-[0.5rem]">
-        <button class="menu-btn" @click="() => {}">
+        <button class="menu-btn" @click.prevent="() => {}">
           <Icon name="Burger" color="#ffffff" size="20" />
           <p>{{ $t("menu") }}</p>
         </button>
