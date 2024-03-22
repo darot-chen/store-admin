@@ -110,9 +110,10 @@
                       <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
                     </button>
                     <input
-                      disabled
-                      class="w-full text-right text-[24px] font-bold disabled:bg-transparent"
-                      :value="sellerReceived"
+                      v-model="sellerReceived"
+                      type="number"
+                      class="w-full text-right text-[24px] font-bold"
+                      @input="debounceCalcReceiveAmount"
                     />
                     <div class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
@@ -325,6 +326,39 @@ const debounceCalcAmount = useDebounceFn(() => {
   } else {
     sellerReceived.value = Number(
       (payload.value.amount * handlingFee + fee.value.otherFee).toFixed(2)
+    );
+  }
+}, 500);
+
+const debounceCalcReceiveAmount = useDebounceFn(() => {
+  const handlingFee = (100 + fee.value.handlingFeePercentage) / 100;
+
+  const isBuyerCurrencyIsUSDT =
+    currencyStore.data.find(
+      (currency) => currency.id === payload.value.buyer_currency_id
+    )?.code === "USDT";
+
+  if (isBuyerCurrencyIsUSDT && fee.value.selected_rate?.price) {
+    payload.value.amount = Number(
+      (
+        sellerReceived.value /
+          (1 / Number(fee.value.selected_rate.price)) /
+          handlingFee -
+        fee.value.otherFee
+      ).toFixed(2)
+    );
+  } else if (fee.value.selected_rate?.price) {
+    payload.value.amount = Number(
+      (
+        sellerReceived.value /
+          Number(fee.value.selected_rate.price) /
+          handlingFee -
+        fee.value.otherFee * Number(fee.value.selected_rate.price)
+      ).toFixed(2)
+    );
+  } else {
+    payload.value.amount = Number(
+      (sellerReceived.value / handlingFee - fee.value.otherFee).toFixed(2)
     );
   }
 }, 500);
