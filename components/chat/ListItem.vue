@@ -5,24 +5,18 @@
       :to="`/room/chat/${room.id}`"
     >
       <div class="flex gap-2">
-        <div
-          class="flex h-12 w-full max-w-12 items-center justify-center rounded-full"
-          :style="{
-            background: generateLinearGradient(room.business.title, room.id),
-          }"
-        >
-          <p class="text-lg font-bold text-[#fff]">
-            {{ room.business.title?.charAt(0).toUpperCase() || "" }}
-          </p>
-        </div>
-
-        <div class="flex flex-1 flex-col">
-          <p class="line-clamp-1 break-all font-medium">
+        <UiGradientProfile
+          :name="room.business.title?.charAt(0).toUpperCase() || ''"
+          size="48px"
+          class="flex-none"
+        />
+        <div class="line-clamp-1 flex max-w-[50%] flex-1 flex-col break-all">
+          <h1 class="font-medium">
             {{ room.business.title }}
             <span v-if="room.lobby_no">
               {{ $t("lobby_no") }} {{ room.lobby_no }}
             </span>
-          </p>
+          </h1>
           <ChatEvent
             v-if="room.latest_message?.type === ChatType.Action"
             class="line-clamp-1 text-sm text-[#8E8E93]"
@@ -31,15 +25,15 @@
               room.latest_message.user?.name || room.latest_message.admin?.name
             "
           />
-          <p v-else class="line-clamp-1 break-all text-sm text-[#8E8E93]">
+          <p v-else class="line-clamp-1 text-sm text-[#8E8E93]">
             {{ room?.latest_message?.message || "" }}
           </p>
         </div>
 
-        <div class="ml-auto flex flex-col items-end justify-between">
+        <div class="ml-auto flex flex-none flex-col items-end justify-between">
           <div class="inline-flex gap-1.5">
             <!-- <Icon name="DoubleCheck" color="#21C004" /> -->
-            <p class="text-sm text-[#8E8E93]">
+            <p class="line-clamp-1 break-all text-sm text-[#8E8E93]">
               {{
                 formatChatListDate(
                   room?.latest_message?.created_at ?? room?.created_at
