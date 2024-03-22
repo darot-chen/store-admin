@@ -63,8 +63,8 @@ function handleScroll(event: Event) {
   }, 300);
 }
 
-onMounted(() => {
-  fetchChatRooms();
+onMounted(async () => {
+  await fetchChatRooms();
 
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     const index = chatRooms.value.findIndex(
