@@ -65,7 +65,7 @@
     <Transition name="fade" mode="out-in">
       <button
         v-show="showScrollButton"
-        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-2 text-white shadow-lg"
+        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
         :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
         @click="onScrollToBottom"
       >
@@ -561,7 +561,7 @@ async function onScrollToBottom() {
       msgId = null;
       await fetchChats();
     }
-    bottomEl.value.scrollIntoView();
+    bottomEl.value.scrollIntoView({ behavior: "smooth" });
   }
 }
 
@@ -689,7 +689,8 @@ const onScroll = useDebounceFn(async (e: Event) => {
   const atBottom =
     scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
 
-  showScrollButton.value = scrollTop + clientHeight >= prevScrollHeight - 20;
+  showScrollButton.value =
+    scrollTop + clientHeight <= prevScrollHeight - clientHeight * 0.1;
 
   if (atTop) {
     if (msgId) {
