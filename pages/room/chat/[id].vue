@@ -48,6 +48,12 @@
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
         @header-reply="onHeaderReplyClick"
+        @resale-order="() => onOrderClick(c)"
+        @evaluate-order="
+          () => {
+            showConfirmationPopup = true;
+          }
+        "
       />
 
       <UiCircularLoading
@@ -256,8 +262,6 @@ onMounted(() => {
           d.data?.seller_completed_at;
         prevDetail.value.order.status = d.data?.status;
       }
-
-      showConfirmationPopup.value = true;
     }
   });
 
@@ -373,7 +377,7 @@ function onCancelReply() {
   replyMsgId.value = undefined;
 }
 
-function onOrderClick() {
+function onOrderClick(chat?: Chat) {
   const isRevisable =
     chatDetail.value?.order?.status === OrderStatus.REJECTED ||
     chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
@@ -388,6 +392,17 @@ function onOrderClick() {
       },
     });
   } else {
+    if (chat) {
+      router.push({
+        path,
+        query: {
+          chat: JSON.stringify(chat),
+          revisable: "true",
+        },
+      });
+      return;
+    }
+
     router.push(path);
   }
 }
