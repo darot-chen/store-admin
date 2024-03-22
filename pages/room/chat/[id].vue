@@ -63,27 +63,33 @@
       <div ref="bottomEl" />
     </div>
     <Transition name="fade" mode="out-in">
-      <button
+      <VanBadge
         v-show="showScrollButton"
-        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
+        :content="unReadMsgCount"
         :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
-        @click="onScrollToBottom"
+        :show-zero="false"
+        :offset="[-20, 3]"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
+        <button
+          class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
+          @click="onScrollToBottom"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </svg>
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </button>
+      </VanBadge>
     </Transition>
     <div class="sticky bottom-0 w-full">
       <div v-if="replyMsgId" class="bg-white py-2">
@@ -199,6 +205,8 @@ const isUpperChatHasNext = ref<boolean>();
 const lowerCursor = ref<number>();
 const isLowerChatHasNext = ref<boolean>();
 
+const unReadMsgCount = ref<number>(0);
+
 const showConfirmOrder = computed(() => {
   return (
     chatDetail.value?.order &&
@@ -245,6 +253,10 @@ onMounted(() => {
       chatDetail.value = d.data?.order && d.data.order;
     }
 
+    if (showScrollButton) {
+      unReadMsgCount.value++;
+    }
+
     addChatAndSort(d.data);
   });
 
@@ -262,6 +274,9 @@ onMounted(() => {
         prevDetail.value.order.seller_completed_at =
           d.data?.seller_completed_at;
         prevDetail.value.order.status = d.data?.status;
+        if (showScrollButton) {
+          unReadMsgCount.value++;
+        }
       }
     }
   });
@@ -279,6 +294,10 @@ onMounted(() => {
         d.data?.order?.seller_confirmed_at;
     }
 
+    if (showScrollButton) {
+      unReadMsgCount.value++;
+    }
+
     const payment = d.data?.orderPayment;
     if (!payment) return;
     newOrderDetail.value = payment;
@@ -293,6 +312,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   pageStore.$reset();
+  unReadMsgCount.value = 0;
   $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
   $evOff(SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED);
   $evOff(SOCKET_EVENT.ORDER_STATUS_UPDATED);
@@ -550,6 +570,7 @@ async function sleepScrollToBottom() {
 }
 
 async function onScrollToBottom() {
+  unReadMsgCount.value = 0;
   if (bottomEl.value) {
     if (msgId) {
       lastItemId.value = 0;
@@ -583,7 +604,7 @@ function addChatAndSort(newChat: Chat) {
     return new Date(a.created_at).valueOf() - new Date(b.created_at).valueOf();
   });
 
-  sleepScrollToBottom();
+  // sleepScrollToBottom();
 }
 
 async function fetchChatWithParam(
