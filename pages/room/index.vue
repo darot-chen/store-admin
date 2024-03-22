@@ -25,7 +25,7 @@ const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
 const loading = ref<boolean>(false);
-const firstLoad = ref<boolean>(false);
+const firstLoad = ref<boolean>(true);
 
 async function fetchChatRooms(isChangeType?: boolean) {
   if (firstLoad.value) {

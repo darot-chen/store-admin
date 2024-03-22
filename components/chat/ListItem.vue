@@ -53,7 +53,7 @@
 
           <div
             v-show="room.total_unread > 0"
-            class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#037EE5] text-xs font-semibold text-white"
+            class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#037EE5] px-1 text-xs font-semibold text-white"
           >
             <p>
               {{ room.total_unread }}
