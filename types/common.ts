@@ -35,3 +35,12 @@ export type FeeType =
   | FeeTypeEnum.HANDLING_FEE_PERCENTAGE
   | FeeTypeEnum.RATE
   | FeeTypeEnum.OTHER_FEE;
+
+export type AppNotification = {
+  id: number;
+  title: string;
+  message: string;
+  duration?: number;
+  show: boolean;
+  icon?: string;
+};

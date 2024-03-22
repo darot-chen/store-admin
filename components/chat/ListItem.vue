@@ -17,26 +17,23 @@
         </div>
 
         <div class="flex flex-1 flex-col">
-          <div>
-            <h1 class="font-medium">
-              {{ room.business.title }}
-              <span v-if="room.lobby_no">
-                {{ $t("lobby_no") }} {{ room.lobby_no }}
-              </span>
-            </h1>
-            <ChatEvent
-              v-if="room.latest_message?.type === ChatType.Action"
-              class="line-clamp-1 text-sm text-[#8E8E93]"
-              :text="room.latest_message.message"
-              :name="
-                room.latest_message.user?.name ||
-                room.latest_message.admin?.name
-              "
-            />
-            <p v-else class="line-clamp-1 text-sm text-[#8E8E93]">
-              {{ room?.latest_message?.message || "" }}
-            </p>
-          </div>
+          <p class="line-clamp-1 break-all font-medium">
+            {{ room.business.title }}
+            <span v-if="room.lobby_no">
+              {{ $t("lobby_no") }} {{ room.lobby_no }}
+            </span>
+          </p>
+          <ChatEvent
+            v-if="room.latest_message?.type === ChatType.Action"
+            class="line-clamp-1 text-sm text-[#8E8E93]"
+            :text="room.latest_message.message"
+            :name="
+              room.latest_message.user?.name || room.latest_message.admin?.name
+            "
+          />
+          <p v-else class="line-clamp-1 break-all text-sm text-[#8E8E93]">
+            {{ room?.latest_message?.message || "" }}
+          </p>
         </div>
 
         <div class="ml-auto flex flex-col items-end justify-between">

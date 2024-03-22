@@ -26,6 +26,7 @@ const user = ref<User>();
 const selectedTab = ref<Option>(PROFILE_TAB_OPTIONS[0]);
 
 definePageMeta({
+  layout: "default",
   keepalive: true,
 });
 

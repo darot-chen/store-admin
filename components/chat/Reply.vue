@@ -17,7 +17,7 @@
     >
       <div>
         <div v-if="chat?.reply_message">
-          <p :class="['text-[12px] font-bold']">
+          <p class="font-bold text-[12px]">
             {{
               chat?.reply_message.user?.name ||
               chat?.reply_message.user_id ||
@@ -25,7 +25,7 @@
               chat?.reply_message.admin_id
             }}
           </p>
-          <p class="text-[12px]">
+          <p class="break-all text-[12px]">
             {{ chat?.reply_message?.message }}
           </p>
         </div>

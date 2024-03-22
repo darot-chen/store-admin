@@ -1,5 +1,3 @@
-import { useCurrencyStore } from "./../stores/currency";
-
 export const getCurrencyByValue = (value?: string) => {
   const currencyStore = useCurrencyStore();
   const currency = currencyStore.options.find(
