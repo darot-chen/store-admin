@@ -223,6 +223,7 @@ const messagePayload = ref<{
 onMounted(() => {
   init();
 
+  // TODO: refactor type any
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;
 
@@ -247,7 +248,7 @@ onMounted(() => {
     addChatAndSort(d.data);
   });
 
-  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d: any) => {
+  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d) => {
     if (d.data?.id !== chatDetail.value?.order?.id) return;
 
     if (

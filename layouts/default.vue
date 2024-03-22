@@ -2,6 +2,10 @@
   <div
     class="safe-area-padding-bottom mx-auto flex h-full max-w-lg flex-col bg-[#FFFFFFBF]"
   >
+    <UiNotification
+      v-if="notificationStore.notifications.length"
+      @click="onNotificationClick"
+    />
     <slot name="header">
       <LayoutChatListHeader v-if="route.path === '/room'" />
 
@@ -51,9 +55,14 @@
 </template>
 
 <script setup lang="ts">
+import { SOCKET_EVENT } from "~/constants/socket";
+
 const authStore = useAuthStore();
 const pageStore = usePageStore();
 const route = useRoute();
+const notificationStore = useNotificationStore();
+const { $evOn, $evOff } = useNuxtApp();
+const chatId = ref<number | null>(null);
 
 watch(
   () => pageStore.title,
@@ -69,6 +78,28 @@ watch(
     }
   }
 );
+
+function onNotificationClick() {
+  if (chatId.value) {
+    navigateTo(`/room/chat/${chatId.value}`);
+  }
+}
+
+onMounted(() => {
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, (d) => {
+    notificationStore.addNotification({
+      title: d.data?.user?.name || "",
+      message: d.data?.message || "",
+      icon: "Chat",
+      duration: 10000,
+    });
+    chatId.value = d.data?.chat_room_id;
+  });
+});
+
+onBeforeUnmount(() => {
+  $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
+});
 </script>
 
 <style scoped lang="css">

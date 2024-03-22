@@ -64,7 +64,10 @@
                 },
               ]"
             >
-              <p v-if="type === ChatType.Text" class="whitespace-pre-wrap">
+              <p
+                v-if="type === ChatType.Text"
+                class="whitespace-pre-wrap break-all"
+              >
                 {{ text }}
               </p>
               <NuxtImg

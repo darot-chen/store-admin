@@ -2,7 +2,9 @@
   <div class="flex flex-col gap-[24px] bg-white px-[20px] py-[20px]">
     <div class="flex flex-row justify-between">
       <div class="flex flex-col">
-        <p class="font-400 text-base text-[#818086]">本周交易总额</p>
+        <p class="font-400 text-base text-[#818086]">
+          {{ $t("total_transaction_volume_this_week") }}
+        </p>
         <h2 class="font-500 text-2xl">15,320,500 U</h2>
       </div>
       <div class="flex flex-col">
@@ -16,7 +18,9 @@
               display: flex;
             "
           />
-          <span style="color: #5abf5f" class="text-xs">往时总额</span>
+          <span style="color: #5abf5f" class="text-xs">{{
+            $t("past_total")
+          }}</span>
         </div>
         <div class="flex flex-row gap-[5px]">
           <div
@@ -28,7 +32,9 @@
               display: flex;
             "
           />
-          <span style="color: #c75a5a" class="text-xs">往时总额</span>
+          <span style="color: #c75a5a" class="text-xs">{{
+            $t("current_total")
+          }}</span>
         </div>
       </div>
     </div>
@@ -42,12 +48,16 @@
       </div>
       <div class="flex flex-row items-center justify-around">
         <div class="flex flex-col items-center">
-          <p class="font-500 text-sm text-[#818086]">交易总额</p>
+          <p class="font-500 text-sm text-[#818086]">
+            {{ $t("total_transaction_amount") }}
+          </p>
           <h3 class="font-500 text-xl text-black">1,260,000</h3>
         </div>
         <div class="h-[20px] w-[1px] dark:bg-[#CCC]" />
         <div class="flex flex-col items-center">
-          <p class="font-500 text-sm text-[#818086]">交易中</p>
+          <p class="font-500 text-sm text-[#818086]">
+            {{ $t("in_transaction") }}
+          </p>
           <h3 class="font-500 text-xl text-black">5</h3>
         </div>
       </div>

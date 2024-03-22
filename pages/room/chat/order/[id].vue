@@ -240,7 +240,6 @@ import { createOrder, reviseOrder, sellerCancelOrder } from "~/api/order";
 import { getRate } from "~/api/rate";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { PAYMENT_METHODS } from "~/constants/options/payment-method";
-import { useCurrencyStore } from "~/stores/currency";
 import type { Member, ChatDetail, Chat } from "~/types/chat";
 import type { Option } from "~/types/common";
 import { CommissionType, OrderStatus, type CreateOrder } from "~/types/order";
@@ -432,8 +431,6 @@ function onSwapCurrency() {
 }
 
 onMounted(async () => {
-  console.log(chatParam);
-
   if (chatParam) {
     isOrderConfirmingOrRejected.value =
       chatParam?.order?.status === OrderStatus.REJECTED ||
@@ -600,9 +597,7 @@ onMounted(async () => {
 
     await getExchangeRate();
   } catch (error: any) {
-    console.log(error);
     showFailToast(error.message);
-    // router.back();
   } finally {
     pageStore.setTitle("交易确认");
     isLoading.value = false;

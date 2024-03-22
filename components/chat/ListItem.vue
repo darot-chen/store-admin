@@ -10,7 +10,7 @@
           size="48px"
           class="flex-none"
         />
-        <div class="flex max-w-[50%] flex-1 flex-col">
+        <div class="line-clamp-1 flex max-w-[50%] flex-1 flex-col break-all">
           <h1 class="font-medium">
             {{ room.business.title }}
             <span v-if="room.lobby_no">
@@ -33,7 +33,7 @@
         <div class="ml-auto flex flex-none flex-col items-end justify-between">
           <div class="inline-flex gap-1.5">
             <!-- <Icon name="DoubleCheck" color="#21C004" /> -->
-            <p class="line-clamp-1 text-sm text-[#8E8E93]">
+            <p class="line-clamp-1 break-all text-sm text-[#8E8E93]">
               {{
                 formatChatListDate(
                   room?.latest_message?.created_at ?? room?.created_at
@@ -44,7 +44,7 @@
 
           <div
             v-show="room.total_unread > 0"
-            class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#037EE5] text-xs font-semibold text-white"
+            class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#037EE5] px-1 text-xs font-semibold text-white"
           >
             <p>
               {{ room.total_unread }}
