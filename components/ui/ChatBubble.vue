@@ -119,10 +119,19 @@
       v-if="text === CHAT_ACTIONS.BUYER_COMPLETE_ORDER"
       :title="$t('buyer_complete_order')"
     />
-    <UiTag
-      v-if="text === CHAT_ACTIONS.ORDER_SUCCESS"
-      :title="$t('order_success')"
-    />
+
+    <div v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
+      <UiButtonLink
+        v-if="isSeller(order?.seller_id ?? 0)"
+        :title="$t('one_more_order')"
+        @click="emit('resale-order')"
+      />
+      <UiButtonLink
+        v-else
+        :title="$t('evaluate')"
+        @click="emit('evaluate-order')"
+      />
+    </div>
     <UiTag
       v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
       :title="$t('buyer_confirm_order')"
@@ -216,6 +225,8 @@ const emit = defineEmits<{
   (e: "cancel-reply"): void;
   (e: "reject"): void;
   (e: "header-reply", id: number): void;
+  (e: "evaluate-order"): void;
+  (e: "resale-order"): void;
 }>();
 
 const { t } = useI18n();
