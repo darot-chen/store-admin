@@ -25,7 +25,7 @@ const chatRooms = ref<ChatRoom[]>([]);
 const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
 const loading = ref<boolean>(false);
-const firstLoad = ref<boolean>(false);
+const firstLoad = ref<boolean>(true);
 
 async function fetchChatRooms(isChangeType?: boolean) {
   if (firstLoad.value) {
@@ -63,10 +63,10 @@ function handleScroll(event: Event) {
   }, 300);
 }
 
-onMounted(() => {
-  fetchChatRooms();
+onMounted(async () => {
+  await fetchChatRooms();
 
-  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d) => {
     const index = chatRooms.value.findIndex(
       (room) => room.id === d?.data.chat_room_id
     );

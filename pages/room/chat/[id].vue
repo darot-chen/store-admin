@@ -11,6 +11,7 @@
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
+        @payment-mgs-click="(id) => onHeaderReplyClick(id)"
       />
     </div>
     <div
@@ -47,6 +48,12 @@
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
         @header-reply="onHeaderReplyClick"
+        @resale-order="() => onOrderClick(c)"
+        @evaluate-order="
+          () => {
+            showConfirmationPopup = true;
+          }
+        "
       />
 
       <UiCircularLoading
@@ -58,7 +65,7 @@
     <Transition name="fade" mode="out-in">
       <button
         v-show="showScrollButton"
-        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-2 text-white shadow-lg"
+        class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
         :class="replyMsgId ? 'bottom-32' : 'bottom-16'"
         @click="onScrollToBottom"
       >
@@ -216,6 +223,7 @@ const messagePayload = ref<{
 onMounted(() => {
   init();
 
+  // TODO: refactor type any
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;
 
@@ -240,7 +248,7 @@ onMounted(() => {
     addChatAndSort(d.data);
   });
 
-  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d: any) => {
+  $evOn(SOCKET_EVENT.ORDER_STATUS_UPDATED, (d) => {
     if (d.data?.id !== chatDetail.value?.order?.id) return;
 
     if (
@@ -255,8 +263,6 @@ onMounted(() => {
           d.data?.seller_completed_at;
         prevDetail.value.order.status = d.data?.status;
       }
-
-      showConfirmationPopup.value = true;
     }
   });
 
@@ -372,7 +378,7 @@ function onCancelReply() {
   replyMsgId.value = undefined;
 }
 
-function onOrderClick() {
+function onOrderClick(chat?: Chat) {
   const isRevisable =
     chatDetail.value?.order?.status === OrderStatus.REJECTED ||
     chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
@@ -387,6 +393,17 @@ function onOrderClick() {
       },
     });
   } else {
+    if (chat) {
+      router.push({
+        path,
+        query: {
+          chat: JSON.stringify(chat),
+          revisable: "true",
+        },
+      });
+      return;
+    }
+
     router.push(path);
   }
 }
@@ -545,7 +562,7 @@ async function onScrollToBottom() {
       msgId = null;
       await fetchChats();
     }
-    bottomEl.value.scrollIntoView();
+    bottomEl.value.scrollIntoView({ behavior: "smooth" });
   }
 }
 
@@ -673,7 +690,8 @@ const onScroll = useDebounceFn(async (e: Event) => {
   const atBottom =
     scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
 
-  showScrollButton.value = scrollTop + clientHeight >= prevScrollHeight - 20;
+  showScrollButton.value =
+    scrollTop + clientHeight <= prevScrollHeight - clientHeight * 0.1;
 
   if (atTop) {
     if (msgId) {

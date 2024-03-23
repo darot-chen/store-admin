@@ -18,14 +18,15 @@
             class="px-[11px] py-[7px] text-[17px]"
           >
             <UiDropdown
-              :is-show-profile="true"
+              :is-show-profile="buyers.length !== 0"
               :hide-show-arrow-down="true"
               title="请选择需方负责人"
               class="text-[17px]"
               :model-value="payload?.buyer_id.toString()"
               :disabled="
                 (isRevisable && isOrderConfirmingOrRejected) ||
-                isOrderConfirmingOrRejected
+                isOrderConfirmingOrRejected ||
+                buyers.length === 0
               "
               :option="buyers"
               @update:model-value="
@@ -65,7 +66,7 @@
                     <input
                       v-model="payload.amount"
                       type="number"
-                      class="mr-2 w-full text-right text-[24px] font-bold"
+                      class="mr-2 w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
@@ -240,8 +241,7 @@ import { createOrder, reviseOrder, sellerCancelOrder } from "~/api/order";
 import { getRate } from "~/api/rate";
 import { COMMISSION_PAY_OPTIONS } from "~/constants/options/payees";
 import { PAYMENT_METHODS } from "~/constants/options/payment-method";
-import { useCurrencyStore } from "~/stores/currency";
-import type { Member, ChatDetail } from "~/types/chat";
+import type { Member, ChatDetail, Chat } from "~/types/chat";
 import type { Option } from "~/types/common";
 import { CommissionType, OrderStatus, type CreateOrder } from "~/types/order";
 import type { Rate, RateParams } from "~/types/rate";
@@ -254,6 +254,11 @@ const authStore = useAuthStore();
 const { t } = useI18n();
 
 const roomId = +route.params.id;
+const chatParamString = route.query.chat as string;
+
+const chatParam: Chat = chatParamString
+  ? JSON.parse(chatParamString)
+  : undefined;
 
 const members = ref<Member[]>([]);
 const chatDetail = ref<ChatDetail>();
@@ -432,6 +437,82 @@ function onSwapCurrency() {
 }
 
 onMounted(async () => {
+  if (chatParam) {
+    isOrderConfirmingOrRejected.value =
+      chatParam?.order?.status === OrderStatus.REJECTED ||
+      chatParam?.order?.status === OrderStatus.CONFIRMING;
+
+    const [getMember] = await Promise.all([
+      getChatRoomMembers(roomId),
+      currencyStore.getCurrencyOptions(),
+    ]);
+    members.value = getMember;
+    buyers.value = members.value
+      .filter((member) => member.user_id !== authStore.user?.id)
+      .map((member) => {
+        return {
+          label: member?.user?.name ?? member?.admin?.name ?? "",
+          value:
+            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
+        };
+      });
+
+    if (isRevisable.value) {
+      payload.value = {
+        chat_room_id: chatParam.chat_room_id,
+        amount: chatParam.order?.amount_to_be_paid ?? 0,
+        title: chatParam.order?.title ?? "",
+        duration: chatParam.order?.duration ?? "",
+        note: chatParam.order?.note ?? "",
+        commission_type:
+          chatParam.order?.commission_type ?? CommissionType.BUYER,
+        buyer_id: chatParam.order?.buyer_id ?? 0,
+        seller_currency_id: chatParam.order?.seller_currency_id ?? 0,
+        buyer_currency_id: chatParam.order?.buyer_currency_id ?? 0,
+        exchange_rate: chatParam.order?.exchange_rate ?? 0,
+        handling_fee_percentage: chatParam.order?.handling_fee_percentage ?? 0,
+        other_expense: chatParam.order?.other_expense ?? 0,
+      };
+
+      fee.value = {
+        order_id: chatParam.order?.id ?? 0,
+        otherFee: chatParam.order?.other_expense ?? 0,
+        status: chatParam.order?.status,
+        selected_rate: {
+          id: "0",
+          baseCurrency: chatParam.order?.base_currency ?? "USDT",
+          quoteCurrency: chatParam.order?.quote_currency ?? "CNY",
+          nickName: "",
+          price: chatParam.order?.exchange_rate?.toString() ?? "0",
+        },
+        handlingFeePercentage: chatParam.order?.handling_fee_percentage ?? 20,
+      };
+      debounceCalcAmount();
+      router.replace({
+        query: {
+          revisable: "true",
+        },
+      });
+    } else {
+      payload.value.buyer_id = +buyers.value[0].value;
+      payload.value.seller_currency_id =
+        chatParam.order?.seller_currency_id ?? 1;
+
+      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
+        payload.value.buyer_currency_id = currencyStore.data[1].id;
+      } else {
+        payload.value.buyer_currency_id = currencyStore.data[0].id;
+      }
+    }
+    router.replace({
+      query: {},
+    });
+    await getExchangeRate();
+    isLoading.value = false;
+    pageStore.setTitle("交易确认");
+    return;
+  }
+
   try {
     const [getDetail, getMember] = await Promise.all([
       getChatDetail(roomId),
@@ -505,7 +586,7 @@ onMounted(async () => {
         },
       });
     } else {
-      payload.value.buyer_id = +buyers.value[0].value;
+      if (buyers.value[0]) payload.value.buyer_id = +buyers.value[0].value;
       payload.value.seller_currency_id =
         chatDetail.value.business?.currency_id ?? 1;
 
@@ -521,8 +602,8 @@ onMounted(async () => {
     });
 
     await getExchangeRate();
-  } catch (error) {
-    router.back();
+  } catch (error: any) {
+    showFailToast(error.message);
   } finally {
     pageStore.setTitle("交易确认");
     isLoading.value = false;

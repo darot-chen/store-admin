@@ -3,7 +3,7 @@
     <div class="inline-flex items-center gap-[5px]">
       <h1 class="flex flex-row items-end text-[15px] font-semibold">
         {{ title }}
-        <p class="text-[11px] font-normal">(选填)</p>
+        <p class="text-[8px] font-normal">(选填)</p>
       </h1>
       <Icon name="Info" color="#E1EFFF" />
     </div>

@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { IsValidSocketEvent } from "~/constants/socket";
-import { useAuthStore } from "./stores/auth";
 import type { SocketMessageData } from "./types/base";
 import "./utils/extension";
 

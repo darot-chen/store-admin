@@ -86,5 +86,12 @@
   },
   "disputed": "Disputed",
   "undisputed": "Undisputed",
-  "untitled": "Untitled"
+  "untitled": "Untitled",
+  "evaluate": "Evaluate",
+  "one_more_order": "Resale",
+  "current_total": "当前总额",
+  "total_transaction_volume_this_week": "本周交易总额",
+  "past_total": "往时总额",
+  "total_transaction_amount": "交易总额",
+  "in_transaction": "交易中"
 }

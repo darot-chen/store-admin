@@ -6,7 +6,7 @@
           <p class="label">费率</p>
           <Icon name="Info" size="10" color="#B7B7B7" class="ml-1" />
         </div>
-        <p>{{ detail?.business?.commission || 0 }}%</p>
+        <p>{{ detail?.order?.handling_fee_percentage || 0 }}%</p>
       </div>
       <UiDivider
         orientation="vertical"
