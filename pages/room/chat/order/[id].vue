@@ -298,67 +298,36 @@ const payload = ref<CreateOrder>({
 
 const debounceGetRate = useDebounceFn(getExchangeRate, 500);
 const debounceCalcAmount = useDebounceFn(() => {
-  const handlingFee = (100 + fee.value.handlingFeePercentage) / 100;
+  if (payload.value.amount !== 0 || sellerReceived.value !== 0) {
+    const currency =
+      currencyStore.data.find(
+        (cur) => cur.id === payload.value.buyer_currency_id
+      )?.code || "CNY";
 
-  const isBuyerCurrencyIsUSDT =
-    currencyStore.data.find(
-      (currency) => currency.id === payload.value.buyer_currency_id
-    )?.code === "USDT";
-
-  if (isBuyerCurrencyIsUSDT && fee.value.selected_rate?.price) {
-    sellerReceived.value = Number(
-      (
-        payload.value.amount *
-          (1 / Number(fee.value.selected_rate.price)) *
-          handlingFee +
-        fee.value.otherFee
-      ).toFixed(2)
-    );
-  } else if (fee.value.selected_rate?.price) {
-    sellerReceived.value = Number(
-      (
-        payload.value.amount *
-          Number(fee.value.selected_rate.price) *
-          handlingFee +
-        fee.value.otherFee * Number(fee.value.selected_rate.price)
-      ).toFixed(2)
-    );
-  } else {
-    sellerReceived.value = Number(
-      (payload.value.amount * handlingFee + fee.value.otherFee).toFixed(2)
+    sellerReceived.value = calculateAmount(
+      "seller",
+      payload.value.amount,
+      Number(fee.value.selected_rate?.price || 1),
+      {
+        fixed: fee.value.otherFee,
+        percentage: fee.value.handlingFeePercentage,
+      },
+      currency
     );
   }
 }, 500);
 
 const debounceCalcReceiveAmount = useDebounceFn(() => {
-  const handlingFee = (100 + fee.value.handlingFeePercentage) / 100;
-
-  const isBuyerCurrencyIsUSDT =
-    currencyStore.data.find(
-      (currency) => currency.id === payload.value.buyer_currency_id
-    )?.code === "USDT";
-
-  if (isBuyerCurrencyIsUSDT && fee.value.selected_rate?.price) {
-    payload.value.amount = Number(
-      (
-        sellerReceived.value /
-          (1 / Number(fee.value.selected_rate.price)) /
-          handlingFee -
-        fee.value.otherFee
-      ).toFixed(2)
-    );
-  } else if (fee.value.selected_rate?.price) {
-    payload.value.amount = Number(
-      (
-        sellerReceived.value /
-          Number(fee.value.selected_rate.price) /
-          handlingFee -
-        fee.value.otherFee * Number(fee.value.selected_rate.price)
-      ).toFixed(2)
-    );
-  } else {
-    payload.value.amount = Number(
-      (sellerReceived.value / handlingFee - fee.value.otherFee).toFixed(2)
+  if (payload.value.amount !== 0 || sellerReceived.value !== 0) {
+    payload.value.amount = calculateAmount(
+      "buyer",
+      sellerReceived.value,
+      Number(fee.value.selected_rate?.price || 1),
+      {
+        fixed: fee.value.otherFee,
+        percentage: fee.value.handlingFeePercentage,
+      },
+      "USDT"
     );
   }
 }, 500);
