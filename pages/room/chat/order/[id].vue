@@ -318,6 +318,9 @@ const debounceCalcAmount = useDebounceFn(() => {
 }, 500);
 
 const debounceCalcReceiveAmount = useDebounceFn(() => {
+  const currency =
+    currencyStore.data.find((cur) => cur.id === payload.value.buyer_currency_id)
+      ?.code || "CNY";
   if (payload.value.amount !== 0 || sellerReceived.value !== 0) {
     payload.value.amount = calculateAmount(
       "buyer",
@@ -327,7 +330,7 @@ const debounceCalcReceiveAmount = useDebounceFn(() => {
         fixed: fee.value.otherFee,
         percentage: fee.value.handlingFeePercentage,
       },
-      "USDT"
+      currency
     );
   }
 }, 500);

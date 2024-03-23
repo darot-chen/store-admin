@@ -17,10 +17,13 @@ export function calculateAmount(
 
     return Number((amount * rate + totalFee).toFixed(2)); // Seller received
   } else {
+    const a =
+      buyerCurrency === "USDT"
+        ? amount / (1 / exchangeRate)
+        : amount / exchangeRate;
+
     return Math.round(
-      Number(
-        ((amount * rate) / (1 + feePercentage) - fixedFee * rate).toFixed(2)
-      )
+      Number((a / (1 + feePercentage) - fixedFee * rate).toFixed(2))
     ); // Buyer paid
   }
 }
