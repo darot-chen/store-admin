@@ -111,9 +111,10 @@
                       <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
                     </button>
                     <input
-                      :value="sellerReceived"
-                      class="w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold disabled:bg-transparent"
-                      disabled
+                      v-model="sellerReceived"
+                      type="number"
+                      class="w-full text-right text-[24px] font-bold"
+                      @input="debounceCalcReceiveAmount"
                     />
                     <div class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
@@ -302,34 +303,39 @@ const payload = ref<CreateOrder>({
 
 const debounceGetRate = useDebounceFn(getExchangeRate, 500);
 const debounceCalcAmount = useDebounceFn(() => {
-  const handlingFee = (100 + fee.value.handlingFeePercentage) / 100;
+  if (payload.value.amount !== 0 || sellerReceived.value !== 0) {
+    const currency =
+      currencyStore.data.find(
+        (cur) => cur.id === payload.value.buyer_currency_id
+      )?.code || "CNY";
 
-  const isBuyerCurrencyIsUSDT =
-    currencyStore.data.find(
-      (currency) => currency.id === payload.value.buyer_currency_id
-    )?.code === "USDT";
+    sellerReceived.value = calculateAmount(
+      "seller",
+      payload.value.amount,
+      Number(fee.value.selected_rate?.price || 1),
+      {
+        fixed: fee.value.otherFee,
+        percentage: fee.value.handlingFeePercentage,
+      },
+      currency
+    );
+  }
+}, 500);
 
-  if (isBuyerCurrencyIsUSDT && fee.value.selected_rate?.price) {
-    sellerReceived.value = Number(
-      (
-        payload.value.amount *
-          (1 / Number(fee.value.selected_rate.price)) *
-          handlingFee +
-        fee.value.otherFee
-      ).toFixed(2)
-    );
-  } else if (fee.value.selected_rate?.price) {
-    sellerReceived.value = Number(
-      (
-        payload.value.amount *
-          Number(fee.value.selected_rate.price) *
-          handlingFee +
-        fee.value.otherFee * Number(fee.value.selected_rate.price)
-      ).toFixed(2)
-    );
-  } else {
-    sellerReceived.value = Number(
-      (payload.value.amount * handlingFee + fee.value.otherFee).toFixed(2)
+const debounceCalcReceiveAmount = useDebounceFn(() => {
+  const currency =
+    currencyStore.data.find((cur) => cur.id === payload.value.buyer_currency_id)
+      ?.code || "CNY";
+  if (payload.value.amount !== 0 || sellerReceived.value !== 0) {
+    payload.value.amount = calculateAmount(
+      "buyer",
+      sellerReceived.value,
+      Number(fee.value.selected_rate?.price || 1),
+      {
+        fixed: fee.value.otherFee,
+        percentage: fee.value.handlingFeePercentage,
+      },
+      currency
     );
   }
 }, 500);
