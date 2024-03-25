@@ -77,7 +77,6 @@
                     v-if="room.type === ChatType.Action"
                     class="line-clamp-3 text-sm text-[#8E8E93]"
                     :text="room.message"
-                    :name="room.message"
                   />
                   <p
                     v-else

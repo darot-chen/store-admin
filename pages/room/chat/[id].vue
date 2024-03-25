@@ -71,23 +71,10 @@
         :offset="[-20, 3]"
       >
         <button
-          class="absolute right-4 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
+          class="absolute right-4 w-10 rounded-full border-2 border-white bg-[#50a7ea] p-1.5 text-white shadow-lg"
           @click="onScrollToBottom"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
+          <Icon name="tabler:arrow-down" color="#fff" size="20" />
         </button>
       </VanBadge>
     </Transition>
@@ -229,8 +216,10 @@ const messagePayload = ref<{
 });
 
 function onIncrementUnreadMSG(shouldUpdate: boolean = true) {
-  if (showScrollButton && shouldUpdate) {
+  if (showScrollButton.value && shouldUpdate) {
     unReadMsgCount.value++;
+  } else {
+    sleepScrollToBottom();
   }
 }
 

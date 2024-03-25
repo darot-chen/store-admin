@@ -8,7 +8,7 @@
         <div class="flex items-center pt-3">
           <Icon
             v-if="order?.base_currency"
-            :name="order?.base_currency!"
+            :name="order.base_currency"
             :color="'#000'"
             size="41"
           />
