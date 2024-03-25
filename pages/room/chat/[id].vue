@@ -261,9 +261,7 @@ onMounted(() => {
       chatDetail.value = d.data?.order && d.data.order;
     }
 
-    if (!isSeller(d.data?.user_id)) {
-      onIncrementUnreadMSG(!isSeller(d.data?.user_id));
-    }
+    onIncrementUnreadMSG(!isSeller(d.data?.user_id));
 
     addChatAndSort(d.data);
   });
