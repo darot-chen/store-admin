@@ -113,7 +113,7 @@
                     <input
                       v-model="sellerReceived"
                       type="number"
-                      class="w-full text-right text-[24px] font-bold"
+                      class="mr-2 w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcReceiveAmount"
                     />
                     <div class="hidden items-center gap-[5px]">
