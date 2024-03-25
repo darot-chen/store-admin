@@ -1,5 +1,6 @@
 import type { Cursor } from "./common";
 import type { Currency } from "./currency";
+import type { User } from "./user";
 
 export enum OrderStatus {
   FAILED = "failed",
@@ -62,6 +63,7 @@ export type Order = {
   amount: number;
   amount_to_be_paid: number;
   amount_paid: number;
+  amount_to_be_paid_usdt: number;
   quantity_to_be_given: number;
   quantity_given: number;
   base_currency: string;
@@ -81,6 +83,8 @@ export type Order = {
   buyer_currency: Currency;
   total_seller_payments: number;
   total_buyer_payments: number;
+  seller: User;
+  buyer: User;
 };
 
 export type OrderDetail = {
@@ -92,7 +96,9 @@ export type OrderDetail = {
   chat_message_id: number;
   status: string;
   quantity_given: number;
+  quantity_given_usdt?: number;
   amount_paid?: number;
+  amount_paid_usdt?: number;
 };
 
 export type OrderPaymentConfirmedType = {

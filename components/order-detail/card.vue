@@ -6,14 +6,18 @@
       <div class="!mb-7 flex items-center gap-x-2">
         <!-- Amount Transaction -->
         <div class="flex items-center pt-3">
-          <Icon name="cryptocurrency-color:usdc" size="41" color="#3e73c4" />
+          <img
+            :src="order?.base_currency === 'CNY' ? CNY : USDT"
+            alt="currency"
+            class="h-10"
+          />
           <div>
             <p class="text-amount !text-[24px] font-bold leading-7">
               {{ order?.amount.toFixed(2) }}
             </p>
             <p class="text-amount !text-[10px] font-bold leading-3">
-              ≈ {{ order?.amount_to_be_paid.toFixed(2) }}
-              {{ order?.base_currency }}
+              ≈ {{ order?.amount_to_be_paid_usdt.toFixed(2) }}
+              USDT
             </p>
           </div>
         </div>
@@ -70,7 +74,9 @@
         </p>
         <p>
           <span class="text-label"> 佣金支付方</span>
-          <span class="pl-2 text-[12px] !text-[#2F4A84]">@moon1688</span>
+          <span class="pl-2 text-[12px] !text-[#2F4A84]">
+            {{ order?.seller.business_name ?? order?.seller.name }}
+          </span>
         </p>
       </div>
       <div
@@ -86,6 +92,8 @@
 
 <script setup lang="ts">
 import type { Order } from "~/types/order";
+import CNY from "~/assets/currency/CNY.svg";
+import USDT from "~/assets/currency/USDT.svg";
 
 defineProps<{ order?: Order; lobbyTitle: string }>();
 </script>
