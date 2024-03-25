@@ -28,7 +28,25 @@
     </div>
   </div>
 
-  <VanPopup v-model:show="isEditPopupVisible" position="bottom" round>
+  <VanDialog
+    v-model:show="isEditPopupVisible"
+    round
+    theme="round-button"
+    :close-on-click-overlay="true"
+    :confirm-button-text="$t('save_edit')"
+    confirm-button-color="#50a7ea"
+    @confirm="onSavedUsername"
+    @closed="
+      () => {
+        if (isUser) {
+          if (userNameRef === user.name) return;
+        } else {
+          if (userNameRef === user.business_name) return;
+        }
+        userNameRef = '';
+      }
+    "
+  >
     <VanCellGroup inset>
       <VanField
         v-model="userNameRef"
@@ -36,23 +54,11 @@
         clearable
         autofocus
         :label="$t('name')"
-        :placeholder="user.name"
+        :placeholder="isUser ? user.name : user.business_name"
       >
-        <template #button>
-          <VanButton
-            :disabled="userNameRef.trim().length === 0"
-            size="small"
-            type="primary"
-            :loading="isLoading"
-            loading-type="spinner"
-            @click="onSavedUsername"
-          >
-            {{ $t("save_edit") }}
-          </VanButton>
-        </template>
       </VanField>
     </VanCellGroup>
-  </VanPopup>
+  </VanDialog>
 
   <div
     v-if="previewImage && isEditProfilePopupVisible"
@@ -199,6 +205,7 @@ const onSavedUsername = async () => {
 
   isLoading.value = false;
   isEditPopupVisible.value = false;
+  userNameRef.value = "";
 };
 
 const toggleEditMode = () => {
