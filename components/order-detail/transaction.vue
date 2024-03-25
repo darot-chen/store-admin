@@ -7,9 +7,14 @@
         <p class="text-[11px] text-[#B7B7B7]">
           {{ type === "issue" ? "下发" : "" }}
         </p>
-        <p class="text-[18px] font-bold text-black">
-          {{ amount }}
-        </p>
+        <div class="flex items-center">
+          <p v-if="type === 'deposit'" class="font-[10px] text-gray-300">
+            {{ amount < 0 ? "-" : "+" }}
+          </p>
+          <p class="text-[18px] font-bold text-black">
+            {{ Math.abs(amount) }}
+          </p>
+        </div>
       </div>
       <p class="din-alternate-text text-[11px] text-gray-300">
         {{ exchangeAmount.toFixed(2) }} {{ currency }}

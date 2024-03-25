@@ -7,8 +7,8 @@
       <div
         class="flex w-1/2 items-center justify-between border-b border-r border-b-red-500 p-3 text-red-500"
       >
-        <p class="text-[14px]">
-          <Icon name="cryptocurrency-color:usdt" size="24" color="#3e73c4" />
+        <p class="flex items-center gap-x-2 text-[14px]">
+          <Icon name="USDT" :color="'#000'" size="24" />
           下发
         </p>
         <p class="din-alternate-text text-[14px]">
@@ -19,9 +19,9 @@
       <div
         class="flex w-1/2 items-center justify-between border-b border-r border-b-green-500 p-3 text-green-500"
       >
-        <p class="text-[14px]">
-          <Icon name="cryptocurrency-color:usdc" size="24" color="#3e73c4" />
-          下发
+        <p class="flex items-center gap-x-2 text-[14px]">
+          <Icon name="CNY" :color="'#000'" size="24" />
+          入款
         </p>
         <p class="din-alternate-text text-[14px]">
           {{ buyerOrderPayments.length }}笔
@@ -38,10 +38,10 @@
           type="issue"
           :chat-room-id="order?.chat_room_id || 0"
           :chat-msg-id="payment.chat_message_id"
-          :currency="order?.base_currency || ''"
+          currency="USDT"
           :date="formatDate(payment.created_at, 'YYYY/MM/DD hh:mm:ss') || ''"
           :amount="payment.amount_paid ?? 0"
-          :exchange-amount="payment.amount_paid ?? 0"
+          :exchange-amount="payment.amount_paid_usdt ?? 0"
         />
       </div>
       <!-- Buyer -->
@@ -52,10 +52,10 @@
           type="deposit"
           :chat-room-id="order?.chat_room_id || 0"
           :chat-msg-id="payment.chat_message_id"
-          :currency="order?.quote_currency || ''"
+          currency="USDT"
           :date="formatDate(payment.created_at, 'YYYY/MM/DD hh:mm:ss') || ''"
           :amount="payment.quantity_given ?? 0"
-          :exchange-amount="payment.quantity_given ?? 0"
+          :exchange-amount="payment.quantity_given_usdt ?? 0"
         />
       </div>
     </div>
