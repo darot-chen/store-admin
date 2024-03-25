@@ -8,7 +8,7 @@
         class="flex w-1/2 items-center justify-between border-b border-r border-b-red-500 p-3 text-red-500"
       >
         <p class="flex items-center gap-x-2 text-[14px]">
-          <img :src="USDT" alt="currency" class="h-7" />
+          <Icon name="USDT" :color="'#000'" size="24" />
           下发
         </p>
         <p class="din-alternate-text text-[14px]">
@@ -20,7 +20,7 @@
         class="flex w-1/2 items-center justify-between border-b border-r border-b-green-500 p-3 text-green-500"
       >
         <p class="flex items-center gap-x-2 text-[14px]">
-          <img :src="CNY" alt="currency" class="h-7" />
+          <Icon name="CNY" :color="'#000'" size="24" />
           入款
         </p>
         <p class="din-alternate-text text-[14px]">
@@ -71,8 +71,6 @@
 import { showFailToast } from "vant";
 import { getOrderDetail, getOrdersPayment } from "~/api/order";
 import type { Order, OrderDetail } from "~/types/order";
-import CNY from "~/assets/currency/CNY.svg";
-import USDT from "~/assets/currency/USDT.svg";
 
 const loading = ref<boolean>(false);
 

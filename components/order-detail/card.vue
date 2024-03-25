@@ -6,10 +6,11 @@
       <div class="!mb-7 flex items-center gap-x-2">
         <!-- Amount Transaction -->
         <div class="flex items-center pt-3">
-          <img
-            :src="getCurrencyIcon(order?.base_currency ?? '')"
-            alt="currency"
-            class="h-10"
+          <Icon
+            v-if="order?.base_currency"
+            :name="order?.base_currency!"
+            :color="'#000'"
+            size="41"
           />
           <div>
             <p class="text-amount !text-[24px] font-bold leading-7">
@@ -92,25 +93,6 @@
 
 <script setup lang="ts">
 import type { Order } from "~/types/order";
-import CNY from "~/assets/currency/CNY.svg";
-import USDT from "~/assets/currency/USDT.svg";
-import PHP from "~/assets/currency/PHP.svg";
-import USD from "~/assets/currency/USD.svg";
-
-const getCurrencyIcon = (currency: string): string => {
-  switch (currency) {
-    case "CNY":
-      return CNY;
-    case "USDT":
-      return USDT;
-    case "PHP":
-      return PHP;
-    case "USD":
-      return USD;
-    default:
-      return USDT;
-  }
-};
 
 defineProps<{ order?: Order; lobbyTitle: string }>();
 </script>
