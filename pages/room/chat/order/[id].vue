@@ -373,7 +373,7 @@ async function onOrderClick() {
   try {
     const preparedPayload: CreateOrder = {
       ...payload.value,
-      exchange_rate: Number(fee.value?.selected_rate?.price) ?? 1,
+      exchange_rate: Number(fee.value.selected_rate?.price || 1),
       handling_fee_percentage: fee.value.handlingFeePercentage,
       other_expense: fee.value.otherFee,
     };
