@@ -7,7 +7,7 @@
         <!-- Amount Transaction -->
         <div class="flex items-center pt-3">
           <img
-            :src="order?.base_currency === 'CNY' ? CNY : USDT"
+            :src="getCurrencyIcon(order?.base_currency ?? '')"
             alt="currency"
             class="h-10"
           />
@@ -94,6 +94,23 @@
 import type { Order } from "~/types/order";
 import CNY from "~/assets/currency/CNY.svg";
 import USDT from "~/assets/currency/USDT.svg";
+import PHP from "~/assets/currency/PHP.svg";
+import USD from "~/assets/currency/USD.svg";
+
+const getCurrencyIcon = (currency: string): string => {
+  switch (currency) {
+    case "CNY":
+      return CNY;
+    case "USDT":
+      return USDT;
+    case "PHP":
+      return PHP;
+    case "USD":
+      return USD;
+    default:
+      return USDT;
+  }
+};
 
 defineProps<{ order?: Order; lobbyTitle: string }>();
 </script>
