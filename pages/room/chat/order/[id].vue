@@ -49,8 +49,8 @@
                     :model-value="payload.seller_currency_id"
                     :option="currencyStore.options"
                     @update:model-value="
-                      (value) => {
-                        payload.seller_currency_id = +value.value;
+                      ({ value }) => {
+                        payload.seller_currency_id = +value;
                         getExchangeRate();
                       }
                     "
@@ -96,9 +96,9 @@
                     :model-value="payload.buyer_currency_id"
                     :option="currencyStore.options"
                     @update:model-value="
-                      (value) => {
-                        payload.buyer_currency_id = +value.value;
-                        // getExchangeRate();
+                      ({ value }) => {
+                        payload.buyer_currency_id = +value;
+                        getExchangeRate();
                       }
                     "
                   />

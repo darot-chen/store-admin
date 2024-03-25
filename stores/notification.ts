@@ -4,6 +4,7 @@ export const useNotificationStore = defineStore({
   id: "notification-store",
   state: () => ({
     notifications: [] as AppNotification[],
+    activeId: 0,
   }),
   actions: {
     addNotification(notification: {
@@ -22,6 +23,12 @@ export const useNotificationStore = defineStore({
       this.notifications = this.notifications.filter(
         (notification) => notification.id !== id
       );
+    },
+    setActiveId(id: number) {
+      this.activeId = id;
+    },
+    clearActiveId() {
+      this.activeId = 0;
     },
   },
 });

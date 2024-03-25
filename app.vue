@@ -7,12 +7,16 @@
   </NuxtLayout>
 
   <NuxtLayout v-else>
+    <UiNotification
+      v-if="notificationStore.notifications.length"
+      @click="onNotificationClick"
+    />
     <NuxtPage :page-key="(route: any) => route.path" />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import { IsValidSocketEvent } from "~/constants/socket";
+import { IsValidSocketEvent, SOCKET_EVENT } from "~/constants/socket";
 import type { SocketMessageData } from "./types/base";
 import "./utils/extension";
 
@@ -21,9 +25,11 @@ const local = getLocaleCookie();
 const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
+const notificationStore = useNotificationStore();
 
 const loading = ref<boolean>(true);
 const socketUrl = getWebSocketUrl();
+const { $evOn, $evOff } = useNuxtApp();
 
 const { open, close } = useSocket(socketUrl || "", {
   autoReconnect: true,
@@ -43,6 +49,10 @@ function handleOnMessage(data: SocketMessageData<any>) {
   }
 
   $evEmit(data.event, data);
+}
+
+function onNotificationClick() {
+  navigateTo(`/room/chat/${notificationStore.activeId}`);
 }
 
 setLocaleCookie(local || "zh");
@@ -68,10 +78,20 @@ onMounted(async () => {
 
   open(getWebSocketUrl());
 
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, (d) => {
+    if (
+      d.data.chat_room_id === +route.params.id ||
+      authStore.user?.id === d.data.user_id
+    )
+      return;
+    renderNotification(d.data);
+  });
+
   loading.value = false;
 });
 
 onUnmounted(() => {
+  $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
   close();
 });
 </script>

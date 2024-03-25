@@ -5,14 +5,18 @@
         {{ selected?.label }}
       </p>
     </div>
+    <div
+      :class="['inline-flex items-center gap-[5px]', disabled && 'disabled']"
+      @click="onClick"
+    >
+      <div :class="['inline-flex items-center gap-[5px]']" @click="onClick">
+        <Icon name="ArrowDown" color="#0000001A" size="9" />
 
-    <div :class="['inline-flex items-center gap-[5px]']" @click="onClick">
-      <Icon name="ArrowDown" color="#0000001A" size="9" />
-
-      <img :src="getIcon()" alt="" :width="16" />
-      <!-- <img :src="USDT" alt="" :width="16" />
+        <img :src="getIcon()" alt="" :width="16" />
+        <!-- <img :src="USDT" alt="" :width="16" />
       <img :src="USD" alt="" :width="16" />
       <img :src="PHP" alt="" :width="16" /> -->
+      </div>
     </div>
   </button>
 
@@ -27,7 +31,7 @@
         :title="item.label"
         class="!text-[16px]"
         is-link
-        @click="() => onOptionClick(item)"
+        @click="onOptionClick(item)"
       />
     </VanCellGroup>
   </VanPopup>

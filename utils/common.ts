@@ -75,18 +75,22 @@ export const scrollAnimatedFrame = (
 
 export const getScrollData = (target: HTMLDivElement) => {
   const scrollTop = target?.scrollTop;
-  const prevScrollHeight = target.scrollHeight ?? 0;
-  const prevScrollTop = target.scrollTop ?? 0;
-  const clientHeight = target.clientHeight ?? 0;
+  const prevScrollHeight = target?.scrollHeight || 0;
+  const prevScrollTop = target?.scrollTop || 0;
+  const clientHeight = target?.clientHeight || 0;
 
   return { scrollTop, prevScrollHeight, prevScrollTop, clientHeight, target };
 };
 
 export const scrollToChatId = async (id: number) => {
   await nextTick(() => {
-    const lastDom = document.getElementById(`chat_${id}`);
-    if (lastDom) {
-      lastDom.scrollIntoView({ block: "start" });
+    const target = document.getElementById(`chat_${id}`);
+    if (target) {
+      target.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+        inline: "start",
+      });
     }
   });
 };

@@ -26,7 +26,7 @@
     </div>
     <div class="flex justify-between py-[5px]">
       <p class="title">{{ $t("trx_completion_date") }}</p>
-      <p class="value">{{ formatDate(data.order?.seller_completed_at) }}</p>
+      <p class="value">{{ formatDate(data?.order?.seller_completed_at) }}</p>
     </div>
     <div class="flex justify-between py-[5px]">
       <p class="title">{{ $t("service_quality") }}</p>

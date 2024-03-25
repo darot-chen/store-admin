@@ -127,9 +127,9 @@
             @click="emit('resale-order')"
           />
           <UiButtonLink
-            v-else
+            v-else-if="detail"
             :title="$t('evaluate')"
-            @click="emit('evaluate-order')"
+            @click="emit('evaluate-order', detail)"
           />
         </div>
       </div>
@@ -198,7 +198,7 @@ const emit = defineEmits<{
   (e: "cancel-reply"): void;
   (e: "reject"): void;
   (e: "header-reply", id: number): void;
-  (e: "evaluate-order"): void;
+  (e: "evaluate-order", detail: ChatDetail): void;
   (e: "resale-order"): void;
 }>();
 

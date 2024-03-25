@@ -50,7 +50,8 @@
         @header-reply="onHeaderReplyClick"
         @resale-order="() => onOrderClick(c)"
         @evaluate-order="
-          () => {
+          (d) => {
+            prevDetail = d;
             showConfirmationPopup = true;
           }
         "
@@ -113,7 +114,12 @@
       type="success"
     >
       <ChatConfirmationBody
-        v-if="prevDetail && prevDetail?.order"
+        v-if="prevDetail"
+        v-model:score="rateScore"
+        :data="prevDetail"
+      />
+      <ChatConfirmationBody
+        v-if="prevDetail"
         v-model:score="rateScore"
         :data="prevDetail"
       />
@@ -215,7 +221,7 @@ const messagePayload = ref<{
   message: "",
 });
 
-function onIncrementUnreadMSG(shouldUpdate: boolean = true) {
+function increaseUnreadMsg(shouldUpdate: boolean = true) {
   if (showScrollButton.value && shouldUpdate) {
     unReadMsgCount.value++;
   } else {
@@ -268,7 +274,7 @@ onMounted(() => {
         chatDetail.value.order = d.data?.order && d.data.order;
     }
 
-    onIncrementUnreadMSG(!isSeller(d.data?.user_id));
+    increaseUnreadMsg(!isSeller(d.data?.user_id));
 
     addChatAndSort(d.data);
   });
@@ -288,7 +294,7 @@ onMounted(() => {
           d.data?.seller_completed_at;
         prevDetail.value.order.status = d.data?.status;
 
-        onIncrementUnreadMSG();
+        increaseUnreadMsg();
       }
     }
   });
@@ -306,7 +312,7 @@ onMounted(() => {
         d.data?.order?.seller_confirmed_at;
     }
 
-    onIncrementUnreadMSG();
+    increaseUnreadMsg();
 
     const payment = d.data?.orderPayment;
     if (!payment) return;
@@ -351,7 +357,7 @@ function onHeaderReplyClick(id: number) {
 
   if (!chatElement) {
     msgId = id.toString();
-    onFetchChatWithMSGId(id.toString());
+    getChatWithId(id.toString());
     return;
   }
   chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -442,14 +448,14 @@ async function init() {
   loading.value = true;
 
   if (typeof msgId === "string") {
-    onFetchChatWithMSGId(msgId);
+    getChatWithId(msgId);
   } else {
     await fetchChats();
   }
   loading.value = false;
 }
 
-async function onFetchChatWithMSGId(id: string) {
+async function getChatWithId(id: string) {
   const searchChat = await getChatMessageById(id);
 
   if (!searchChat) return;
@@ -570,6 +576,12 @@ async function fetchChats() {
       hasMore.value = chatRes.meta.has_next;
     }
   }
+
+  chatRes.results.forEach((chat) => {
+    if (chat.user_id !== authStore.user?.id) {
+      unReadMsgCount.value++;
+    }
+  });
 
   sleepScrollToBottom();
 }
@@ -713,20 +725,19 @@ async function onRateSeller() {
 }
 
 const onScroll = useDebounceFn(async (e: Event) => {
-  const lastChat = chats.value[0];
-
   const { scrollTop, prevScrollHeight, clientHeight } = getScrollData(
     e.target as HTMLDivElement
   );
-
-  const atTop = scrollTop === 0;
+  const atTop = scrollTop <= clientHeight * 0.2;
   const atBottom =
     scrollTop + clientHeight >= prevScrollHeight - clientHeight * 0.2;
 
   showScrollButton.value =
     scrollTop + clientHeight <= prevScrollHeight - clientHeight * 0.1;
 
-  if (atTop) {
+  if (atTop && hasMore.value) {
+    const lastChat = chats.value[0];
+
     if (msgId) {
       if (!isUpperChatHasNext.value && !fetchingMoreChat.value) return;
       await fetchChatWithId();

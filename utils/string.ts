@@ -1,7 +1,8 @@
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 
 export const getChatEvent = (type: string, name?: string) => {
-  const { t } = useNuxtApp().$i18n;
+  const { $i18n } = useNuxtApp();
+  const t = $i18n.t;
 
   if (type === CHAT_ACTIONS.JOIN) {
     return t("name_has_joined_the_chat", {
@@ -12,7 +13,7 @@ export const getChatEvent = (type: string, name?: string) => {
       name,
     });
   } else if (type === CHAT_ACTIONS.ORDER_SUCCESS) {
-    return undefined;
+    return "";
   } else {
     return t(type);
   }
