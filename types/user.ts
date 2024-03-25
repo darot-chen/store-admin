@@ -20,6 +20,8 @@ export type User = {
   rating_score: number;
   rating_count: number;
   profile_key: string;
+  business_name?: string;
+  business_profile_key?: string;
 };
 
 export type LoginPayload = {

@@ -2,8 +2,10 @@
   <div class="relative flex flex-col items-center gap-[7px]">
     <div>
       <UiGradientProfile
-        :image-source="refUser.profile_key"
-        :name="refUser.name"
+        :image-source="
+          isUser ? refUser.profile_key : refUser.business_profile_key ?? ''
+        "
+        :name="isUser ? refUser.name : refUser.business_name ?? ''"
         size="80px"
         @click="fileInput?.click()"
       />
@@ -13,7 +15,7 @@
         class="text-[20px] font-semibold text-[#010101]"
         contenteditable="false"
       >
-        {{ refUser.name }}
+        {{ isUser ? refUser.name : refUser.business_name ?? "" }}
       </h1>
       <button class="absolute -right-7" @click="toggleEditMode">
         <Icon name="EditProfile" color="#818086" size="15" />
@@ -82,6 +84,7 @@ import imageCompression from "browser-image-compression";
 
 const props = defineProps<{
   user: User;
+  isUser: boolean;
 }>();
 
 const refUser = toRef(props).value.user;
