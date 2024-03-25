@@ -1,6 +1,10 @@
 <template>
   <div class="mx-[12px] my-[6px] flex flex-col gap-[24px]">
-    <UiProfile v-if="user" :user="user" />
+    <UiProfile
+      v-if="user"
+      :user="user"
+      :is-user="selectedTab.value === 'quickSelection'"
+    />
     <UiSwitch v-model="selectedTab" :options="PROFILE_TAB_OPTIONS" />
     <div class="inline-flex justify-between gap-[6px]">
       <UiCard title="成功交易数次" icon="Check2" value="367" color="#007AFF" />

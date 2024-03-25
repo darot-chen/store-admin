@@ -2,8 +2,10 @@
   <div class="relative flex flex-col items-center gap-[7px]">
     <div>
       <UiGradientProfile
-        :image-source="refUser.profile_key"
-        :name="refUser.name"
+        :image-source="
+          isUser ? refUser.profile_key : refUser.business_profile_key ?? ''
+        "
+        :name="isUser ? refUser.name : refUser.business_name ?? ''"
         size="80px"
         @click="fileInput?.click()"
       />
@@ -13,7 +15,7 @@
         class="text-[20px] font-semibold text-[#010101]"
         contenteditable="false"
       >
-        {{ refUser.name }}
+        {{ isUser ? refUser.name : refUser.business_name ?? "" }}
       </h1>
       <button class="absolute -right-7" @click="toggleEditMode">
         <Icon name="EditProfile" color="#818086" size="15" />
@@ -76,12 +78,18 @@
 
 <script setup lang="ts">
 import type { User } from "~/types/user";
-import { updateName, uploadProfileImage } from "~/api/user";
+import {
+  updateBusinessName,
+  updateName,
+  uploadBusinessProfileImage,
+  uploadProfileImage,
+} from "~/api/user";
 import { showFailToast, showSuccessToast } from "vant";
 import imageCompression from "browser-image-compression";
 
 const props = defineProps<{
   user: User;
+  isUser: boolean;
 }>();
 
 const refUser = toRef(props).value.user;
@@ -148,13 +156,23 @@ const onUpload = async (croppedImg: string) => {
     return;
   }
 
-  const isUpdated = await uploadProfileImage(profileImg);
+  let profileKey: string | undefined;
+
+  if (props.isUser) {
+    profileKey = await uploadProfileImage(profileImg);
+  } else {
+    profileKey = await uploadBusinessProfileImage(profileImg);
+  }
 
   isEditProfilePopupVisible.value = false;
   isUpdateProfileLoading.value = false;
-  if (isUpdated) {
+  if (profileKey) {
+    if (props.isUser) {
+      refUser.profile_key = profileKey;
+    } else {
+      refUser.business_profile_key = profileKey;
+    }
     showSuccessToast("Updated");
-    refUser.profile_key = isUpdated;
   } else {
     showFailToast("Failed");
   }
@@ -162,14 +180,24 @@ const onUpload = async (croppedImg: string) => {
 
 const onSavedUsername = async () => {
   isLoading.value = true;
-  const isSuccess = await updateName(userNameRef.value);
+  let isSuccess = false;
+  if (props.isUser) {
+    isSuccess = await updateName(userNameRef.value);
+  } else {
+    isSuccess = await updateBusinessName(userNameRef.value);
+  }
   if (isSuccess) {
     showSuccessToast("Updated");
+    if (props.isUser) {
+      refUser.name = userNameRef.value;
+    } else {
+      refUser.business_name = userNameRef.value;
+    }
   } else {
     showFailToast("Failed");
   }
+
   isLoading.value = false;
-  refUser.name = userNameRef.value;
   isEditPopupVisible.value = false;
 };
 
