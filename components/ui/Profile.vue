@@ -35,6 +35,7 @@
     :close-on-click-overlay="true"
     :confirm-button-text="$t('save_edit')"
     confirm-button-color="#50a7ea"
+    :confirm-button-disabled="userNameRef.trim() === ''"
     @confirm="onSavedUsername"
     @closed="
       () => {
