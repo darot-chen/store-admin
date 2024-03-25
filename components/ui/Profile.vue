@@ -78,7 +78,12 @@
 
 <script setup lang="ts">
 import type { User } from "~/types/user";
-import { updateName, uploadProfileImage } from "~/api/user";
+import {
+  updateBusinessName,
+  updateName,
+  uploadBusinessProfileImage,
+  uploadProfileImage,
+} from "~/api/user";
 import { showFailToast, showSuccessToast } from "vant";
 import imageCompression from "browser-image-compression";
 
@@ -151,13 +156,19 @@ const onUpload = async (croppedImg: string) => {
     return;
   }
 
-  const isUpdated = await uploadProfileImage(profileImg);
+  let profileKey: string | undefined;
+
+  if (props.isUser) {
+    profileKey = await uploadProfileImage(profileImg);
+  } else {
+    profileKey = await uploadBusinessProfileImage(profileImg);
+  }
 
   isEditProfilePopupVisible.value = false;
   isUpdateProfileLoading.value = false;
-  if (isUpdated) {
+  if (profileKey) {
     showSuccessToast("Updated");
-    refUser.profile_key = isUpdated;
+    refUser.profile_key = profileKey;
   } else {
     showFailToast("Failed");
   }
@@ -165,7 +176,12 @@ const onUpload = async (croppedImg: string) => {
 
 const onSavedUsername = async () => {
   isLoading.value = true;
-  const isSuccess = await updateName(userNameRef.value);
+  let isSuccess = false;
+  if (props.isUser) {
+    isSuccess = await updateName(userNameRef.value);
+  } else {
+    isSuccess = await updateBusinessName(userNameRef.value);
+  }
   if (isSuccess) {
     showSuccessToast("Updated");
   } else {
