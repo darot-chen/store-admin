@@ -167,8 +167,12 @@ const onUpload = async (croppedImg: string) => {
   isEditProfilePopupVisible.value = false;
   isUpdateProfileLoading.value = false;
   if (profileKey) {
+    if (props.isUser) {
+      refUser.profile_key = profileKey;
+    } else {
+      refUser.business_profile_key = profileKey;
+    }
     showSuccessToast("Updated");
-    refUser.profile_key = profileKey;
   } else {
     showFailToast("Failed");
   }
@@ -184,11 +188,16 @@ const onSavedUsername = async () => {
   }
   if (isSuccess) {
     showSuccessToast("Updated");
+    if (props.isUser) {
+      refUser.name = userNameRef.value;
+    } else {
+      refUser.business_name = userNameRef.value;
+    }
   } else {
     showFailToast("Failed");
   }
+
   isLoading.value = false;
-  refUser.name = userNameRef.value;
   isEditPopupVisible.value = false;
 };
 
