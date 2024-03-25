@@ -229,8 +229,10 @@ const messagePayload = ref<{
 });
 
 function onIncrementUnreadMSG(shouldUpdate: boolean = true) {
-  if (showScrollButton && shouldUpdate) {
+  if (showScrollButton.value && shouldUpdate) {
     unReadMsgCount.value++;
+  } else {
+    sleepScrollToBottom();
   }
 }
 
