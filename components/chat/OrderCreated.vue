@@ -10,7 +10,7 @@
     <p>
       {{
         $t("order_message.contact_person", {
-          name: detail?.business?.owner.name,
+          name: detail?.business?.owner?.name,
         })
       }}
     </p>
