@@ -118,11 +118,7 @@
         v-model:score="rateScore"
         :data="prevDetail"
       />
-      <ChatConfirmationBody
-        v-if="prevDetail"
-        v-model:score="rateScore"
-        :data="prevDetail"
-      />
+
       <template #footer>
         <ChatConfirmationFooter
           v-model:comment="rateComment"
