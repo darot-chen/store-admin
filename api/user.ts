@@ -10,11 +10,11 @@ export const getMe = async () => {
 };
 
 export const updateName = async (name: string) => {
-  const { data } = await useAxiosInstance().post(`${url}/me/name`, {
+  const { status } = await useAxiosInstance().post(`${url}/me/name`, {
     name,
   });
 
-  if (data.message === "Success") {
+  if (status === 200) {
     return true;
   }
 
@@ -22,11 +22,11 @@ export const updateName = async (name: string) => {
 };
 
 export const updateBusinessName = async (name: string) => {
-  const { data } = await useAxiosInstance().post(`${url}/business/name`, {
+  const { status } = await useAxiosInstance().post(`${url}/business/name`, {
     name,
   });
 
-  if (data.message === "Success") {
+  if (status === 200) {
     return true;
   }
 
