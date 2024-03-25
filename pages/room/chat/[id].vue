@@ -241,11 +241,13 @@ onMounted(() => {
       d.data.type === ChatType.Action &&
       d.data.message === CHAT_ACTIONS.NEW_TICKET_CREATED
     ) {
-      chatDetail.value = d.data?.order && d.data.order;
+      if (chatDetail.value)
+        chatDetail.value.order = d.data?.order && d.data.order;
     }
 
     if (d.data.message === CHAT_ACTIONS.ORDER_UPDATED) {
-      chatDetail.value = d.data?.order && d.data.order;
+      if (chatDetail.value)
+        chatDetail.value.order = d.data?.order && d.data.order;
     }
 
     onIncrementUnreadMSG(!isSeller(d.data?.user_id));

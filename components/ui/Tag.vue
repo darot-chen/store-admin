@@ -1,5 +1,5 @@
 <template>
-  <div class="my-[0.1rem] inline-block w-full text-center">
+  <div v-show="title" class="my-[0.1rem] inline-block w-full text-center">
     <div class="bg-tag">
       <p class="px-[0.44rem] py-[0.19rem]">
         {{ title }}

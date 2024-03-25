@@ -11,6 +11,8 @@ export const getChatEvent = (type: string, name?: string) => {
     return t("name_has_left_the_chat", {
       name,
     });
+  } else if (type === CHAT_ACTIONS.ORDER_SUCCESS) {
+    return undefined;
   } else {
     return t(type);
   }
