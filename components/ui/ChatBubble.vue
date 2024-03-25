@@ -124,16 +124,23 @@
     />
 
     <div v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
-      <UiButtonLink
-        v-if="isSeller(order?.seller_id ?? 0)"
-        :title="$t('one_more_order')"
-        @click="emit('resale-order')"
-      />
-      <UiButtonLink
-        v-else
-        :title="$t('evaluate')"
-        @click="emit('evaluate-order')"
-      />
+      <div class="flex flex-col gap-2">
+        <ChatSystem :timestamp="timestamp" :text="text">
+          <ChatOrderCreated v-if="detail" :order="order" :detail="detail" />
+        </ChatSystem>
+        <div class="ml-[48px] mr-[35px]">
+          <UiButtonLink
+            v-if="isSeller(order?.seller_id ?? 0)"
+            :title="$t('one_more_order')"
+            @click="emit('resale-order')"
+          />
+          <UiButtonLink
+            v-else
+            :title="$t('evaluate')"
+            @click="emit('evaluate-order')"
+          />
+        </div>
+      </div>
     </div>
     <UiTag
       v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
