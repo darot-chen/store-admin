@@ -62,6 +62,7 @@ const pageStore = usePageStore();
 const route = useRoute();
 const notificationStore = useNotificationStore();
 const { $evOn, $evOff } = useNuxtApp();
+const { t } = useI18n();
 const chatId = ref<number | null>(null);
 
 watch(
@@ -89,7 +90,7 @@ onMounted(() => {
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, (d) => {
     notificationStore.addNotification({
       title: d.data?.user?.name || "",
-      message: d.data?.message || "",
+      message: t(d.data?.message) || "",
       icon: "Chat",
       duration: 10000,
     });
