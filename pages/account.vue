@@ -5,19 +5,58 @@
       :user="user"
       :is-user="selectedTab.value === 'quickSelection'"
     />
-    <UiSwitch v-model="selectedTab" :options="PROFILE_TAB_OPTIONS" />
-    <div class="inline-flex justify-between gap-[6px]">
-      <UiCard title="成功交易数次" icon="Check2" value="367" color="#007AFF" />
-      <UiCard title="交易总额" icon="List" value="商户信用度" color="#007AFF" />
-      <UiCard
-        title="商户信用度"
-        icon="PersonCheck"
-        value="6 级"
-        color="#007AFF"
-      />
+    <UiSwitch
+      v-model="selectedTab"
+      :options="PROFILE_TAB_OPTIONS"
+      @update:model-value="
+        (v) => {
+          $router.replace({ query: { tab: v.value } });
+        }
+      "
+    />
+    <div
+      v-if="selectedTab.value === 'quickSelection'"
+      class="flex flex-col gap-[24px]"
+    >
+      <div class="inline-flex justify-between gap-[6px]">
+        <UiCard
+          title="成功交易数次"
+          icon="Check2"
+          value="367"
+          color="#007AFF"
+        />
+        <UiCard
+          title="总交易额"
+          icon="List"
+          value="5,845,000"
+          color="#007AFF"
+        />
+      </div>
+      <UiCell inset :cells="profileMerchantTop" />
+      <UiCell inset :cells="profileMerchantBottom" />
     </div>
-    <UiCell inset :cells="profileTopItems" />
-    <UiCell inset :cells="profileBottomItems" />
+
+    <div
+      v-else-if="selectedTab.value === 'fixedDate'"
+      class="flex flex-col gap-[24px]"
+    >
+      <div class="inline-flex justify-between gap-[6px]">
+        <UiCard
+          title="成功交易数次"
+          icon="Check2"
+          value="367"
+          color="#007AFF"
+        />
+        <UiCard
+          title="总交易额"
+          icon="List"
+          value="5,845,000"
+          color="#007AFF"
+        />
+      </div>
+      <UiCell inset :cells="profileMerchantTop" />
+      <UiCell inset :cells="profileMerchantBottom" />
+    </div>
   </div>
 </template>
 
@@ -33,6 +72,28 @@ definePageMeta({
   layout: "default",
   keepalive: true,
 });
+
+const profileMerchantTop: Cell[] = [
+  {
+    title: "我的报表",
+    icon: "Statistic",
+    backgroundColor: "#FF453A",
+    onClick: () => navigateTo("/report"),
+  },
+  {
+    title: "账户管理",
+    icon: "StackPerson",
+    backgroundColor: "#8321FF",
+  },
+];
+
+const profileMerchantBottom: Cell[] = [
+  {
+    title: "我的订单",
+    icon: "GroupPeople",
+    backgroundColor: "#FF453A",
+  },
+];
 
 const profileBottomItems: Cell[] = [
   {
