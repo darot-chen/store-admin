@@ -46,7 +46,7 @@
                 <div class="p-[5px]">
                   <CreateOrderCurrency
                     class="mx-[4px]"
-                    :model-value="payload.seller_currency_id.toString()"
+                    :model-value="payload.seller_currency_id"
                     :option="currencyStore.options"
                     @update:model-value="
                       (value) => {
@@ -93,12 +93,12 @@
               <div class="pl-[8px]">
                 <div class="p-[5px]">
                   <CreateOrderCurrency
-                    :model-value="payload.buyer_currency_id.toString()"
+                    :model-value="payload.buyer_currency_id"
                     :option="currencyStore.options"
                     @update:model-value="
                       (value) => {
                         payload.buyer_currency_id = +value.value;
-                        getExchangeRate();
+                        // getExchangeRate();
                       }
                     "
                   />
