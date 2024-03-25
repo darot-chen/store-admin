@@ -28,7 +28,7 @@
         v-for="c in chats"
         :id="`chat_${c.id}`"
         :key="`key_chat_${c.id}`"
-        :name="!c.user_id ? c.admin?.name ?? '' : c.user?.name ?? ''"
+        :name="getProfileName(c)"
         :text="c.message"
         :timestamp="c.created_at"
         :show-profile="true"
@@ -42,7 +42,7 @@
         :chat-type="c.user_id === authStore.user?.id ? 'outgoing' : 'incoming'"
         :detail="c.type === ChatType.Action ? chatDetail : undefined"
         :is-selected="c.id.toString() === msgId"
-        :profile="c.user?.profile_key"
+        :profile="getProfileImage(c)"
         :chat="c"
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
@@ -222,6 +222,24 @@ function onIncrementUnreadMSG(shouldUpdate: boolean = true) {
     sleepScrollToBottom();
   }
 }
+
+const getProfileName = (c: Chat): string => {
+  if (!c.user_id) {
+    return c.admin?.name || "";
+  } else if (chatDetail.value?.business?.owner_id === c.user_id) {
+    return c.user?.business_name ?? (c.user?.name || "");
+  } else {
+    return c.user?.name || "";
+  }
+};
+
+const getProfileImage = (c: Chat): string => {
+  if (chatDetail.value?.business?.owner_id === c.user_id) {
+    return c.user?.business_profile_key ?? (c.user?.profile_key || "");
+  } else {
+    return c.user?.profile_key || "";
+  }
+};
 
 onMounted(() => {
   init();
