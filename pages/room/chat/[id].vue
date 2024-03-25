@@ -571,7 +571,6 @@ async function sleepScrollToBottom() {
 }
 
 async function onScrollToBottom() {
-  unReadMsgCount.value = 0;
   if (bottomEl.value) {
     if (msgId) {
       lastItemId.value = 0;
@@ -584,7 +583,10 @@ async function onScrollToBottom() {
       msgId = null;
       await fetchChats();
     }
+
     bottomEl.value.scrollIntoView({ behavior: "smooth" });
+    await sleep(700);
+    unReadMsgCount.value = 0;
   }
 }
 
@@ -726,6 +728,9 @@ const onScroll = useDebounceFn(async (e: Event) => {
   }
 
   if (atBottom) {
+    if (unReadMsgCount && unReadMsgCount.value > 1) {
+      unReadMsgCount.value = 0;
+    }
     await fetchMoreBottomChat();
   }
 }, 100);
