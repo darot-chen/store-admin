@@ -106,22 +106,14 @@
     </div>
   </div>
   <div v-else>
-    <UiTag
-      v-if="text === CHAT_ACTIONS.JOIN"
-      :title="
-        $t('name_has_joined_the_chat', {
-          name,
-        })
-      "
-    />
-    <UiTag
-      v-if="text === CHAT_ACTIONS.SELLER_COMPLETE_ORDER"
-      :title="$t('seller_complete_order')"
-    />
-    <UiTag
-      v-if="text === CHAT_ACTIONS.BUYER_COMPLETE_ORDER"
-      :title="$t('buyer_complete_order')"
-    />
+    <UiTag :title="getChatEvent(text, name)" />
+
+    <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
+      <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
+        <ChatOrderCreated :order="order" :detail="detail" />
+      </ChatSystem>
+      <UiTag class="mt-3" :title="$t(text)" />
+    </template>
 
     <div v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
       <div class="flex flex-col gap-2">
@@ -142,35 +134,6 @@
         </div>
       </div>
     </div>
-    <UiTag
-      v-if="text === CHAT_ACTIONS.BUYER_CONFIRM_ORDER"
-      :title="$t('buyer_confirm_order')"
-    />
-    <UiTag
-      v-if="text === CHAT_ACTIONS.LEAVE"
-      :title="
-        $t('name_has_left_the_chat', {
-          name,
-        })
-      "
-    />
-
-    <UiTag
-      v-if="text === CHAT_ACTIONS.SELLER_CANCEL"
-      :title="$t('seller_cancel_order')"
-    />
-
-    <UiTag
-      v-if="text === CHAT_ACTIONS.BUYER_REJECT"
-      :title="$t('buyer_reject_order')"
-    />
-
-    <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
-      <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
-        <ChatOrderCreated :order="order" :detail="detail" />
-      </ChatSystem>
-      <UiTag class="mt-3" :title="$t('order_updated')" />
-    </template>
 
     <ChatSystem
       v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"

@@ -58,11 +58,11 @@
   "during_the_waiting_period": "During the waiting period, you can first describe the business content you need to handle, and the manual customer service will reply to you directly later.",
   "name_has_left_the_chat": "{name} has left the chat",
   "merchant real-time transaction exchange rate": "Merchant real-time transaction exchange rate",
-  "new_order_create": "New Order Created",
+  "new_order_created": "New Order Created",
   "new_ticket_created": "New Ticcket Created",
   "order_updated": "Seller has updated order",
-  "seller_cancel_order": "Seller has cancelled order",
-  "buyer_reject_order": "Buyer has rejected order",
+  "seller_cancel": "Seller has cancelled order",
+  "buyer_reject": "Buyer has rejected order",
   "reject": "Reject",
   "confirm": "Confirm",
   "confirm_sending": "Confirm sending?",
@@ -93,5 +93,6 @@
   "total_transaction_volume_this_week": "本周交易总额",
   "past_total": "往时总额",
   "total_transaction_amount": "交易总额",
-  "in_transaction": "交易中"
+  "in_transaction": "交易中",
+  "send_an_attachment": "Sent an attachment"
 }

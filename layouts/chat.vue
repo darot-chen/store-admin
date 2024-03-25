@@ -43,6 +43,10 @@ watch(
     });
   }
 );
+
+onUnmounted(() => {
+  useNotificationStore().$reset();
+});
 </script>
 
 <style scoped lang="css">

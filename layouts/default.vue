@@ -56,14 +56,15 @@
 
 <script setup lang="ts">
 import { SOCKET_EVENT } from "~/constants/socket";
+import { ChatType, type Chat } from "~/types/chat";
 
 const authStore = useAuthStore();
 const pageStore = usePageStore();
 const route = useRoute();
 const notificationStore = useNotificationStore();
 const { $evOn, $evOff } = useNuxtApp();
-const { t } = useI18n();
 const chatId = ref<number | null>(null);
+const { t } = useI18n();
 
 watch(
   () => pageStore.title,
@@ -86,15 +87,37 @@ function onNotificationClick() {
   }
 }
 
-onMounted(() => {
-  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, (d) => {
+function renderNotification(m: Chat) {
+  if (m.type === ChatType.Text) {
     notificationStore.addNotification({
-      title: d.data?.user?.name || "",
-      message: t(d.data?.message) || "",
+      title: m.user?.name || "",
+      message: m?.message || "",
       icon: "Chat",
       duration: 10000,
     });
-    chatId.value = d.data?.chat_room_id;
+    chatId.value = m.chat_room_id;
+  } else if (m.type === ChatType.Image || m.type === ChatType.Video) {
+    notificationStore.addNotification({
+      title: m.user?.name || "",
+      message: t("send_an_attachment"),
+      icon: "tabler:photo",
+      duration: 10000,
+    });
+    chatId.value = m.chat_room_id;
+  } else if (m.type === ChatType.Action) {
+    notificationStore.addNotification({
+      title: m.user?.name || "",
+      message: getChatEvent(m.message, m.user?.name),
+      icon: getChatEventIcon(m.message),
+      duration: 10000,
+    });
+    chatId.value = m.chat_room_id;
+  }
+}
+
+onMounted(() => {
+  $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, (d) => {
+    renderNotification(d.data);
   });
 });
 
