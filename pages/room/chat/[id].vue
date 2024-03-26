@@ -44,6 +44,7 @@
         :is-selected="c.id.toString() === msgId"
         :profile="getProfileImage(c)"
         :chat="c"
+        :show-rate="false"
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
