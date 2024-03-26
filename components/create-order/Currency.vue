@@ -7,15 +7,11 @@
     </div>
     <div
       :class="['inline-flex items-center gap-[5px]', disabled && 'disabled']"
-      @click="onClick"
     >
       <div :class="['inline-flex items-center gap-[5px]']" @click="onClick">
         <Icon name="ArrowDown" color="#0000001A" size="9" />
 
         <img :src="getIcon()" alt="" :width="16" />
-        <!-- <img :src="USDT" alt="" :width="16" />
-      <img :src="USD" alt="" :width="16" />
-      <img :src="PHP" alt="" :width="16" /> -->
       </div>
     </div>
   </button>
@@ -39,10 +35,10 @@
 
 <script setup lang="ts">
 import type { Option } from "~/types/common";
-import CNY from "~/assets/currency/CNY.svg";
-import USDT from "~/assets/currency/USDT.svg";
-import USD from "~/assets/currency/USD.svg";
-import PHP from "~/assets/currency/PHP.svg";
+import CNY from "~/assets/currencies/CNY.svg";
+import USDT from "~/assets/currencies/USDT.svg";
+import USD from "~/assets/currencies/USD.svg";
+import PHP from "~/assets/currencies/PHP.svg";
 
 const showPopup = ref(false);
 

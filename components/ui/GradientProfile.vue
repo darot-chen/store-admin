@@ -2,13 +2,13 @@
   <div
     class="bg-avatar"
     :style="{
-      background: !imageSource ? generateLinearGradient(name!) : undefined,
+      background: !src ? generateLinearGradient(name!) : undefined,
       width: size ?? '2.375rem',
       height: size ?? '2.375rem',
     }"
     @click="emit('click')"
   >
-    <img v-if="imageSource" class="rounded-full" :src="getS3Url(imageSource)" />
+    <img v-if="src" class="rounded-full" :src="getS3Url(src)" />
     <p v-else>{{ name!.charAt(0).toUpperCase() }}</p>
   </div>
 </template>
@@ -17,7 +17,7 @@
 defineProps<{
   name: string;
   size?: string;
-  imageSource?: string;
+  src?: string;
 }>();
 
 const emit = defineEmits<{
