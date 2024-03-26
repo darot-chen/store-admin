@@ -86,7 +86,7 @@
                       v-if="Number(fee.selected_rate?.price) !== 1"
                       v-model="payload.amount"
                       type="number"
-                      class="mr-2 w-full rounded-sm font-['DIN_ALTERNATE'] text-[24px] font-bold"
+                      class="mr-2 w-full rounded-sm text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
@@ -94,7 +94,7 @@
                       v-else
                       v-model="payload.amount"
                       type="number"
-                      class="w-full rounded-md border-[0.5px] px-2 py-1 font-['DIN_ALTERNATE'] text-[24px] font-bold"
+                      class="w-full rounded-md border-[0.5px] px-2 py-1 text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
