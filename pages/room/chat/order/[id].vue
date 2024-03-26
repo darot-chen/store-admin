@@ -41,8 +41,20 @@
           <div
             class="relative w-full rounded-[10px] border-[0.5px] border-[#0000001a] py-[7px]"
           >
-            <div class="relative grid grid-cols-2">
-              <div class="border-r-[0.5px] border-[#0000001a] pr-[8px]">
+            <div
+              :class="[
+                'relative grid',
+                Number(fee.selected_rate?.price) !== 1
+                  ? 'grid-cols-2'
+                  : 'grid-cols-1',
+              ]"
+            >
+              <div
+                :class="[
+                  'border-r-[0.5px] border-[#0000001a]',
+                  Number(fee.selected_rate?.price) === 1 ? '' : 'pr-[8px]',
+                ]"
+              >
                 <div class="p-[5px]">
                   <CreateOrderCurrency
                     class="mx-[4px]"
@@ -57,30 +69,61 @@
                   />
                   <div class="my-[5px] border-[0.5px] border-[#0000001a]" />
                   <div
-                    class="flex w-full flex-col items-end gap-[10px] px-[4px] py-[5px]"
+                    class="flex w-full flex-col items-start gap-[10px] px-[4px] py-[5px]"
                   >
-                    <button class="flex items-center gap-[5px]">
+                    <button
+                      :class="[
+                        'flex items-center gap-[5px]',
+                        Number(fee.selected_rate?.price) !== 1
+                          ? ''
+                          : 'flex-row-reverse',
+                      ]"
+                    >
                       <Icon name="Info" color="#EDEDED" />
                       <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
                     </button>
                     <input
+                      v-if="Number(fee.selected_rate?.price) !== 1"
                       v-model="payload.amount"
                       type="number"
-                      class="mr-2 w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
+                      class="mr-2 w-full rounded-sm font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
-                    <div class="hidden items-center gap-[5px]">
+                    <input
+                      v-else
+                      v-model="payload.amount"
+                      type="number"
+                      class="w-full rounded-md border-[0.5px] px-2 py-1 font-['DIN_ALTERNATE'] text-[24px] font-bold"
+                      @input="debounceCalcAmount"
+                    />
+
+                    <div
+                      v-if="Number(fee.selected_rate?.price) === 1"
+                      class="flex items-center gap-[5px]"
+                    >
+                      <Icon name="Info" color="#EDEDED" />
+                      <p class="text-[10px] text-[#0000004d]">
+                        {{ t("minimum") }}
+                      </p>
+                      <p
+                        class="font-['DIN_ALTERNATE'] text-[10px] text-[#F57F7F]"
+                      >
+                        {{ "0.5" }}
+                      </p>
+                    </div>
+
+                    <div v-else class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
                       <button>
                         <Icon name="Info" color="#EDEDED" />
                       </button>
                     </div>
-                    <Icon name="Info" color="#EDEDED" />
                   </div>
                 </div>
               </div>
               <div
+                v-if="Number(fee.selected_rate?.price) !== 1"
                 class="absolute left-1/2 top-1/2 mt-[1rem] -translate-x-1/2 -translate-y-1/2"
               >
                 <button
@@ -90,7 +133,10 @@
                   <Icon name="Swap" color="#0000004D" size="16" />
                 </button>
               </div>
-              <div class="pl-[8px]">
+              <div
+                v-if="Number(fee.selected_rate?.price) !== 1"
+                class="pl-[8px]"
+              >
                 <div class="p-[5px]">
                   <CreateOrderCurrency
                     :model-value="payload.buyer_currency_id"
@@ -222,7 +268,7 @@
           class="px-[20px] py-[15px]"
           title="确认"
           :disabled="titleErrorMessage != ''"
-          @click="onOrderClick"
+          @click="onCreateOrder"
         />
       </div>
     </div>
@@ -272,14 +318,14 @@ const titleErrorMessage = ref("");
 
 const fee = ref<{
   otherFee: number;
-  selected_rate?: Rate;
   handlingFeePercentage: number;
+  selected_rate?: Rate;
   status?: OrderStatus;
   order_id: number;
 }>({
   order_id: 0,
   otherFee: 0,
-  handlingFeePercentage: 20,
+  handlingFeePercentage: 0,
 });
 const ss = ref<{
   payment_method: Option;
@@ -295,7 +341,7 @@ const payload = ref<CreateOrder>({
   buyer_currency_id: 0,
   buyer_id: 0,
   amount: 0,
-  exchange_rate: 0,
+  exchange_rate: 1,
   handling_fee_percentage: 0,
   commission_type: CommissionType.BUYER,
   other_expense: 0,
@@ -307,7 +353,7 @@ const debounceCalcAmount = useDebounceFn(() => {
     const currency =
       currencyStore.data.find(
         (cur) => cur.id === payload.value.buyer_currency_id
-      )?.code || "CNY";
+      )?.code || "USDT";
 
     sellerReceived.value = calculateAmount(
       "seller",
@@ -340,6 +386,197 @@ const debounceCalcReceiveAmount = useDebounceFn(() => {
   }
 }, 500);
 
+onMounted(async () => {
+  if (chatParam) {
+    isOrderConfirmingOrRejected.value =
+      chatParam?.order?.status === OrderStatus.REJECTED ||
+      chatParam?.order?.status === OrderStatus.CONFIRMING;
+
+    const [getMember] = await Promise.all([
+      getChatRoomMembers(roomId),
+      currencyStore.getCurrencyOptions(),
+    ]);
+    members.value = getMember;
+    buyers.value = members.value
+      .filter((member) => member.user_id !== authStore.user?.id)
+      .map((member) => {
+        return {
+          label: member?.user?.name ?? member?.admin?.name ?? "",
+          value:
+            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
+        };
+      });
+
+    if (isRevisable.value) {
+      payload.value = {
+        chat_room_id: chatParam.chat_room_id,
+        amount: chatParam.order?.amount_to_be_paid ?? 0,
+        title: chatParam.order?.title ?? "",
+        duration: chatParam.order?.duration ?? "",
+        note: chatParam.order?.note ?? "",
+        commission_type:
+          chatParam.order?.commission_type ?? CommissionType.BUYER,
+        buyer_id: chatParam.order?.buyer_id ?? 0,
+        seller_currency_id: chatParam.order?.seller_currency_id ?? 0,
+        buyer_currency_id: chatParam.order?.buyer_currency_id ?? 0,
+        exchange_rate: chatParam.order?.exchange_rate ?? 1,
+        handling_fee_percentage: chatParam.order?.handling_fee_percentage ?? 0,
+        other_expense: chatParam.order?.other_expense ?? 0,
+      };
+
+      fee.value = {
+        order_id: chatParam.order?.id ?? 0,
+        otherFee: chatParam.order?.other_expense ?? 0,
+        status: chatParam.order?.status,
+        selected_rate: {
+          id: "0",
+          baseCurrency: chatParam.order?.base_currency ?? "USDT",
+          quoteCurrency: chatParam.order?.quote_currency ?? "CNY",
+          nickName: "",
+          price: chatParam.order?.exchange_rate?.toString() ?? "1",
+        },
+        handlingFeePercentage: chatParam.order?.handling_fee_percentage ?? 0,
+      };
+      debounceCalcAmount();
+      router.replace({
+        query: {
+          revisable: "true",
+        },
+      });
+    } else {
+      payload.value.buyer_id = +buyers.value[0].value;
+      payload.value.seller_currency_id =
+        chatParam.order?.seller_currency_id ?? 1;
+
+      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
+        payload.value.buyer_currency_id = currencyStore.data[1].id;
+      } else {
+        payload.value.buyer_currency_id = currencyStore.data[0].id;
+      }
+    }
+    router.replace({
+      query: {},
+    });
+    await getExchangeRate();
+    isLoading.value = false;
+    pageStore.setTitle("交易确认");
+    return;
+  }
+
+  try {
+    const [getDetail, getMember] = await Promise.all([
+      getChatDetail(roomId),
+      getChatRoomMembers(roomId),
+      currencyStore.getCurrencyOptions(),
+    ]);
+
+    chatDetail.value = getDetail;
+    members.value = getMember;
+
+    fee.value.handlingFeePercentage =
+      chatDetail.value.business?.handling_fee_percentage || 0;
+    fee.value.otherFee = chatDetail.value.business?.other_fee || 0;
+    fee.value.selected_rate = {
+      id: "0",
+      baseCurrency:
+        chatDetail.value.order?.buyer_currency.code ??
+        chatDetail.value.business?.default_currency ??
+        "USDT",
+      quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
+      nickName: "",
+      price:
+        chatDetail.value.order?.exchange_rate.toString() ??
+        chatDetail.value.business?.exchange_rate?.toString() ??
+        "1",
+    };
+
+    isOrderConfirmingOrRejected.value =
+      chatDetail.value?.order?.status === OrderStatus.REJECTED ||
+      chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
+
+    buyers.value = members.value
+      .filter((member) => member.user_id !== authStore.user?.id)
+      .map((member) => {
+        return {
+          label: member?.user?.name ?? member?.admin?.name ?? "",
+          value:
+            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
+        };
+      });
+    if (isRevisable.value && isOrderConfirmingOrRejected.value) {
+      payload.value = {
+        chat_room_id: roomId,
+        amount: chatDetail.value.order?.amount_to_be_paid ?? 0,
+        title: chatDetail.value.order?.title ?? "",
+        duration: chatDetail.value.order?.duration ?? "",
+        note: chatDetail.value.order?.note ?? "",
+        commission_type:
+          chatDetail.value.order?.commission_type ?? CommissionType.BUYER,
+        buyer_id: chatDetail.value.order?.buyer_id ?? 0,
+        seller_currency_id: chatDetail.value.order?.seller_currency.id ?? 0,
+        buyer_currency_id: chatDetail.value.order?.buyer_currency?.id ?? 0,
+        exchange_rate: chatDetail.value.order?.exchange_rate ?? 0,
+        handling_fee_percentage:
+          chatDetail.value.order?.handling_fee_percentage ?? 0,
+        other_expense: chatDetail.value.order?.other_expense ?? 0,
+      };
+
+      fee.value = {
+        order_id: chatDetail.value.order?.id ?? 0,
+        otherFee:
+          chatDetail.value.order?.other_expense ??
+          chatDetail.value.business?.other_fee ??
+          0,
+        status: chatDetail.value.order?.status,
+        selected_rate: {
+          id: "0",
+          baseCurrency:
+            chatDetail.value.order?.buyer_currency.code ??
+            chatDetail.value.business?.default_currency ??
+            "USDT",
+          quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
+          nickName: "",
+          price:
+            chatDetail.value.order?.exchange_rate.toString() ??
+            chatDetail.value.business?.exchange_rate?.toString() ??
+            "1",
+        },
+        handlingFeePercentage:
+          chatDetail.value.order?.handling_fee_percentage ??
+          chatDetail.value.business?.handling_fee_percentage ??
+          0,
+      };
+
+      router.replace({
+        query: {
+          revisable: "true",
+        },
+      });
+    } else {
+      if (buyers.value[0]) payload.value.buyer_id = +buyers.value[0].value;
+      payload.value.seller_currency_id =
+        chatDetail.value.business?.currency_id ?? 1;
+
+      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
+        payload.value.buyer_currency_id = currencyStore.data[1].id;
+      } else {
+        payload.value.buyer_currency_id = currencyStore.data[0].id;
+      }
+    }
+
+    router.replace({
+      query: {},
+    });
+
+    await getExchangeRate();
+  } catch (error: any) {
+    showFailToast(error.message);
+  } finally {
+    pageStore.setTitle("交易确认");
+    isLoading.value = false;
+  }
+});
+
 function validateTitleLength() {
   if (payload.value.title && payload.value.title?.length > 10) {
     titleErrorMessage.value = t("validation.max_length", { length: 10 });
@@ -350,9 +587,21 @@ function validateTitleLength() {
 
 function onToggleExchangeRate(v: boolean) {
   showRealtimeExchangeRate.value = v;
-  fee.value.selected_rate = undefined;
 
   if (v === false) {
+    fee.value.selected_rate = {
+      id: "0",
+      baseCurrency:
+        chatDetail.value?.order?.buyer_currency.code ??
+        chatDetail.value?.business?.default_currency ??
+        "USDT",
+      quoteCurrency: chatDetail.value?.order?.seller_currency?.code ?? "CNY",
+      nickName: "",
+      price:
+        chatDetail.value?.order?.exchange_rate.toString() ??
+        chatDetail.value?.business?.exchange_rate?.toString() ??
+        "1",
+    };
     getExchangeRate();
   }
 }
@@ -369,7 +618,7 @@ async function onCancelOrderClick() {
   }
 }
 
-async function onOrderClick() {
+async function onCreateOrder() {
   try {
     const preparedPayload: CreateOrder = {
       ...payload.value,
@@ -435,180 +684,6 @@ function onSwapCurrency() {
 
   debounceGetRate();
 }
-
-onMounted(async () => {
-  if (chatParam) {
-    isOrderConfirmingOrRejected.value =
-      chatParam?.order?.status === OrderStatus.REJECTED ||
-      chatParam?.order?.status === OrderStatus.CONFIRMING;
-
-    const [getMember] = await Promise.all([
-      getChatRoomMembers(roomId),
-      currencyStore.getCurrencyOptions(),
-    ]);
-    members.value = getMember;
-    buyers.value = members.value
-      .filter((member) => member.user_id !== authStore.user?.id)
-      .map((member) => {
-        return {
-          label: member?.user?.name ?? member?.admin?.name ?? "",
-          value:
-            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
-        };
-      });
-
-    if (isRevisable.value) {
-      payload.value = {
-        chat_room_id: chatParam.chat_room_id,
-        amount: chatParam.order?.amount_to_be_paid ?? 0,
-        title: chatParam.order?.title ?? "",
-        duration: chatParam.order?.duration ?? "",
-        note: chatParam.order?.note ?? "",
-        commission_type:
-          chatParam.order?.commission_type ?? CommissionType.BUYER,
-        buyer_id: chatParam.order?.buyer_id ?? 0,
-        seller_currency_id: chatParam.order?.seller_currency_id ?? 0,
-        buyer_currency_id: chatParam.order?.buyer_currency_id ?? 0,
-        exchange_rate: chatParam.order?.exchange_rate ?? 0,
-        handling_fee_percentage: chatParam.order?.handling_fee_percentage ?? 0,
-        other_expense: chatParam.order?.other_expense ?? 0,
-      };
-
-      fee.value = {
-        order_id: chatParam.order?.id ?? 0,
-        otherFee: chatParam.order?.other_expense ?? 0,
-        status: chatParam.order?.status,
-        selected_rate: {
-          id: "0",
-          baseCurrency: chatParam.order?.base_currency ?? "USDT",
-          quoteCurrency: chatParam.order?.quote_currency ?? "CNY",
-          nickName: "",
-          price: chatParam.order?.exchange_rate?.toString() ?? "0",
-        },
-        handlingFeePercentage: chatParam.order?.handling_fee_percentage ?? 20,
-      };
-      debounceCalcAmount();
-      router.replace({
-        query: {
-          revisable: "true",
-        },
-      });
-    } else {
-      payload.value.buyer_id = +buyers.value[0].value;
-      payload.value.seller_currency_id =
-        chatParam.order?.seller_currency_id ?? 1;
-
-      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
-        payload.value.buyer_currency_id = currencyStore.data[1].id;
-      } else {
-        payload.value.buyer_currency_id = currencyStore.data[0].id;
-      }
-    }
-    router.replace({
-      query: {},
-    });
-    await getExchangeRate();
-    isLoading.value = false;
-    pageStore.setTitle("交易确认");
-    return;
-  }
-
-  try {
-    const [getDetail, getMember] = await Promise.all([
-      getChatDetail(roomId),
-      getChatRoomMembers(roomId),
-      currencyStore.getCurrencyOptions(),
-    ]);
-
-    chatDetail.value = getDetail;
-    members.value = getMember;
-
-    isOrderConfirmingOrRejected.value =
-      chatDetail.value?.order?.status === OrderStatus.REJECTED ||
-      chatDetail.value?.order?.status === OrderStatus.CONFIRMING;
-
-    buyers.value = members.value
-      .filter((member) => member.user_id !== authStore.user?.id)
-      .map((member) => {
-        return {
-          label: member?.user?.name ?? member?.admin?.name ?? "",
-          value:
-            member.user_id?.toString() ?? member?.admin_id?.toString() ?? "",
-        };
-      });
-    if (isRevisable.value && isOrderConfirmingOrRejected.value) {
-      payload.value = {
-        chat_room_id: roomId,
-        amount: chatDetail.value.order?.amount_to_be_paid ?? 0,
-        title: chatDetail.value.order?.title ?? "",
-        duration: chatDetail.value.order?.duration ?? "",
-        note: chatDetail.value.order?.note ?? "",
-        commission_type:
-          chatDetail.value.order?.commission_type ?? CommissionType.BUYER,
-        buyer_id: chatDetail.value.order?.buyer_id ?? 0,
-        seller_currency_id: chatDetail.value.order?.seller_currency.id ?? 0,
-        buyer_currency_id: chatDetail.value.order?.buyer_currency?.id ?? 0,
-        exchange_rate: chatDetail.value.order?.exchange_rate ?? 0,
-        handling_fee_percentage:
-          chatDetail.value.order?.handling_fee_percentage ?? 0,
-        other_expense: chatDetail.value.order?.other_expense ?? 0,
-      };
-
-      fee.value = {
-        order_id: chatDetail.value.order?.id ?? 0,
-        otherFee:
-          chatDetail.value.order?.other_expense ??
-          chatDetail.value.business?.other_fee ??
-          0,
-        status: chatDetail.value.order?.status,
-        selected_rate: {
-          id: "0",
-          baseCurrency:
-            chatDetail.value.order?.buyer_currency.code ??
-            chatDetail.value.business?.default_currency ??
-            "USDT",
-          quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
-          nickName: "",
-          price:
-            chatDetail.value.order?.exchange_rate.toString() ??
-            chatDetail.value.business?.exchange_rate?.toString() ??
-            "0",
-        },
-        handlingFeePercentage:
-          chatDetail.value.order?.handling_fee_percentage ??
-          chatDetail.value.business?.handling_fee_percentage ??
-          20,
-      };
-
-      router.replace({
-        query: {
-          revisable: "true",
-        },
-      });
-    } else {
-      if (buyers.value[0]) payload.value.buyer_id = +buyers.value[0].value;
-      payload.value.seller_currency_id =
-        chatDetail.value.business?.currency_id ?? 1;
-
-      if (currencyStore.data[0].id === payload.value.seller_currency_id) {
-        payload.value.buyer_currency_id = currencyStore.data[1].id;
-      } else {
-        payload.value.buyer_currency_id = currencyStore.data[0].id;
-      }
-    }
-
-    router.replace({
-      query: {},
-    });
-
-    await getExchangeRate();
-  } catch (error: any) {
-    showFailToast(error.message);
-  } finally {
-    pageStore.setTitle("交易确认");
-    isLoading.value = false;
-  }
-});
 </script>
 
 <style scoped lang="css">
