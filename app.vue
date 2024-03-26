@@ -90,8 +90,11 @@ onMounted(async () => {
   loading.value = false;
 });
 
-onUnmounted(() => {
+onBeforeMount(() => {
   $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
+});
+
+onUnmounted(() => {
   close();
 });
 </script>

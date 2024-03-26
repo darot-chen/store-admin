@@ -11,7 +11,7 @@
           class="flex-none"
         />
         <div class="line-clamp-1 flex max-w-[50%] flex-1 flex-col break-all">
-          <h1 class="font-medium">
+          <h1 class="line-clamp-1 font-medium">
             {{ room.business.title }}
             <span v-if="room.lobby_no">
               {{ $t("lobby_no") }} {{ room.lobby_no }}
