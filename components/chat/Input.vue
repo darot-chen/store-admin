@@ -19,6 +19,7 @@
           placeholder="Message"
           @focus="isShowEmoji = false"
           @input="(e) => onInput(e)"
+          @keyup="onKeyUp"
         />
       </div>
       <div class="inline-flex items-center justify-end gap-[1.12rem]">
@@ -84,6 +85,10 @@ function onInput(e: Event) {
   isInputFocused.value = true;
   const target = e.target as HTMLInputElement;
   emits("update:modelValue", target.value);
+}
+
+function onKeyUp(e: KeyboardEvent) {
+  if (e.code === "Enter") emits("submit");
 }
 
 function onAttachFile() {
