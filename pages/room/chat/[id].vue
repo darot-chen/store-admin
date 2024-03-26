@@ -56,6 +56,14 @@
             showConfirmationPopup = true;
           }
         "
+        @touchstart="
+          () => {
+            if (c.type === ChatType.Text) {
+              handleTouchStart(c.message);
+            }
+          }
+        "
+        @touchend="handleTouchEnd"
       />
 
       <UiCircularLoading
@@ -136,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { showDialog, showFailToast, showSuccessToast } from "vant";
+import { showDialog, showFailToast, showSuccessToast, showToast } from "vant";
 import {
   addChat,
   getChat,
@@ -196,6 +204,7 @@ const lowerCursor = ref<number>();
 const isLowerChatHasNext = ref<boolean>();
 
 const unReadMsgCount = ref<number>(0);
+let touchTimer: string | number | NodeJS.Timeout | undefined;
 
 const showConfirmOrder = computed(() => {
   return (
@@ -224,6 +233,31 @@ function increaseUnreadMsg(shouldUpdate: boolean = true) {
   } else {
     sleepScrollToBottom();
   }
+}
+
+function handleTouchStart(msg: string) {
+  touchTimer = setTimeout(() => {
+    onCopyText(msg);
+  }, 500);
+}
+
+function handleTouchEnd() {
+  clearTimeout(touchTimer);
+}
+
+function onCopyText(msg: string) {
+  const input = document.createElement("input");
+  input.setAttribute("value", msg);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+
+  showToast({
+    message: t("copied"),
+    position: "bottom",
+  });
 }
 
 const getProfileName = (c: Chat): string => {

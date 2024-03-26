@@ -95,6 +95,7 @@
   "total_transaction_amount": "交易总额",
   "in_transaction": "交易中",
   "send_an_attachment": "已发送附件",
+  "copied": "已复制",
   "minimum": "最低限度",
   "order_removed": "订单已删除"
 }
