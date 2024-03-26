@@ -35,10 +35,10 @@
 
 <script setup lang="ts">
 import type { Option } from "~/types/common";
-import CNY from "~/assets/currency/CNY.svg";
-import USDT from "~/assets/currency/USDT.svg";
-import USD from "~/assets/currency/USD.svg";
-import PHP from "~/assets/currency/PHP.svg";
+import CNY from "~/assets/currencies/CNY.svg";
+import USDT from "~/assets/currencies/USDT.svg";
+import USD from "~/assets/currencies/USD.svg";
+import PHP from "~/assets/currencies/PHP.svg";
 
 const showPopup = ref(false);
 

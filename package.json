@@ -24,6 +24,7 @@
     "chart.js": "^4.4.2",
     "dayjs": "^1.11.10",
     "mitt": "^3.0.1",
+    "nuxt-swiper": "^1.2.2",
     "pinia": "^2.1.7",
     "vant": "4.8.0",
     "vue-advanced-cropper": "^2.8.8",

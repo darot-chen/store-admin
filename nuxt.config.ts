@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-icon",
     "@nuxt/image",
+    "nuxt-swiper",
   ],
   build: {
     transpile: ["vue-advanced-cropper"],
@@ -63,6 +64,16 @@ export default defineNuxtConfig({
         { name: "msapplication-TileColor", content: "#ffff" },
       ],
       link: [
+        {
+          href: "/public/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff2",
+          rel: "preload",
+          type: "font/woff2",
+        },
+        {
+          href: "/public/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff",
+          rel: "preload",
+          type: "font/woff",
+        },
         {
           rel: "apple-touch-icon",
           sizes: "180x180",
