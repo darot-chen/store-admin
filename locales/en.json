@@ -94,5 +94,6 @@
   "past_total": "往时总额",
   "total_transaction_amount": "交易总额",
   "in_transaction": "交易中",
-  "send_an_attachment": "Sent an attachment"
+  "send_an_attachment": "Sent an attachment",
+  "minimum": "Minimum"
 }
