@@ -88,7 +88,7 @@ function onInput(e: Event) {
 }
 
 function onKeyUp(e: KeyboardEvent) {
-  if (e.code === "Enter") emits("submit");
+  if (e.code === "Enter") debounceSubmit();
 }
 
 function onAttachFile() {
