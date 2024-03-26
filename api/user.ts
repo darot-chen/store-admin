@@ -45,8 +45,8 @@ export const uploadBusinessProfileImage = async (
       formatData
     );
 
-    if (data?.profile_key) {
-      return data?.profile_key?.toString();
+    if (data?.business_profile_key) {
+      return data?.business_profile_key?.toString();
     }
     return undefined;
   } catch (error) {
