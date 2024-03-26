@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-icon",
     "@nuxt/image",
+    "nuxt-swiper",
   ],
   build: {
     transpile: ["vue-advanced-cropper"],

@@ -10,18 +10,16 @@
         @click="fileInput?.click()"
       />
     </div>
-    <div
-      class="relative inline-flex w-1/2 items-center justify-center gap-[10px] break-all text-center"
-    >
-      <div
-        class="relative text-[20px] font-semibold text-[#010101]"
+    <div class="relative inline-flex items-center gap-[10px]">
+      <h1
+        class="text-[20px] font-semibold text-[#010101]"
         contenteditable="false"
       >
-        <span> {{ isUser ? refUser.name : refUser.business_name ?? "" }}</span>
-        <button class="absolute" @click="toggleEditMode">
-          <Icon name="EditProfile" color="#818086" size="15" />
-        </button>
-      </div>
+        {{ isUser ? refUser.name : refUser.business_name ?? "" }}
+      </h1>
+      <button class="absolute -right-7" @click="toggleEditMode">
+        <Icon name="EditProfile" color="#818086" size="15" />
+      </button>
     </div>
     <div class="text-[#818086]">
       <p>
