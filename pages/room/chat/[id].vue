@@ -325,7 +325,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   pageStore.$reset();
   unReadMsgCount.value = 0;
-  $evOff(SOCKET_EVENT.NEW_CHAT_RECEIVED);
   $evOff(SOCKET_EVENT.ORDER_PAYMENT_CONFIRMED);
   $evOff(SOCKET_EVENT.ORDER_STATUS_UPDATED);
 });

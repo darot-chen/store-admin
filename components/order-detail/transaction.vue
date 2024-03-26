@@ -34,14 +34,13 @@
         class="h-5 w-auto"
         :to="`/room/chat/${chatRoomId}?msgId=${chatMsgId}`"
       >
-        <img :src="viewChatIcon" alt="view chat" color="black" class="h-full" />
+        <Icon name="ViewChat" color="#B7B7B7" />
       </NuxtLink>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import viewChatIcon from "~/assets/icons/view-chat.svg";
 defineProps<{
   type: "issue" | "deposit";
   date: string;

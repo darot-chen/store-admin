@@ -95,49 +95,6 @@ const profileMerchantBottom: Cell[] = [
   },
 ];
 
-const profileBottomItems: Cell[] = [
-  {
-    title: "纠纷处理中",
-    icon: "GroupPeople",
-    backgroundColor: "#FF453A",
-    onClick: () => navigateTo("/orders-history"),
-  },
-  {
-    title: "分享与邀请",
-    icon: "PeoplePlus",
-    backgroundColor: "#8F8E93",
-  },
-];
-
-const profileTopItems: Cell[] = [
-  {
-    title: "我的报表",
-    icon: "Statistic",
-    backgroundColor: "#FF453A",
-    onClick: () => navigateTo("/report"),
-  },
-  {
-    title: "账户管理",
-    icon: "StackPerson",
-    backgroundColor: "#8321FF",
-  },
-  {
-    title: "我的帖子",
-    icon: "ShoppingBagCheck",
-    backgroundColor: "#3BC55E",
-  },
-  {
-    title: "钱包地址",
-    icon: "StackFolder",
-    backgroundColor: "#2DA4D7",
-  },
-  {
-    title: "钱包地址",
-    icon: "MegaPhone",
-    backgroundColor: "#FF9900",
-  },
-];
-
 onMounted(() => {
   user.value = useAuthStore().user;
 });
