@@ -51,14 +51,18 @@
           <p class="font-500 text-sm text-[#818086]">
             {{ $t("total_transaction_amount") }}
           </p>
-          <h3 class="font-500 text-xl text-black">1,260,000</h3>
+          <h3 class="font-500 text-xl text-black">
+            {{ report.summary.total_amount }}
+          </h3>
         </div>
         <div class="h-[20px] w-[1px] dark:bg-[#CCC]" />
         <div class="flex flex-col items-center">
           <p class="font-500 text-sm text-[#818086]">
             {{ $t("in_transaction") }}
           </p>
-          <h3 class="font-500 text-xl text-black">5</h3>
+          <h3 class="font-500 text-xl text-black">
+            {{ report.summary.total_payment }}
+          </h3>
         </div>
       </div>
     </div>
@@ -68,6 +72,11 @@
 <script lang="ts" setup>
 import type { ChartData, ChartOptions } from "chart.js";
 import { Line } from "vue-chartjs";
+import type { ReportTransaction } from "~/types/report";
+
+defineProps<{
+  report: ReportTransaction;
+}>();
 
 const data = ref<ChartData<"line">>({
   labels: ["晨", "午", "晚"],
