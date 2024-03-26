@@ -18,7 +18,7 @@
       <div class="flex w-1/2 flex-col gap-[2px]">
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>1</p>
+            <p class="font-youshebiaotihei text-[#F75B62]">1</p>
             <p>防骗说明</p>
           </div>
           <div
@@ -29,7 +29,7 @@
         </div>
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>2</p>
+            <p class="font-youshebiaotihei text-[#F99354]">2</p>
             <p>官方 TG 与语言包</p>
           </div>
           <div
@@ -40,7 +40,7 @@
         </div>
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>3</p>
+            <p class="font-youshebiaotihei text-[#FCCA4B]">3</p>
             <p>登录验证码不要外泄</p>
           </div>
           <div
@@ -53,7 +53,7 @@
       <div class="flex w-1/2 flex-col gap-[2px]">
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>4</p>
+            <p class="font-youshebiaotihei text-[#FF6102]">4</p>
             <p>防骗说明</p>
           </div>
           <div
@@ -64,7 +64,7 @@
         </div>
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>5</p>
+            <p class="font-youshebiaotihei text-[#FF6102]">5</p>
             <p>官方 TG 与语言包</p>
           </div>
           <div
@@ -75,7 +75,7 @@
         </div>
         <div class="inline-flex items-center gap-[5px]">
           <div class="inline-flex gap-[10px]">
-            <p>6</p>
+            <p class="font-youshebiaotihei text-[#FF6102]">6</p>
             <p>登录验证码不要外泄</p>
           </div>
           <div
@@ -101,5 +101,19 @@
   border-radius: 10px;
   background: linear-gradient(0deg, #fff 0%, #fff0de 100%);
   padding: 10px;
+}
+
+.font-youshebiaotihei {
+  font-family: "YouSheBiaoTiHei";
+}
+
+@font-face {
+  font-family: "YouSheBiaoTiHei";
+  src:
+    url("/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff2") format("woff2"),
+    url("/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 </style>
