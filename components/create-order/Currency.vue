@@ -7,15 +7,11 @@
     </div>
     <div
       :class="['inline-flex items-center gap-[5px]', disabled && 'disabled']"
-      @click="onClick"
     >
       <div :class="['inline-flex items-center gap-[5px]']" @click="onClick">
         <Icon name="ArrowDown" color="#0000001A" size="9" />
 
         <img :src="getIcon()" alt="" :width="16" />
-        <!-- <img :src="USDT" alt="" :width="16" />
-      <img :src="USD" alt="" :width="16" />
-      <img :src="PHP" alt="" :width="16" /> -->
       </div>
     </div>
   </button>
