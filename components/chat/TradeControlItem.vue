@@ -4,7 +4,8 @@
       <div class="amount mb-1">
         <div class="label">
           <p class="remaining-title">
-            {{ "已入款 / 应入款" + " (" + `${paymentCount ?? 0}` + "笔)" }}
+            {{ party === "seller" ? "已下发 / 应下发" : "已入款 / 应入款" }}
+            {{ " (" + `${paymentCount ?? 0}` + "笔)" }}
           </p>
         </div>
         <div class="flex">
