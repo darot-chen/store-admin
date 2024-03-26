@@ -433,7 +433,10 @@ onMounted(async () => {
           baseCurrency: chatParam.order?.base_currency ?? "USDT",
           quoteCurrency: chatParam.order?.quote_currency ?? "CNY",
           nickName: "",
-          price: chatParam.order?.exchange_rate?.toString() ?? "1",
+          price:
+            chatParam.order?.exchange_rate?.toString() ??
+            chatDetail.value?.order?.exchange_rate?.toString() ??
+            "1",
         },
         handlingFeePercentage: chatParam.order?.handling_fee_percentage ?? 0,
       };
@@ -485,8 +488,8 @@ onMounted(async () => {
       quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
       nickName: "",
       price:
-        chatDetail.value.order?.exchange_rate.toString() ??
-        chatDetail.value.business?.exchange_rate?.toString() ??
+        chatDetail.value?.business?.exchange_rate?.toString() ??
+        chatDetail.value?.order?.exchange_rate?.toString() ??
         "1",
     };
 
@@ -515,7 +518,7 @@ onMounted(async () => {
         buyer_id: chatDetail.value.order?.buyer_id ?? 0,
         seller_currency_id: chatDetail.value.order?.seller_currency.id ?? 0,
         buyer_currency_id: chatDetail.value.order?.buyer_currency?.id ?? 0,
-        exchange_rate: chatDetail.value.order?.exchange_rate ?? 0,
+        exchange_rate: chatDetail.value.order?.exchange_rate ?? 1,
         handling_fee_percentage:
           chatDetail.value.order?.handling_fee_percentage ?? 0,
         other_expense: chatDetail.value.order?.other_expense ?? 0,
@@ -537,8 +540,8 @@ onMounted(async () => {
           quoteCurrency: chatDetail.value.order?.seller_currency?.code ?? "CNY",
           nickName: "",
           price:
-            chatDetail.value.order?.exchange_rate.toString() ??
             chatDetail.value.business?.exchange_rate?.toString() ??
+            chatDetail.value?.order?.exchange_rate?.toString() ??
             "1",
         },
         handlingFeePercentage:
@@ -598,8 +601,8 @@ function onToggleExchangeRate(v: boolean) {
       quoteCurrency: chatDetail.value?.order?.seller_currency?.code ?? "CNY",
       nickName: "",
       price:
-        chatDetail.value?.order?.exchange_rate.toString() ??
         chatDetail.value?.business?.exchange_rate?.toString() ??
+        chatDetail.value?.order?.exchange_rate?.toString() ??
         "1",
     };
     getExchangeRate();
