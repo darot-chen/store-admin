@@ -1,11 +1,25 @@
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading" class="flex flex-1 items-center justify-center">
     <UiCircularLoading />
   </div>
 
   <div v-else class="flex flex-col">
-    <VanPopup v-model:show="isShowDatePicker" position="bottom" round>
-      <ReportDateSelection :start-date="startDate" :end-date="endDate" />
+    <VanPopup
+      v-model:show="isShowDatePicker"
+      position="bottom"
+      round
+      @closed="() => (isShowDatePicker = false)"
+    >
+      <ReportDateSelection
+        :start-date="startDate"
+        :end-date="endDate"
+        @cancel="
+          () => {
+            isShowDatePicker = false;
+          }
+        "
+        @confirmed="onFilterDate"
+      />
     </VanPopup>
     <div class="flex flex-col gap-[24px] bg-white px-[12px] py-[15px]">
       <UiSwitch
@@ -77,11 +91,6 @@ definePageMeta({
 const isLoading = ref(false);
 const isShowDatePicker = ref(false);
 
-// const currentDate = ref([
-//   new Date().getFullYear.toString(),
-//   new Date().getMonth.toString(),
-//   new Date().getDate.toString(),
-// ]);
 let startDate = new Date();
 let endDate = new Date();
 
@@ -97,14 +106,16 @@ function onOpenDatePicker() {
   isShowDatePicker.value = true;
 }
 
-async function getReport() {
+async function getReport(stateDateParam?: Date, endDateParam?: Date) {
   if (!report.value) {
     isLoading.value = true;
   }
 
   try {
     const { startDate, endDate } = calculateDateRange(
-      selectedCheckboxIndex.value
+      selectedCheckboxIndex.value,
+      stateDateParam,
+      endDateParam
     );
     const response = await getReportTransaction({
       start_date: startDate,
@@ -118,19 +129,30 @@ async function getReport() {
   }
 }
 
-const handleSelectedCheckbox = (index: number) => {
+function onFilterDate(startDate: Date, endDate: Date) {
+  isLoading.value = true;
+  selectedCheckboxIndex.value = 10;
+  getReport(startDate, endDate);
+  isShowDatePicker.value = false;
+}
+
+function handleSelectedCheckbox(index: number) {
   if (index === selectedCheckboxIndex.value) return;
 
   selectedCheckboxIndex.value = index;
   getReport();
-};
+}
 
-function calculateDateRange(index: number): {
+function calculateDateRange(
+  index: number,
+  startDateParam?: Date,
+  endDateParam?: Date
+): {
   startDate: string;
   endDate: string;
 } {
-  const tempStartDate = new Date();
-  const tempEndDate = new Date();
+  const tempStartDate = startDateParam ?? new Date();
+  const tempEndDate = endDateParam ?? new Date();
 
   switch (index) {
     case 0: // Today
