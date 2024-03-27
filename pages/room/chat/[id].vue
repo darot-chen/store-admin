@@ -63,7 +63,7 @@
             }
           }
         "
-        @touchend="handleTouchEnd"
+        @touchend="onTouchend"
       />
 
       <UiCircularLoading
@@ -241,7 +241,7 @@ function handleTouchStart(msg: string) {
   }, 500);
 }
 
-function handleTouchEnd() {
+function onTouchend() {
   clearTimeout(touchTimer);
 }
 
@@ -390,7 +390,9 @@ function onHeaderReplyClick(id: number) {
     getChatWithId(id.toString());
     return;
   }
-  chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.requestAnimationFrame(() => {
+    chatElement?.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 }
 
 function onRequestSupport() {
@@ -527,7 +529,9 @@ async function getChatWithId(id: string) {
   ) as HTMLElement | null;
 
   if (chatElement) {
-    chatElement?.scrollIntoView({ behavior: "instant", block: "center" });
+    window.requestAnimationFrame(() => {
+      chatElement?.scrollIntoView({ behavior: "instant", block: "center" });
+    });
   }
 }
 
@@ -634,21 +638,28 @@ async function onScrollToBottom() {
       msgId = null;
       await fetchChats();
     }
-
-    bottomEl.value.scrollIntoView({ behavior: "smooth" });
+    window.requestAnimationFrame(() => {
+      if (bottomEl.value) bottomEl.value.scrollIntoView({ behavior: "smooth" });
+    });
     await sleep(700);
     unReadMsgCount.value = 0;
   }
 }
 
 function scrollToBottom() {
-  if (bottomEl.value) {
-    if (firstLoad.value) {
-      bottomEl.value.scrollIntoView();
-      firstLoad.value = false;
-    } else {
-      bottomEl.value.scrollIntoView();
-    }
+  if (firstLoad.value) {
+    window.requestAnimationFrame(() => {
+      if (bottomEl.value) {
+        bottomEl.value.scrollIntoView();
+      }
+    });
+    firstLoad.value = false;
+  } else if (bottomEl.value) {
+    window.requestAnimationFrame(() => {
+      if (bottomEl.value) {
+        bottomEl.value.scrollIntoView();
+      }
+    });
   }
 }
 
