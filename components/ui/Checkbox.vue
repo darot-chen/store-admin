@@ -8,7 +8,7 @@
         'bg-[#F3F3F3] text-[#8E8E93]': modelValue !== index,
         'bg-[#0A7AFF] text-[#FFF]': modelValue === index,
       }"
-      @click="$emit('update:modelValue', index)"
+      @click="$emit('click', index)"
     >
       <div class="px-[20px] py-[6px] text-center" :style="{}">
         <p class="text-[14px]">{{ option.label }}</p>
@@ -26,7 +26,7 @@ defineProps<{
 }>();
 
 defineEmits<{
-  (e: "update:modelValue", value: number): void;
+  (e: "click", value: number): void;
 }>();
 </script>
 
