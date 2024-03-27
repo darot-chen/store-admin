@@ -1,4 +1,11 @@
 <template>
+  <UiTag
+    v-if="showGroupDate"
+    :id="`chatDate_${formatDate(groupDate, 'DD')}`"
+    :title="getGroupDate()"
+    bg-color="rgba(114, 131, 145, 1)"
+    class="sticky top-0"
+  />
   <div
     v-if="type !== ChatType.Action"
     v-bind="$attrs"
@@ -191,6 +198,8 @@ const props = defineProps<{
   showRate?: boolean;
   order?: Order;
   isSelected?: boolean;
+  showGroupDate?: boolean;
+  groupDate?: string;
 }>();
 
 const emit = defineEmits<{
@@ -202,6 +211,13 @@ const emit = defineEmits<{
   (e: "evaluate-order", detail: ChatDetail): void;
   (e: "resale-order"): void;
 }>();
+
+const getGroupDate = () => {
+  const today = formatDate(new Date().toDateString(), "DD MMM");
+  const _groupDate = formatDate(props.groupDate, "DD MMM");
+  if (today === _groupDate) return "Today";
+  else return _groupDate;
+};
 
 const { t } = useI18n();
 
