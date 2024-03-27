@@ -86,10 +86,12 @@ export const scrollToChatId = async (id: number) => {
   await nextTick(() => {
     const target = document.getElementById(`chat_${id}`);
     if (target) {
-      target.scrollIntoView({
-        behavior: "instant",
-        block: "start",
-        inline: "start",
+      window.requestAnimationFrame(() => {
+        target.scrollIntoView({
+          behavior: "instant",
+          block: "start",
+          inline: "start",
+        });
       });
     }
   });

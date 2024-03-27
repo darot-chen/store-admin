@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="relative flex h-full flex-col overflow-auto"
-    @scroll="handleScroll"
-  >
+  <div class="relative flex h-full flex-col overflow-auto" @scroll="onScroll">
     <div class="sticky top-0 w-full bg-white px-3 py-3">
       <input
         ref="inputRef"
@@ -156,7 +153,7 @@ const fetchChatMessages = async () => {
   isLoading.value = false;
 };
 
-const handleScroll = (event: Event) => {
+const onScroll = (event: Event) => {
   const target = event.target as HTMLDivElement;
   const { scrollTop, clientHeight, scrollHeight } = target;
 

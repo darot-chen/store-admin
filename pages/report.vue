@@ -13,7 +13,7 @@
           v-model:model-value="selectedCheckboxIndex"
           class="w-full"
           :options="REPORT_CHECKBOX_OPTION"
-          @update:model-value="handleSelectedCheckbox"
+          @update:model-value="onSelectCheckbox"
         />
         <div class="ml-[30px] flex flex-row items-center">
           <UiDivider type="vertical" color="#818086" height="25px" />
@@ -61,7 +61,7 @@ definePageMeta({
 const selectedTab = ref<Option>(REPORT_TAB_OPTION[0]);
 const selectedCheckboxIndex = ref<number>(0);
 
-const handleSelectedCheckbox = (index: number) => {
+const onSelectCheckbox = (index: number) => {
   if (index === selectedCheckboxIndex.value) {
     return;
   }
