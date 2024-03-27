@@ -4,23 +4,6 @@
   </div>
 
   <div v-else class="flex flex-col">
-    <VanPopup
-      v-model:show="isShowDatePicker"
-      position="bottom"
-      round
-      @closed="() => (isShowDatePicker = false)"
-    >
-      <ReportDateSelection
-        :start-date="startDate"
-        :end-date="endDate"
-        @cancel="
-          () => {
-            isShowDatePicker = false;
-          }
-        "
-        @confirmed="onFilterDate"
-      />
-    </VanPopup>
     <div class="flex flex-col gap-[24px] bg-white px-[12px] py-[15px]">
       <UiSwitch
         v-model="selectedTab"
@@ -37,8 +20,22 @@
           @click="handleSelectedCheckbox"
         />
         <div class="ml-[30px] flex flex-row items-center">
+          <VanPopup
+            :key="isShowDatePicker.toString()"
+            v-model:show="isShowDatePicker"
+            position="bottom"
+            round
+            @closed="() => (isShowDatePicker = false)"
+          >
+            <ReportDateSelection
+              :start-date="startDate"
+              :end-date="endDate"
+              @cancel="() => (isShowDatePicker = false)"
+              @confirmed="onFilterDate"
+            />
+          </VanPopup>
           <UiDivider type="vertical" color="#818086" height="25px" />
-          <Calender class="ml-[10px]" @click.prevent="onOpenDatePicker" />
+          <Calender class="ml-[10px]" @click="onOpenDatePicker" />
         </div>
       </div>
     </div>
@@ -68,7 +65,7 @@
             {{ item.total_amount.toVFixed(2) }}
           </p>
         </div>
-        <UiDivider type="horizontal" />
+        <UiDivider type="horizontal" color="#000" />
       </div>
     </div>
   </div>
@@ -91,8 +88,8 @@ definePageMeta({
 const isLoading = ref(false);
 const isShowDatePicker = ref(false);
 
-let startDate = new Date();
-let endDate = new Date();
+const startDate = ref(new Date());
+const endDate = ref(new Date());
 
 const selectedTab = ref<Option>(REPORT_TAB_OPTION[0]);
 const selectedCheckboxIndex = ref<number>(0);
@@ -103,7 +100,7 @@ onMounted(() => {
 });
 
 function onOpenDatePicker() {
-  isShowDatePicker.value = true;
+  isShowDatePicker.value = !isShowDatePicker.value;
 }
 
 async function getReport(stateDateParam?: Date, endDateParam?: Date) {
@@ -175,8 +172,8 @@ function calculateDateRange(
       break;
   }
 
-  startDate = tempStartDate;
-  endDate = tempEndDate;
+  startDate.value = tempStartDate;
+  endDate.value = tempEndDate;
 
   return {
     startDate: formatDate(tempStartDate),

@@ -62,7 +62,7 @@
         </p>
       </div>
     </div>
-    <van-date-picker
+    <VanDatePicker
       v-model="currentDateComputed"
       title="选择日期（多选"
       class="w-full"
@@ -81,6 +81,11 @@ const props = defineProps<{
   startDate: Date;
   endDate: Date;
 }>();
+
+onMounted(() => {
+  console.log(props.startDate);
+  console.log(props.endDate);
+});
 
 const selectedDateOption = ref(0);
 
