@@ -82,11 +82,6 @@ const props = defineProps<{
   endDate: Date;
 }>();
 
-onMounted(() => {
-  console.log(props.startDate);
-  console.log(props.endDate);
-});
-
 const selectedDateOption = ref(0);
 
 const startDateRef = toRef(props.startDate);
