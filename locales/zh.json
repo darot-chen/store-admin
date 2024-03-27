@@ -33,7 +33,7 @@
   "order_confirmed_message": "等待对方点击确认",
   "order_rejected_message": "成功拒绝订单",
   "please_confirm_complete_transaction": "请确定要完成交易",
-  "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？",
+  "after_complete_transaction": "确定完成交易后，无法返回。还确定要完成交易吗",
   "edit": "编辑",
   "buyer_confirm_order": "买方已确认订单",
   "seller_complete_order": "卖方已完成订单",
@@ -64,8 +64,8 @@
   "seller_cancel": "卖方已取消订单",
   "buyer_reject": "买方拒绝订单",
   "reject": "拒绝",
-  "confirm": "确认",
-  "confirm_sending": "确认发送?",
+  "confirm": "确认订单",
+  "confirm_sending": "请仔细审核交易内容再点击确认。?",
   "reject_sending": "拒绝发送?",
   "upload": "上传",
   "save": "节省",
@@ -94,5 +94,8 @@
   "past_total": "往时总额",
   "total_transaction_amount": "交易总额",
   "in_transaction": "交易中",
-  "send_an_attachment": "已发送附件"
+  "send_an_attachment": "已发送附件",
+  "copied": "已复制",
+  "minimum": "最低限度",
+  "order_removed": "订单已删除"
 }

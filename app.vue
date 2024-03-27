@@ -35,13 +35,13 @@ const { open, close } = useSocket(socketUrl || "", {
   autoReconnect: true,
   reconnectTimeout: 0,
   onMessage(_, event) {
-    handleOnMessage(event);
+    onMessage(event);
   },
 });
 
 const { $evEmit } = useNuxtApp();
 
-function handleOnMessage(data: SocketMessageData<any>) {
+function onMessage(data: SocketMessageData<any>) {
   if (!IsValidSocketEvent(data.event)) {
     // eslint-disable-next-line no-console
     console.error("unknown websocket event name");

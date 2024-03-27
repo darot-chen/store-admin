@@ -127,7 +127,7 @@
             @click="emit('resale-order')"
           />
           <UiButtonLink
-            v-else-if="detail"
+            v-else-if="detail && showRate"
             :title="$t('evaluate')"
             @click="emit('evaluate-order', detail)"
           />
@@ -188,6 +188,7 @@ const props = defineProps<{
   showProfile?: boolean;
   showButton?: boolean;
   detail?: ChatDetail;
+  showRate?: boolean;
   order?: Order;
   isSelected?: boolean;
 }>();

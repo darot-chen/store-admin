@@ -46,7 +46,7 @@
       <div class="text-left">
         <Line :data="data" :options="options" />
       </div>
-      <div class="mt-[0px] flex flex-row items-center justify-around">
+      <div class="mt-[20px] flex flex-row items-center justify-around">
         <div class="flex flex-col items-center">
           <p class="font-500 text-sm text-[#818086]">
             {{ $t("total_transaction_amount") }}
@@ -115,7 +115,6 @@ const dataLabel = () => {
       }
       return labelsYear;
     }
-
     default:
       break;
   }
@@ -149,6 +148,18 @@ const data = ref<ChartData<"line">>({
 
 const options = ref<ChartOptions<"line">>({
   responsive: true,
+  showLine: true,
+  color: "#DDD",
+
+  backgroundColor: "#000",
+
+  line: {
+    datasets: {
+      backgroundColor: "#000",
+
+      // borderColor: "#000",
+    },
+  },
   plugins: {
     legend: {
       display: false,

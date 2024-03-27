@@ -17,7 +17,7 @@
           v-model:model-value="selectedCheckboxIndex"
           class="w-full"
           :options="REPORT_CHECKBOX_OPTION"
-          @click="handleSelectedCheckbox"
+          @click="onSelectCheckBox"
         />
         <div class="ml-[30px] flex flex-row items-center">
           <VanPopup
@@ -139,7 +139,7 @@ function onFilterDate(startDate: Date, endDate: Date) {
   isShowDatePicker.value = false;
 }
 
-function handleSelectedCheckbox(index: number) {
+function onSelectCheckBox(index: number) {
   if (index === selectedCheckboxIndex.value) return;
 
   selectedCheckboxIndex.value = index;
