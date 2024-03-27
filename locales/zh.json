@@ -33,7 +33,7 @@
   "order_confirmed_message": "等待对方点击确认",
   "order_rejected_message": "成功拒绝订单",
   "please_confirm_complete_transaction": "请确定要完成交易",
-  "after_complete_transaction": "确定完成交易后，就不能扳回的要完成交易吗？",
+  "after_complete_transaction": "确定完成交易后，无法返回。还确定要完成交易吗",
   "edit": "编辑",
   "buyer_confirm_order": "买方已确认订单",
   "seller_complete_order": "卖方已完成订单",
