@@ -14,75 +14,27 @@
       </div>
       <Icon name="CaretRight" color="#FF6102" size="10" />
     </div>
-    <div class="mt-[10px] inline-flex text-[13px]">
-      <div class="flex w-1/2 flex-col gap-[2px]">
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#F75B62]">1</p>
-            <p>防骗说明</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
+    <div
+      class="mt-[10px] grid grid-flow-col grid-cols-2 grid-rows-3 text-[13px]"
+    >
+      <div
+        v-for="(faq, index) in faqs"
+        :key="index"
+        class="inline-flex items-center gap-[5px]"
+      >
+        <div class="inline-flex gap-[10px]">
+          <p
+            class="font-youshebiaotihei"
+            :style="{ color: getColor(index + 1) }"
           >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
+            {{ index + 1 }}
+          </p>
+          <p>{{ faq }}</p>
         </div>
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#F99354]">2</p>
-            <p>官方 TG 与语言包</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
-          >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
-        </div>
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#FCCA4B]">3</p>
-            <p>登录验证码不要外泄</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
-          >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
-        </div>
-      </div>
-      <div class="flex w-1/2 flex-col gap-[2px]">
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#FF6102]">4</p>
-            <p>防骗说明</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
-          >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
-        </div>
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#FF6102]">5</p>
-            <p>官方 TG 与语言包</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
-          >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
-        </div>
-        <div class="inline-flex items-center gap-[5px]">
-          <div class="inline-flex gap-[10px]">
-            <p class="font-youshebiaotihei text-[#FF6102]">6</p>
-            <p>登录验证码不要外泄</p>
-          </div>
-          <div
-            class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
-          >
-            <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
-          </div>
+        <div
+          class="flex h-[12px] items-center justify-center rounded-[3px] bg-[#FFEDD6]"
+        >
+          <p class="p-[1px] text-[8px] text-[#FF6102]">新</p>
         </div>
       </div>
     </div>
@@ -94,6 +46,36 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+const faqs = [
+  "防骗说明",
+  "官方 TG 与语言包",
+  "登录验证码不要外泄",
+  "防骗说明",
+  "官方 TG 与语言包",
+  "登录验证码不要外泄",
+];
+
+function getColor(index: number) {
+  switch (index) {
+    case 1:
+      return "#F75B62";
+    case 2:
+      return "#F99354";
+    case 3:
+      return "#FCCA4B";
+    case 4:
+      return "#FF6102";
+    case 5:
+      return "#FF6102";
+    case 6:
+      return "#FF6102";
+    default:
+      return "#FF6102";
+  }
+}
+</script>
 
 <style scoped>
 .container {
