@@ -40,7 +40,13 @@
       </div>
     </div>
 
-    <ReportTransaction v-if="report" class="mt-[20px]" :report="report" />
+    <ReportTransaction
+      v-if="report"
+      :key="report.keys.length"
+      :selected-check-box-index="selectedCheckboxIndex"
+      class="mb-[10px]"
+      :report="report"
+    />
     <div class="mt-[20px] flex flex-col gap-[24px] bg-white py-[15px]">
       <h3 class="px-[12px] text-[16px] text-[#818086]">总交易成功次数</h3>
       <UiDivider type="horizontal" />

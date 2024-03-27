@@ -46,7 +46,7 @@
       <div class="text-left">
         <Line :data="data" :options="options" />
       </div>
-      <div class="flex flex-row items-center justify-around">
+      <div class="mt-[0px] flex flex-row items-center justify-around">
         <div class="flex flex-col items-center">
           <p class="font-500 text-sm text-[#818086]">
             {{ $t("total_transaction_amount") }}
@@ -74,15 +74,75 @@ import type { ChartData, ChartOptions } from "chart.js";
 import { Line } from "vue-chartjs";
 import type { ReportTransaction } from "~/types/report";
 
-defineProps<{
+const props = defineProps<{
   report: ReportTransaction;
+  selectedCheckBoxIndex: number;
 }>();
 
+const dataLabel = () => {
+  const currentDate = new Date();
+
+  switch (props.selectedCheckBoxIndex) {
+    case 0:
+      return ["晨", "午", "晚"];
+    case 1:
+      return [
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六",
+        "星期日",
+      ];
+    case 2: {
+      const daysInMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth() + 1,
+        0
+      ).getDate();
+      const labels = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        labels.push(`${currentDate.getMonth() + 1}月${i}日`);
+      }
+      return labels;
+    }
+
+    case 3: {
+      const labelsYear = [];
+      for (let i = 0; i < 12; i++) {
+        labelsYear.push(`${i + 1}月`);
+      }
+      return labelsYear;
+    }
+
+    default:
+      break;
+  }
+};
+
+const totalAmounts = () => {
+  if (props.selectedCheckBoxIndex === 3) {
+    const monthlyTotalAmount: number[] = new Array(12).fill(0);
+    for (const key in props.report.data) {
+      const date = new Date(key);
+      const month = date.getMonth();
+      monthlyTotalAmount[month] += props.report.data[key].total_amount;
+    }
+
+    return monthlyTotalAmount;
+  }
+
+  return Object.values(props.report.data).map(
+    (summary) => summary.total_amount
+  );
+};
+
 const data = ref<ChartData<"line">>({
-  labels: ["晨", "午", "晚"],
+  labels: dataLabel(),
   datasets: [
     {
-      data: [40, 39, 10, 40, 39, 80, 40],
+      data: totalAmounts(),
     },
   ],
 });
