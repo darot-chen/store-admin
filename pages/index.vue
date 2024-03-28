@@ -40,7 +40,7 @@ onMounted(() => {
 
 <style scoped>
 .bg-home {
-  background-image: url("~/assets/backgrounds/home.png");
+  background-image: url("images/backgrounds/home.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
