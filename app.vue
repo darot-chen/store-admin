@@ -59,6 +59,11 @@ setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
 onMounted(async () => {
+  const tg = (window as any).Telegram;
+  if (tg) {
+    tg?.enableClosingConfirmation();
+  }
+
   const at = route.query.at?.toString();
   let token = null;
 
