@@ -6,13 +6,16 @@ import type {
   GetMessagePayload,
   Member,
 } from "~/types/chat";
-import type { ChatRoom } from "~/types/chatRoom";
+import type { ChatRoom, CursorChatRoomPayload } from "~/types/chatRoom";
 import type { Cursor } from "~/types/common";
 import type { CursorResponse } from "~/types/pagination";
 
 const url = "/chat-rooms";
 
-export const getPublicChatRoom = async (type: string, params: Cursor) => {
+export const getPublicChatRoom = async (
+  type: string,
+  params: CursorChatRoomPayload
+) => {
   const { data } = await useAxiosInstance().get<CursorResponse<ChatRoom[]>>(
     `${url}/${type}`,
     {

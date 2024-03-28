@@ -97,5 +97,7 @@
   "send_an_attachment": "Sent an attachment",
   "minimum": "Minimum",
   "order_removed": "Order removed",
-  "copied": "Copied"
+  "copied": "Copied",
+  "chat_room": "Chat room",
+  "message": "Message"
 }
