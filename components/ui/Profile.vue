@@ -17,9 +17,13 @@
       >
         {{ isUser ? refUser.name : refUser.business_name ?? "" }}
       </h1>
+
+      <!-- 
+      Hide Edit profile name
       <button class="absolute -right-7" @click="toggleEditMode">
         <Icon name="EditProfile" color="#818086" size="15" />
       </button>
+      -->
     </div>
     <div class="text-[#818086]">
       <p>
@@ -209,9 +213,9 @@ const onSavedUsername = async () => {
   userNameRef.value = "";
 };
 
-const toggleEditMode = () => {
-  isEditPopupVisible.value = !isEditPopupVisible.value;
-};
+// const toggleEditMode = () => {
+//   isEditPopupVisible.value = !isEditPopupVisible.value;
+// };
 
 const dataURLtoFile = (dataUrl: string, filename: string): File | undefined => {
   const byteString = atob(dataUrl.split(",")[1]);
