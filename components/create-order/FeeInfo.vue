@@ -1,10 +1,10 @@
 <template>
   <div class="detail-item">
     <div class="inline-flex items-center gap-[5px]">
-      <h1 class="flex flex-row items-end text-[15px] font-semibold">
-        {{ title }}
+      <div class="flex flex-wrap items-end text-[15px] font-semibold">
+        <p class="min-w-[40px]">{{ title }}</p>
         <p class="text-[8px] font-normal">(选填)</p>
-      </h1>
+      </div>
       <Icon name="Info" color="#E1EFFF" />
     </div>
     <button class="text-[16px]" @click="$emit('click', props.type)">
