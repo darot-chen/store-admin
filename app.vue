@@ -62,6 +62,8 @@ onMounted(async () => {
   const tg = (window as any).Telegram;
   if (tg?.WebApp) {
     tg.WebApp?.enableClosingConfirmation();
+    tg.WebApp?.expand();
+    tg.WebApp?.MainButton?.hide();
   }
 
   const at = route.query.at?.toString();
