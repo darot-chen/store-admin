@@ -60,8 +60,8 @@ setLocale(local || "zh");
 
 onMounted(async () => {
   const tg = (window as any).Telegram;
-  if (tg) {
-    tg?.enableClosingConfirmation();
+  if (tg?.WebApp) {
+    tg.WebApp?.enableClosingConfirmation();
   }
 
   const at = route.query.at?.toString();
