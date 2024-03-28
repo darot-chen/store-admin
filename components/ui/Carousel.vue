@@ -20,9 +20,9 @@
     }"
   >
     <SwiperSlide class="cursor-pointer rounded-lg object-cover">
-      <NuxtImg
+      <UiImg
         class="w-full rounded-lg"
-        src="/images/banners/banner-1.png"
+        src="banners/banner-1.png"
         height="343"
       />
     </SwiperSlide>

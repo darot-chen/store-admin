@@ -11,7 +11,7 @@
     <div class="flex gap-[5px] overflow-scroll">
       <div v-for="(group, i) in groups" :key="i">
         <div class="inline-flex flex-col items-center">
-          <NuxtImg class="image" width="97" height="97" :src="group.img" />
+          <UiImg class="image" width="97" height="97" :src="group.img" />
           <div class="card">
             <div class="inline-flex items-center justify-center gap-[2px]">
               <div
@@ -37,37 +37,37 @@
 <script setup lang="ts">
 const groups = [
   {
-    img: "/images/group-1.png",
+    img: "group-1.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
   },
   {
-    img: "/images/group-2.png",
+    img: "group-2.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
   },
   {
-    img: "/images/group-3.png",
+    img: "group-3.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
   },
   {
-    img: "/images/group-1.png",
+    img: "group-1.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
   },
   {
-    img: "/images/group-2.png",
+    img: "group-2.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
   },
   {
-    img: "/images/group-3.png",
+    img: "group-3.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",

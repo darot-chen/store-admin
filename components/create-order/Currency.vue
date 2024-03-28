@@ -11,7 +11,7 @@
       <div :class="['inline-flex items-center gap-[5px]']" @click="onClick">
         <Icon name="ArrowDown" color="#0000001A" size="9" />
 
-        <NuxtImg :src="getIcon()" alt="" :width="16" />
+        <UiImg :src="getIcon()" :width="16" />
       </div>
     </div>
   </button>
@@ -48,15 +48,15 @@ const props = defineProps<{
 const getIcon = (): string => {
   switch (selected.value?.label) {
     case "CNY":
-      return "svg/currencies/CNY.svg";
+      return "icons/currencies/CNY.svg";
     case "USDT":
-      return "svg/currencies/USDT.svg";
+      return "icons/currencies/USDT.svg";
     case "USD":
-      return "svg/currencies/USD.svg";
+      return "icons/currencies/USD.svg";
     case "PHP":
-      return "svg/currencies/PHP.svg";
+      return "icons/currencies/PHP.svg";
     default:
-      return "svg/currencies/CNY.svg";
+      return "icons/currencies/CNY.svg";
   }
 };
 
