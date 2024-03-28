@@ -50,6 +50,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
+      script: [{ src: "https://telegram.org/js/telegram-web-app.js" }],
       title: "百順擔保",
       charset: "utf-8",
       meta: [
