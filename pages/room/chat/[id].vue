@@ -253,7 +253,8 @@ function onCopyText(msg: string) {
   document.body.appendChild(input);
   input.select();
   input.setSelectionRange(0, 99999);
-  document.execCommand("copy");
+
+  navigator.clipboard.writeText(input.value);
   document.body.removeChild(input);
 
   showToast({
