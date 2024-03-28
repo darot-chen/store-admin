@@ -50,7 +50,7 @@
             <ChatReply
               v-if="chat?.reply_message"
               :chat="chat"
-              @on-header-click="(id) => emit('header-reply', id)"
+              @header-click="(id) => emit('header-reply', id)"
             />
             <p
               v-if="chatType === 'incoming'"
@@ -71,12 +71,17 @@
                 },
               ]"
             >
-              <p
+              <div
                 v-if="type === ChatType.Text"
                 class="whitespace-pre-wrap break-all"
               >
-                {{ text }}
-              </p>
+                <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
+                  {{ text }}
+                </NuxtLink>
+                <p v-else>
+                  {{ text }}
+                </p>
+              </div>
               <UiImg
                 v-else-if="type === ChatType.Image"
                 :placeholder="[200, 20]"

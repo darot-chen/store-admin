@@ -11,13 +11,13 @@
       @click="
         () => {
           if (replying) return;
-          emits('on-header-click', chat?.reply_message?.id || 0);
+          emits('header-click', chat?.reply_message?.id || 0);
         }
       "
     >
       <div>
         <div v-if="chat?.reply_message">
-          <p class="font-bold text-[12px]">
+          <p class="text-[12px] font-bold">
             {{
               chat?.reply_message.user?.name ||
               chat?.reply_message.user_id ||
@@ -58,7 +58,7 @@ defineProps<{
 
 const emits = defineEmits<{
   (e: "cancel"): void;
-  (e: "on-header-click", id: number): void;
+  (e: "header-click", id: number): void;
 }>();
 </script>
 
