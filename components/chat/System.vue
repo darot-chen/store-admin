@@ -2,7 +2,7 @@
   <div class="flex w-full items-end justify-start">
     <div class="inline-flex items-end">
       <div class="bg-avatar">
-        <img class="w-[2.375rem] rounded-full" src="/images/bs-logo.png" />
+        <NuxtImg class="w-[2.375rem] rounded-full" src="/images/bs-logo.png" />
       </div>
       <Icon name="ChatTail" color="#ffff" size="10" />
       <div class="layout">

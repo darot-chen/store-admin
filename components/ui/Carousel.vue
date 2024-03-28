@@ -19,8 +19,12 @@
       },
     }"
   >
-    <SwiperSlide class="w-[343px] cursor-pointer rounded-lg object-cover">
-      <img class="rounded-lg object-cover" src="~/assets/banners/banner.png" />
+    <SwiperSlide class="cursor-pointer rounded-lg object-cover">
+      <NuxtImg
+        class="w-full rounded-lg"
+        src="/images/banners/banner-1.png"
+        height="343"
+      />
     </SwiperSlide>
   </Swiper>
 </template>

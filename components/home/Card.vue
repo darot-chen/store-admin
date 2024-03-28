@@ -21,14 +21,14 @@
           <p class="font-semibold">如何使用</p>
           <p>百顺系統交易</p>
         </div>
-        <img class="w-[63px]" src="~/assets/icons/Shield.png" />
+        <NuxtImg width="64" height="64" src="/icons/Shield.png" />
       </div>
       <div class="card-2 flex w-1/2 items-center justify-between">
         <div class="px-[10px]">
           <p class="font-semibold">如何使用</p>
           <p>百顺系統交易</p>
         </div>
-        <img class="w-[63px]" src="~/assets/icons/Statistic.png" />
+        <NuxtImg width="64" height="64" src="/icons/Statistic.png" />
       </div>
     </div>
   </div>

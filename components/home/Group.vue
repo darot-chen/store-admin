@@ -11,7 +11,7 @@
     <div class="flex gap-[5px] overflow-scroll">
       <div v-for="(group, i) in groups" :key="i">
         <div class="inline-flex flex-col items-center">
-          <img class="image h-[95px] w-full" :src="group.img" />
+          <NuxtImg class="image" width="97" height="97" :src="group.img" />
           <div class="card">
             <div class="inline-flex items-center justify-center gap-[2px]">
               <div
