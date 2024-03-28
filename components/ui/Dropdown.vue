@@ -14,7 +14,7 @@
       size="14"
       class="opacity-30"
     />
-    <img
+    <NuxtImg
       v-if="selected?.icon"
       :src="selected.icon"
       :alt="selected.label"

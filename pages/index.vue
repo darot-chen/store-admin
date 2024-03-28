@@ -10,7 +10,12 @@
         />
         <p>{{ user?.name }}</p>
       </div>
-      <img class="h-[28px] w-[28px] rounded-full" src="/images/bs-logo.png" />
+      <NuxtImg
+        class="rounded-full"
+        src="/images/bs-logo.png"
+        width="24"
+        height="24"
+      />
     </div>
     <UiCarousel />
     <HomeCard />
