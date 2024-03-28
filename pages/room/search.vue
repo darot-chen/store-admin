@@ -105,7 +105,7 @@ const handleInput = () => {
 const fetchChatMessages = async () => {
   const res = await Promise.all([
     getPublicChatRoom("private", {
-      last: cursorId.value,
+      last: cursorRoomId.value,
       keyword: searchQuery.value,
       limit: 20,
     }),
