@@ -25,7 +25,7 @@
       />
 
       <UiChatBubble
-        v-for="c in chats"
+        v-for="(c, index) in chats"
         :id="`chat_${c.id}`"
         :key="`key_chat_${c.id}`"
         :name="getProfileName(c)"
@@ -45,6 +45,8 @@
         :profile="getProfileImage(c)"
         :chat="c"
         :show-rate="false"
+        :show-group-date="isShowGroupDate(c.created_at, index)"
+        :group-date="chats[index].created_at"
         @confirm="onConfirmOrder"
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
@@ -259,6 +261,14 @@ function onCopyText(msg: string) {
     position: "bottom",
   });
 }
+
+const isShowGroupDate = (currentDate: string, index: number): boolean => {
+  if (index === 0) return true;
+  const currentMsgDate: Date = new Date(currentDate);
+  const nextMsgDate: Date = new Date(chats.value[index - 1].created_at);
+
+  return currentMsgDate.getDate() !== nextMsgDate.getDate();
+};
 
 const getProfileName = (c: Chat): string => {
   if (!c.user_id) {
