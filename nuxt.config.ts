@@ -1,7 +1,10 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  ssr: false,
   css: ["~/assets/css/main.css", "~/assets/css/vant.css"],
+  ssr: false,
+  routeRules: {
+    "/_ipx/**": { ssr: true },
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -13,19 +16,10 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@vueuse/nuxt",
     "nuxt-icon",
-    "@nuxt/image",
     "nuxt-swiper",
   ],
   build: {
     transpile: ["vue-advanced-cropper"],
-  },
-  image: {
-    providers: {
-      s3: {
-        name: "s3",
-        provider: "~/providers/s3.ts",
-      },
-    },
   },
   pinia: {
     storesDirs: ["./stores/**"],

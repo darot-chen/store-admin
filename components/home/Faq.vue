@@ -3,8 +3,8 @@
     <div class="inline-flex items-center justify-between">
       <div class="inline-flex items-center gap-[5px]">
         <div class="inline-flex gap-[2px]">
-          <NuxtImg src="/images/title-1.png" class="h-[15px]" />
-          <NuxtImg src="/images/title-2.png" class="h-[15px]" />
+          <UiImg src="title-1.png" width="26" height="26" />
+          <UiImg src="title-2.png" width="26" height="26" />
         </div>
         <div
           class="inline-flex w-[24px] justify-center rounded-sm border border-[#FF6102] px-[8px] py-[2px]"

@@ -10,11 +10,13 @@
       @input="onInput"
     />
     <span v-if="isPercent">%</span>
-    <NuxtImg
+    <UiImg
       v-if="icon"
       :src="icon"
       :alt="icon"
-      class="w-[18px] rounded-full"
+      class="rounded-full"
+      width="16"
+      height="16"
     />
     <button
       v-if="!disabled"

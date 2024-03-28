@@ -77,7 +77,7 @@
               >
                 {{ text }}
               </p>
-              <NuxtImg
+              <UiImg
                 v-else-if="type === ChatType.Image"
                 :placeholder="[200, 20]"
                 width="200"

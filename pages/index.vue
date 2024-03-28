@@ -10,12 +10,7 @@
         />
         <p>{{ user?.name }}</p>
       </div>
-      <NuxtImg
-        class="rounded-full"
-        src="/images/bs-logo.png"
-        width="24"
-        height="24"
-      />
+      <UiImg class="rounded-full" src="bs-logo.png" width="24" height="24" />
     </div>
     <UiCarousel />
     <HomeCard />
@@ -40,7 +35,7 @@ onMounted(() => {
 
 <style scoped>
 .bg-home {
-  background-image: url("images/backgrounds/home.png");
+  background-image: url("/images/backgrounds/home.png");
   background-size: contain;
   background-repeat: no-repeat;
 }

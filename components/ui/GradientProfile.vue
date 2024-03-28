@@ -8,7 +8,7 @@
     }"
     @click="emit('click')"
   >
-    <NuxtImg v-if="src" class="rounded-full" :src="src" />
+    <UiImg v-if="src" class="rounded-full" :src="src" provider="s3" />
     <p v-else>{{ name!.charAt(0).toUpperCase() }}</p>
   </div>
 </template>
