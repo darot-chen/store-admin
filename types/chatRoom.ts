@@ -13,6 +13,7 @@ export type ChatRoom = {
   updated_at: string;
   owner_id: number;
   business_id: number;
+  title: string;
   type: ChatRoomType;
   closed_at: string;
   lobby_no: number;
@@ -26,4 +27,5 @@ export type ChatRoom = {
 export type CursorChatRoomPayload = {
   limit?: number;
   last?: number;
+  keyword?: string;
 };

@@ -31,68 +31,29 @@
       <UiCircularLoading size="24" />
     </div>
     <div v-else>
-      <div v-if="searchItems.length === 0">
-        <div class="flex h-full items-center justify-center">No data</div>
+      <div v-if="searchItems.length === 0 && chatRoomSearchItems.length === 0">
+        <div class="flex h-full items-center justify-center">
+          <VanEmpty image="search" />
+        </div>
       </div>
-      <div
-        v-for="room in searchItems"
-        v-else
-        :key="room.chat_room.id"
-        class="border-b border-gray-300"
-      >
-        <div class="rounded-md bg-white">
-          <NuxtLink
-            class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
-            :to="`/room/chat/${room.chat_room.id}?msgId=${room.id}`"
-          >
-            <div class="flex gap-2">
-              <div
-                class="flex h-12 w-12 items-center justify-center rounded-full"
-                :style="{
-                  background: generateLinearGradient(
-                    room.chat_room.business.title,
-                    room.chat_room.id
-                  ),
-                }"
-              >
-                <span class="text-lg font-bold text-[#fff]">
-                  {{
-                    room.chat_room.business.title?.charAt(0).toUpperCase() || ""
-                  }}
-                </span>
-              </div>
-
-              <div class="flex w-7/12 flex-col">
-                <div>
-                  <h1 class="font-medium">
-                    {{ room.chat_room.business.title }}
-                    <span v-if="room.chat_room.lobby_no">
-                      {{ $t("lobby_no") }} {{ room.chat_room.lobby_no }}
-                    </span>
-                  </h1>
-                  <ChatEvent
-                    v-if="room.type === ChatType.Action"
-                    class="line-clamp-3 text-sm text-[#8E8E93]"
-                    :text="room.message"
-                  />
-                  <p
-                    v-else
-                    class="line-clamp-2 text-ellipsis text-sm text-[#8E8E93]"
-                  >
-                    {{ room.message || "" }}
-                  </p>
-                </div>
-              </div>
-
-              <div class="ml-auto flex flex-col items-end justify-between">
-                <div class="flex gap-1.5">
-                  <span class="text-sm text-[#8E8E93]">
-                    {{ formatChatListDate(room?.created_at.toString()) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </NuxtLink>
+      <div v-else>
+        <div v-if="chatRoomSearchItems.length > 0">
+          <VanDivider style="margin: 4px">{{ $t("chat_room") }}</VanDivider>
+          <SearchItem
+            v-for="room in chatRoomSearchItems"
+            :key="room.id"
+            :room="room"
+            type="room"
+          />
+        </div>
+        <div v-if="searchItems.length > 0">
+          <VanDivider style="margin: 4px">{{ $t("message") }}</VanDivider>
+          <SearchItem
+            v-for="message in searchItems"
+            :key="message.chat_room.id"
+            :message="message"
+            type="message"
+          />
         </div>
       </div>
       <div v-show="loadMore" class="mt-1 flex justify-center">
@@ -103,8 +64,9 @@
 </template>
 
 <script setup lang="ts">
-import { getChatMessages } from "~/api/chat";
-import { ChatType, type ChatMessage } from "~/types/chat";
+import { getChatMessages, getPublicChatRoom } from "~/api/chat";
+import type { ChatMessage } from "~/types/chat";
+import type { ChatRoom } from "~/types/chatRoom";
 
 const pageStore = usePageStore();
 const { t } = useI18n();
@@ -123,33 +85,42 @@ const loadMore = ref(false);
 const isLoading = ref(false);
 const inputRef = ref<HTMLInputElement | null>(null);
 const searchItems = ref<ChatMessage[]>([]);
+const chatRoomSearchItems = ref<ChatRoom[]>([]);
 const cursorId = ref(0);
+const cursorRoomId = ref(0);
 
 onMounted(() => {
   fetchChatMessages();
 });
 
 const handleInput = () => {
-  searchItems.value.length = 0;
+  searchItems.value = [];
+  chatRoomSearchItems.value = [];
   cursorId.value = 0;
+  cursorRoomId.value = 0;
   loadMoreResults();
   isLoading.value = true;
 };
 
 const fetchChatMessages = async () => {
-  if (searchItems.value.length === 0) {
-    isLoading.value = true;
-  }
+  const res = await Promise.all([
+    getPublicChatRoom("private", {
+      last: cursorRoomId.value,
+      keyword: searchQuery.value,
+      limit: 20,
+    }),
+    getChatMessages({
+      last: cursorId.value,
+      query: searchQuery.value,
+      limit: 20,
+    }),
+  ]);
 
-  const res = await getChatMessages({
-    last: cursorId.value,
-    query: searchQuery.value,
-    limit: 20,
-  });
-
-  searchItems.value.push(...res.results);
-  cursorId.value = res.results[res.results.length - 1]?.id || 0;
-  loadMore.value = res.meta.has_next;
+  searchItems.value = res[1].results;
+  chatRoomSearchItems.value = res[0].results;
+  cursorId.value = res[0].results[res[0].results.length - 1]?.id || 0;
+  cursorRoomId.value = res[1].results[res[1].results.length - 1]?.id || 0;
+  loadMore.value = res[1].meta.has_next;
   isLoading.value = false;
 };
 
