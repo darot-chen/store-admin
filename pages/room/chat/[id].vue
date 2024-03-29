@@ -21,13 +21,13 @@
     >
       <UiCircularLoading
         v-show="fetchingMoreChat"
-        class="absolute right-0 flex w-full justify-center"
+        class="sticky right-0 flex w-full justify-center"
       />
 
       <UiChatBubble
         v-for="(c, index) in chats"
         :id="`chat_${c.id}`"
-        :key="`key_chat_${c.id}`"
+        :key="`key_chat_${c.id}_${index}`"
         :name="getProfileName(c)"
         :text="c.message"
         :timestamp="c.created_at"

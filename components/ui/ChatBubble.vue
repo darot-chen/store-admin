@@ -1,184 +1,181 @@
 <template>
-  <UiTag
-    v-if="showGroupDate"
-    :id="`chatDate_${formatDate(groupDate, 'DD')}`"
-    :title="getGroupDate()"
-    bg-color="rgba(114, 131, 145, 1)"
-    class="sticky top-0"
-  />
-  <div
-    v-if="type !== ChatType.Action"
-    v-bind="$attrs"
-    :class="['inline-flex flex-col justify-end']"
-  >
-    <div
-      :class="[
-        'flex w-full items-end',
-        chatType === 'incoming' ? 'justify-start' : 'justify-end',
-      ]"
-    >
-      <div class="inline-flex items-end">
-        <UiGradientProfile
-          v-if="(showProfile || profile) && chatType === 'incoming'"
-          :image-source="profile"
-          :name="name"
-          size="2.375rem"
-        />
-        <Icon
-          v-if="chatType === 'incoming'"
-          name="ChatTail"
-          color="#ffff"
-          size="10"
-        />
-      </div>
+  <div v-bind="$attrs" class="inline-flex flex-col justify-end">
+    <UiTag
+      v-if="showGroupDate"
+      :id="`chatDate_${formatDate(groupDate, 'DD')}`"
+      :title="getGroupDate()"
+      bg-color="rgba(114, 131, 145, 1)"
+      class="sticky top-0"
+    />
+    <div v-if="type !== ChatType.Action">
       <div
         :class="[
-          'flex items-center',
-          chatType === 'incoming' ? '' : 'flex-row-reverse',
+          'flex w-full items-end',
+          chatType === 'incoming' ? 'justify-start' : 'justify-end',
         ]"
       >
+        <div class="inline-flex items-end">
+          <UiGradientProfile
+            v-if="(showProfile || profile) && chatType === 'incoming'"
+            :image-source="profile"
+            :name="name"
+            size="2.375rem"
+          />
+          <Icon
+            v-if="chatType === 'incoming'"
+            name="ChatTail"
+            color="#ffff"
+            size="10"
+          />
+        </div>
         <div
           :class="[
-            chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
-            {
-              'flash-outgoing': chatType === 'outgoing' ? isSelected : false,
-              'flash-incoming': chatType === 'incoming' ? isSelected : false,
-            },
+            'flex w-96 items-center',
+            chatType === 'incoming' ? '' : 'flex-row-reverse',
           ]"
         >
-          <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-            <ChatReply
-              v-if="chat?.reply_message"
-              :chat="chat"
-              @header-click="(id) => emit('header-reply', id)"
-            />
-            <p
-              v-if="chatType === 'incoming'"
-              class="incoming-name px-[0.38rem]"
-              :style="{ color: generateColorForName(name) }"
-            >
-              {{ name }}
-            </p>
-            <div
-              :class="[
-                'px-[0.38rem]',
-                chatType === 'incoming'
-                  ? 'incoming-content'
-                  : 'outgoing-content',
-                {
-                  'flash-incoming':
-                    chatType === 'incoming' ? isSelected : false,
-                },
-              ]"
-            >
-              <div
-                v-if="type === ChatType.Text"
-                class="whitespace-pre-wrap break-all"
-              >
-                <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
-                  {{ text }}
-                </NuxtLink>
-                <p v-else>
-                  {{ text }}
-                </p>
-              </div>
-              <UiImg
-                v-else-if="type === ChatType.Image"
-                :placeholder="[200, 20]"
-                width="200"
-                height="400"
-                provider="s3"
-                :src="text"
-                class="rounded-sm pt-2"
-                @click="onPreview(text)"
+          <div
+            :class="[
+              chatType === 'incoming' ? 'incoming-layout' : 'outgoing-layout',
+              {
+                'flash-outgoing': chatType === 'outgoing' ? isSelected : false,
+                'flash-incoming': chatType === 'incoming' ? isSelected : false,
+              },
+            ]"
+          >
+            <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
+              <ChatReply
+                v-if="chat?.reply_message"
+                :chat="chat"
+                @header-click="(id) => emit('header-reply', id)"
               />
-              <video
-                v-else-if="type === ChatType.Video"
-                class="max-h-[400] max-w-[200] rounded-sm pt-2"
-                controls
+              <p
+                v-if="chatType === 'incoming'"
+                class="incoming-name px-[0.38rem]"
+                :style="{ color: generateColorForName(name) }"
               >
-                <source :src="getS3Url(text)" />
-              </video>
+                {{ name }}
+              </p>
+              <div
+                :class="[
+                  'px-[0.38rem]',
+                  chatType === 'incoming'
+                    ? 'incoming-content'
+                    : 'outgoing-content',
+                  {
+                    'flash-incoming':
+                      chatType === 'incoming' ? isSelected : false,
+                  },
+                ]"
+              >
+                <div
+                  v-if="type === ChatType.Text"
+                  class="whitespace-normal break-words"
+                >
+                  <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
+                    {{ text }}
+                  </NuxtLink>
+                  <p v-else>
+                    {{ text }}
+                  </p>
+                </div>
+                <UiImg
+                  v-else-if="type === ChatType.Image"
+                  width="200"
+                  height="400"
+                  provider="s3"
+                  :src="text"
+                  class="mt-2 rounded-lg"
+                  @click="onPreview(text)"
+                />
+                <video
+                  v-else-if="type === ChatType.Video"
+                  class="max-h-[400] max-w-[200] rounded-sm pt-2"
+                  controls
+                >
+                  <source :src="getS3Url(text)" />
+                </video>
+              </div>
+              <p
+                :class="[
+                  chatType === 'incoming'
+                    ? 'incoming-timestamp'
+                    : 'outgoing-timestamp',
+                ]"
+              >
+                {{ formatDate(timestamp) }}
+              </p>
             </div>
-            <p
-              :class="[
-                chatType === 'incoming'
-                  ? 'incoming-timestamp'
-                  : 'outgoing-timestamp',
-              ]"
-            >
-              {{ formatDate(timestamp) }}
-            </p>
+          </div>
+          <div class="px-2" @click="emit('reply')">
+            <Icon name="Reply" color="#6C808C" size="16" />
           </div>
         </div>
-        <div class="px-2" @click="emit('reply')">
-          <Icon name="Reply" color="#6C808C" size="16" />
-        </div>
       </div>
     </div>
-  </div>
-  <div v-else>
-    <UiTag :title="getChatEvent(text, name)" />
+    <div v-else>
+      <UiTag :title="getChatEvent(text, name)" />
 
-    <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
-      <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
+      <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
+        <ChatSystem v-if="order && detail" :timestamp="timestamp" :text="text">
+          <ChatOrderCreated :order="order" :detail="detail" />
+        </ChatSystem>
+        <UiTag class="mt-3" :title="$t(text)" />
+      </template>
+
+      <div v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
+        <div class="flex flex-col gap-2">
+          <ChatSystem :timestamp="timestamp" :text="text">
+            <ChatOrderCreated v-if="detail" :order="order" :detail="detail" />
+          </ChatSystem>
+          <div class="ml-[48px] mr-[35px] w-full">
+            <UiButtonLink
+              v-if="isSeller(order?.seller_id ?? 0)"
+              :title="$t('one_more_order')"
+              @click="emit('resale-order')"
+            />
+            <UiButtonLink
+              v-else-if="detail && showRate"
+              :title="$t('evaluate')"
+              @click="emit('evaluate-order', detail)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <ChatSystem
+        v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
+        :timestamp="timestamp"
+        :text="text"
+      >
         <ChatOrderCreated :order="order" :detail="detail" />
       </ChatSystem>
-      <UiTag class="mt-3" :title="$t(text)" />
-    </template>
 
-    <div v-if="text === CHAT_ACTIONS.ORDER_SUCCESS">
-      <div class="flex flex-col gap-2">
-        <ChatSystem :timestamp="timestamp" :text="text">
-          <ChatOrderCreated v-if="detail" :order="order" :detail="detail" />
-        </ChatSystem>
-        <div class="ml-[48px] mr-[35px]">
-          <UiButtonLink
-            v-if="isSeller(order?.seller_id ?? 0)"
-            :title="$t('one_more_order')"
-            @click="emit('resale-order')"
-          />
-          <UiButtonLink
-            v-else-if="detail && showRate"
-            :title="$t('evaluate')"
-            @click="emit('evaluate-order', detail)"
-          />
-        </div>
+      <ChatSystem
+        v-if="text === CHAT_ACTIONS.NEW_TICKET_CREATED"
+        :timestamp="timestamp"
+        class="whitespace-pre-wrap"
+        :text="text"
+      >
+        <p>
+          {{ $t("manual_cs_is_being_assigned") }}
+        </p>
+
+        <p>
+          {{ $t("during_the_waiting_period") }}
+        </p>
+      </ChatSystem>
+
+      <div
+        v-if="showButton"
+        :class="[
+          'mt-[0.3125rem] inline-flex w-full  justify-end gap-[0.3125rem]',
+          showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
+        ]"
+      >
+        <UiButtonLink :title="$t('reject')" @click="onReject" />
+        <UiButtonLink :title="$t('confirm')" @click="onConfirm" />
       </div>
-    </div>
-
-    <ChatSystem
-      v-if="order && text === CHAT_ACTIONS.NEW_ORDER_CREATED && detail"
-      :timestamp="timestamp"
-      :text="text"
-    >
-      <ChatOrderCreated :order="order" :detail="detail" />
-    </ChatSystem>
-
-    <ChatSystem
-      v-if="text === CHAT_ACTIONS.NEW_TICKET_CREATED"
-      :timestamp="timestamp"
-      class="whitespace-pre-wrap"
-      :text="text"
-    >
-      <p>
-        {{ $t("manual_cs_is_being_assigned") }}
-      </p>
-
-      <p>
-        {{ $t("during_the_waiting_period") }}
-      </p>
-    </ChatSystem>
-
-    <div
-      v-if="showButton"
-      :class="[
-        'mt-[0.3125rem] inline-flex w-full  justify-end gap-[0.3125rem]',
-        showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
-      ]"
-    >
-      <UiButtonLink :title="$t('reject')" @click="onReject" />
-      <UiButtonLink :title="$t('confirm')" @click="onConfirm" />
     </div>
   </div>
 </template>

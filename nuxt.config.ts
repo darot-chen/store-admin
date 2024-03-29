@@ -61,12 +61,10 @@ export default defineNuxtConfig({
       link: [
         {
           href: "/public/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff2",
-          rel: "preload",
           type: "font/woff2",
         },
         {
           href: "/public/assets/fonts/Youshebiaotihei/YouSheBiaoTiHei.woff",
-          rel: "preload",
           type: "font/woff",
         },
         {
