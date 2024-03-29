@@ -69,6 +69,7 @@
                 <div
                   v-if="type === ChatType.Text"
                   class="w-full whitespace-normal break-words text-start"
+                  @touchstart="onTouch(text)"
                 >
                   <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
                     {{ text }}
@@ -210,6 +211,7 @@ const emit = defineEmits<{
   (e: "header-reply", id: number): void;
   (e: "evaluate-order", detail: ChatDetail): void;
   (e: "resale-order"): void;
+  (e: "touch-start-message", value: string): void;
 }>();
 
 const getGroupDate = () => {
@@ -252,6 +254,10 @@ function onPreview(v: string) {
     images: [getS3Url(v)],
     closeable: true,
   });
+}
+
+function onTouch(text: string) {
+  emit("touch-start-message", text);
 }
 </script>
 

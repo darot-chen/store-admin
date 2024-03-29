@@ -53,7 +53,7 @@
         @header-reply="onHeaderReplyClick"
         @resale-order="onOrderClick(c)"
         @evaluate-order="(d) => onEvalOrder(d)"
-        @click="onTouchStart(c)"
+        @touch-start-message="(c) => onTouchStart(c)"
       />
 
       <UiCircularLoading
@@ -229,9 +229,9 @@ function onEvalOrder(detail: ChatDetail) {
   showConfirmationPopup.value = true;
 }
 
-const debounceCopy = useDebounceFn((c: Chat) => {
+const debounceCopy = useDebounceFn((c: string) => {
   try {
-    navigator.clipboard.writeText(c.message);
+    navigator.clipboard.writeText(c);
     showToast({
       message: t("copied"),
       type: "success",
@@ -241,8 +241,8 @@ const debounceCopy = useDebounceFn((c: Chat) => {
   }
 }, 500);
 
-function onTouchStart(c: Chat) {
-  if (c.type === ChatType.Text) debounceCopy(c);
+function onTouchStart(c: string) {
+  debounceCopy(c);
 }
 
 const isShowGroupDate = (currentDate: string, index: number): boolean => {
