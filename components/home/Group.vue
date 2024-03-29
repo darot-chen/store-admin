@@ -48,7 +48,7 @@ const groups = [
     title: "百顺担保公告群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
-    href: "(https://t.me/bsdbq/1",
+    href: "https://t.me/bsdbq/1",
   },
   {
     img: "group-3.png",
