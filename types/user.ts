@@ -41,6 +41,11 @@ export type LoginResponse = {
   token: string;
 };
 
+export type LoginViaMiniAppResponse = {
+  token: string;
+  start_action: any;
+};
+
 export type OnlineUserResponse = {
   onlineUsers: number;
 };

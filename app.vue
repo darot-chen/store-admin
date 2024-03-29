@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { IsValidSocketEvent, SOCKET_EVENT } from "~/constants/socket";
 import type { SocketMessageData } from "./types/base";
+import { loginViaMiniApp } from "~/api/user";
 import "./utils/extension";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
@@ -60,16 +61,30 @@ setLocale(local || "zh");
 
 onMounted(async () => {
   const tg = (window as any).Telegram;
+  const at = route.query.at?.toString();
+
+  let token = null;
+
   if (tg?.WebApp) {
     tg.WebApp?.enableClosingConfirmation();
     tg.WebApp?.expand();
     tg.WebApp?.MainButton?.hide();
+
+    const res = await loginViaMiniApp(tg.WebApp?.initData);
+    if (res) {
+      token = res.token;
+      storage.setAccessToken(token);
+
+      await sleep(10);
+      if (res?.start_action?.type === "join_room") {
+        router.replace(`/room/chat/${res.start_action.data.room_id}`);
+      } else {
+        router.replace(route.path);
+      }
+    }
   }
 
-  const at = route.query.at?.toString();
-  let token = null;
-
-  if (at) {
+  if (!token && at) {
     token = atob(at);
     storage.setAccessToken(token);
 
