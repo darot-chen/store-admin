@@ -5,7 +5,7 @@
       :id="`chatDate_${formatDate(groupDate, 'DD')}`"
       :title="getGroupDate()"
       bg-color="rgba(114, 131, 145, 1)"
-      class="sticky top-0"
+      class="sticky top-0 mb-[1rem]"
     />
     <div v-if="type !== ChatType.Action">
       <div
@@ -30,7 +30,7 @@
         </div>
         <div
           :class="[
-            'flex w-full items-center',
+            'flex w-3/4 items-center ',
             chatType === 'incoming' ? '' : 'flex-row-reverse',
           ]"
         >
@@ -43,7 +43,7 @@
               },
             ]"
           >
-            <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
+            <div class="flex flex-col gap-y-[0.75rem] p-[0.76rem]">
               <ChatReply
                 v-if="chat?.reply_message"
                 :chat="chat"
@@ -51,14 +51,13 @@
               />
               <p
                 v-if="chatType === 'incoming'"
-                class="incoming-name px-[0.38rem]"
+                class="incoming-name"
                 :style="{ color: generateColorForName(name) }"
               >
                 {{ name }}
               </p>
               <div
                 :class="[
-                  'px-[0.38rem]',
                   chatType === 'incoming'
                     ? 'incoming-content'
                     : 'outgoing-content',
@@ -70,16 +69,12 @@
               >
                 <div
                   v-if="type === ChatType.Text"
-                  class="whitespace-normal break-words text-start"
+                  class="w-full whitespace-normal break-words text-start"
                 >
-                  <NuxtLink
-                    v-if="isUrl(text)"
-                    :to="text"
-                    class="max-w-full underline"
-                  >
+                  <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
                     {{ text }}
                   </NuxtLink>
-                  <p v-else class="max-w-full">
+                  <p v-else>
                     {{ text }}
                   </p>
                 </div>
@@ -117,7 +112,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="flex flex-col gap-[1rem]">
       <UiTag :title="getChatEvent(text, name)" />
 
       <template v-if="text === CHAT_ACTIONS.ORDER_UPDATED">
@@ -132,7 +127,7 @@
           <ChatSystem :timestamp="timestamp" :text="text">
             <ChatOrderCreated v-if="detail" :order="order" :detail="detail" />
           </ChatSystem>
-          <div class="ml-[48px] mr-[35px] w-full">
+          <div class="ml-[48px] mr-[35px] w-[80%]">
             <UiButtonLink
               v-if="isSeller(order?.seller_id ?? 0)"
               :title="$t('one_more_order')"
@@ -173,8 +168,8 @@
       <div
         v-if="showButton"
         :class="[
-          'mt-[0.3125rem] inline-flex w-full  justify-end gap-[0.3125rem]',
-          showProfile ? 'max-w-[90%] pl-10' : 'max-w-[80%]',
+          'ml-[10px] mt-[0.3125rem] inline-flex w-[90%] justify-end gap-[0.3125rem]',
+          showProfile ? 'max-w-[90%] pl-10' : 'max-w-[90%]',
         ]"
       >
         <UiButtonLink :title="$t('reject')" @click="onReject" />
@@ -312,7 +307,6 @@ function onPreview(v: string) {
   font-size: 0.875rem;
   font-style: normal;
   line-height: 1.1875rem;
-  width: fit-content;
 }
 
 .outgoing-content {

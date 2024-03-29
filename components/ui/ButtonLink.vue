@@ -1,5 +1,5 @@
 <template>
-  <button class="container relative" @click="$emit('click')">
+  <button class="container relative h-10" @click="$emit('click')">
     <p>{{ title }}</p>
     <Icon
       name="Arrow"
@@ -28,6 +28,5 @@ defineEmits<{
   font-weight: 500;
   line-height: 1.125rem;
   border-radius: 0.375rem;
-  padding: 0.69rem 3.44rem;
 }
 </style>
