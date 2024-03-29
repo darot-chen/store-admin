@@ -625,6 +625,7 @@ async function onCreateOrder() {
   try {
     const preparedPayload: CreateOrder = {
       ...payload.value,
+      amount: Number(payload.value.amount),
       exchange_rate: Number(fee.value.selected_rate?.price || 1),
       handling_fee_percentage: fee.value.handlingFeePercentage,
       other_expense: fee.value.otherFee,
