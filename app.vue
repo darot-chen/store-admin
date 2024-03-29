@@ -65,7 +65,7 @@ onMounted(async () => {
 
   let token = null;
 
-  if (tg?.WebApp) {
+  if (tg?.WebApp && tg?.WebApp?.initData) {
     tg.WebApp?.enableClosingConfirmation();
     tg.WebApp?.expand();
     tg.WebApp?.MainButton?.hide();
