@@ -230,15 +230,14 @@ function onEvalOrder(detail: ChatDetail) {
 }
 
 const debounceCopy = useDebounceFn((c: string) => {
-  try {
-    navigator.clipboard.writeText(c);
+  const clipboard = useClipboard({ source: c });
+
+  clipboard.copy().then(() => {
     showToast({
       message: t("copied"),
-      type: "success",
+      position: "bottom",
     });
-  } catch (error: any) {
-    showFailToast(error?.message);
-  }
+  });
 }, 500);
 
 function onTouchStart(c: string) {
