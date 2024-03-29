@@ -1,12 +1,11 @@
 <template>
-  <div v-bind="$attrs" class="inline-flex flex-col justify-end">
-    <UiTag
-      v-if="showGroupDate"
-      :id="`chatDate_${formatDate(groupDate, 'DD')}`"
-      :title="getGroupDate()"
-      bg-color="rgba(114, 131, 145, 1)"
-      class="sticky top-0 mb-[1rem]"
-    />
+  <UiTag
+    v-if="showGroupDate"
+    :title="getGroupDate()"
+    bg-color="rgba(114, 131, 145, 1)"
+    class="sticky top-0 mb-[1rem]"
+  />
+  <div v-bind="$attrs" class="relative inline-flex flex-col justify-end">
     <div v-if="type !== ChatType.Action">
       <div
         :class="[
@@ -217,7 +216,7 @@ const getGroupDate = () => {
   const today = formatDate(new Date().toDateString(), "DD MMM");
   const _groupDate = formatDate(props.groupDate, "DD MMM");
   if (today === _groupDate) return "Today";
-  else return _groupDate;
+  return _groupDate;
 };
 
 const { t } = useI18n();
