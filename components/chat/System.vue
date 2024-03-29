@@ -6,9 +6,9 @@
       </div>
       <Icon name="ChatTail" color="#ffff" size="10" />
       <div class="layout">
-        <div class="flex flex-col gap-y-[0.75rem] p-[0.38rem]">
-          <p class="name px-[0.38rem]">{{ $t("baishun") }}</p>
-          <div class="content px-[0.38rem]">
+        <div class="flex flex-col gap-y-[0.75rem] p-[0.76rem]">
+          <p class="name">{{ $t("baishun") }}</p>
+          <div class="content">
             <slot />
           </div>
           <p class="timestamp">{{ formatDate(timestamp) }}</p>
