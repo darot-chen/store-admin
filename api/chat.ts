@@ -1,5 +1,6 @@
 import type { APIMeta } from "~/types/base";
 import type {
+  BusinessFilter,
   Chat,
   ChatDetail,
   ChatMessage,
@@ -122,6 +123,17 @@ export const requestSupport = async (roomId: number, orderId: number) => {
 export const getChatMessages = async (params: GetMessagePayload) => {
   const { data } = await useAxiosInstance().get<CursorResponse<ChatMessage[]>>(
     "chat-messages",
+    {
+      params,
+    }
+  );
+
+  return data;
+};
+
+export const getBusinessFilter = async (params?: Cursor) => {
+  const { data } = await useAxiosInstance().get<BusinessFilter[]>(
+    "businesses",
     {
       params,
     }

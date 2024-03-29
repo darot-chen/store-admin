@@ -137,3 +137,26 @@ export type ChatMessage = {
   order_id: string;
   chat_room: ChatRoom;
 };
+
+export type BusinessFilter = {
+  id: number;
+  updated_at: Date;
+  created_at: Date;
+  deleted_at: Date | null;
+  owner_id: number;
+  buyer_id: number | null;
+  title: string;
+  description: string;
+  status: string;
+  commission: number;
+  handling_fee_percentage: number | null;
+  exchange_rate: number | null;
+  other_fee: number | null;
+  default_currency: number | null;
+  total_fund: number;
+  available_fund: number;
+  frozen_fund: number;
+  group_ref_id: number | null;
+  group_tg_id: number | null;
+  group_type: string;
+};
