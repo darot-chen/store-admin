@@ -32,14 +32,14 @@
     <p>
       {{
         $t("order_message.total_amount_payable_by_the_demander", {
-          value: order?.amount_to_be_paid || 0,
+          value: order?.quantity_to_be_given || 0,
         })
       }}
     </p>
     <p>
       {{
         $t("order_message.total_amount_payable_by_supplier", {
-          value: order?.quantity_to_be_given || 0,
+          value: order?.amount_to_be_paid || 0,
         })
       }}
     </p>
