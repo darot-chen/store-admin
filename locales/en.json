@@ -99,5 +99,8 @@
   "order_removed": "Order removed",
   "copied": "Copied",
   "chat_room": "Chat room",
-  "message": "Message"
+  "message": "Message",
+  "order_cancelled": "Order Cancelled",
+  "buyer_cancelled_order": "Buyer Cancelled",
+  "seller_cancelled_order": "Seller Cancelled"
 }
