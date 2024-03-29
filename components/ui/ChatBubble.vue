@@ -30,7 +30,7 @@
         </div>
         <div
           :class="[
-            'flex w-96 items-center',
+            'flex w-full items-center',
             chatType === 'incoming' ? '' : 'flex-row-reverse',
           ]"
         >
@@ -70,12 +70,16 @@
               >
                 <div
                   v-if="type === ChatType.Text"
-                  class="whitespace-normal break-words"
+                  class="whitespace-normal break-words text-start"
                 >
-                  <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
+                  <NuxtLink
+                    v-if="isUrl(text)"
+                    :to="text"
+                    class="max-w-full underline"
+                  >
                     {{ text }}
                   </NuxtLink>
-                  <p v-else>
+                  <p v-else class="max-w-full">
                     {{ text }}
                   </p>
                 </div>
@@ -308,6 +312,7 @@ function onPreview(v: string) {
   font-size: 0.875rem;
   font-style: normal;
   line-height: 1.1875rem;
+  width: fit-content;
 }
 
 .outgoing-content {
