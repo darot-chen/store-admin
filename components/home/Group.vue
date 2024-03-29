@@ -24,9 +24,9 @@
               </p>
             </div>
             <p class="line-clamp-1 text-[10px]">{{ group.description }}</p>
-            <button class="button mt-[5px] w-full">
+            <NuxtLink :to="group.href" class="button mt-[5px] w-full">
               <p class="text-[10px] text-white">立即联系</p>
-            </button>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -38,39 +38,45 @@
 const groups = [
   {
     img: "group-1.png",
-    title: "百顺担保公群",
+    title: "官方网站",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "https://bsdb168.com/",
   },
   {
     img: "group-2.png",
-    title: "百顺担保公群",
+    title: "百顺担保公告群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "(https://t.me/bsdbq/1",
   },
   {
     img: "group-3.png",
     title: "百顺担保公群",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "https://t.me/bsdbq/8",
   },
   {
     img: "group-1.png",
-    title: "百顺担保公群",
+    title: "百顺供需信息频道",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "https://t.me/bsgxu",
   },
   {
     img: "group-2.png",
-    title: "百顺担保公群",
+    title: "百顺公群流程",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "https://t.me/bsdbq/12",
   },
   {
     img: "group-3.png",
-    title: "百顺担保公群",
+    title: "百顺专群流程",
     description:
       "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    href: "https://t.me/bsdbq/112",
   },
 ];
 </script>
