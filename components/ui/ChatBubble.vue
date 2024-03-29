@@ -1,12 +1,11 @@
 <template>
-  <div v-bind="$attrs" class="inline-flex flex-col justify-end">
-    <UiTag
-      v-if="showGroupDate"
-      :id="`chatDate_${formatDate(groupDate, 'DD')}`"
-      :title="getGroupDate()"
-      bg-color="rgba(114, 131, 145, 1)"
-      class="sticky top-0 mb-[1rem]"
-    />
+  <UiTag
+    v-if="showGroupDate"
+    :title="getGroupDate()"
+    bg-color="rgba(114, 131, 145, 1)"
+    class="sticky top-0 mb-[1rem]"
+  />
+  <div v-bind="$attrs" class="relative inline-flex flex-col justify-end">
     <div v-if="type !== ChatType.Action">
       <div
         :class="[
@@ -70,6 +69,7 @@
                 <div
                   v-if="type === ChatType.Text"
                   class="w-full whitespace-normal break-words text-start"
+                  @touchstart="onTouch(text)"
                 >
                   <NuxtLink v-if="isUrl(text)" :to="text" class="underline">
                     {{ text }}
@@ -211,13 +211,14 @@ const emit = defineEmits<{
   (e: "header-reply", id: number): void;
   (e: "evaluate-order", detail: ChatDetail): void;
   (e: "resale-order"): void;
+  (e: "touch-start-message", value: string): void;
 }>();
 
 const getGroupDate = () => {
   const today = formatDate(new Date().toDateString(), "DD MMM");
   const _groupDate = formatDate(props.groupDate, "DD MMM");
   if (today === _groupDate) return "Today";
-  else return _groupDate;
+  return _groupDate;
 };
 
 const { t } = useI18n();
@@ -253,6 +254,10 @@ function onPreview(v: string) {
     images: [getS3Url(v)],
     closeable: true,
   });
+}
+
+function onTouch(text: string) {
+  emit("touch-start-message", text);
 }
 </script>
 
