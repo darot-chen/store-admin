@@ -28,4 +28,5 @@ export type CursorChatRoomPayload = {
   limit?: number;
   last?: number;
   keyword?: string;
+  business_id?: number;
 };

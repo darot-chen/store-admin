@@ -1,12 +1,14 @@
 <template>
-  <div class="flex h-full flex-col gap-5 bg-[#FFFFFFBF]" @scroll="handleScroll">
+  <div class="flex h-full flex-col gap-2 bg-[#FFFFFFBF]" @scroll="handleScroll">
     <ChatSearch class="px-3" />
+    <ChatFilterChatRoom @on-clicked="onFilterItemClicked" />
     <UiCircularLoading
       v-if="loading"
       size="40"
       class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
     />
-    <div v-else class="flex flex-col">
+    <div v-else class="flex flex-1 flex-col">
+      <p v-if="chatRooms.length === 0" class="flex justify-center">No room</p>
       <ChatListItem v-for="room in chatRooms" :key="room.id" :room="room" />
     </div>
   </div>
@@ -26,6 +28,13 @@ const lastItemId = ref<number>(0);
 const loadMore = ref<boolean>(true);
 const loading = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
+const businessId = ref<number>();
+
+function onFilterItemClicked(id: number) {
+  firstLoad.value = true;
+  businessId.value = id;
+  fetchChatRooms(true);
+}
 
 async function fetchChatRooms(isChangeType?: boolean) {
   if (firstLoad.value) {
@@ -41,10 +50,11 @@ async function fetchChatRooms(isChangeType?: boolean) {
   const res = await getPublicChatRoom(roomType.value, {
     last: lastItemId.value,
     limit: 10,
+    business_id: businessId.value,
   });
 
   chatRooms.value.push(...res.results);
-  lastItemId.value = res.results[res.results.length - 1].id;
+  lastItemId.value = res.results[res.results.length - 1]?.id;
   loadMore.value = res.meta.has_next;
 
   loading.value = false;
@@ -83,3 +93,10 @@ onMounted(async () => {
   });
 });
 </script>
+
+<style scoped>
+:root:root {
+  --van-button-primary-border-color: transparent;
+  --van-button-primary-color: #ffffffbf;
+}
+</style>
