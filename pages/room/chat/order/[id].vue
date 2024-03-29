@@ -85,7 +85,7 @@
                     <input
                       v-if="Number(fee.selected_rate?.price) !== 1"
                       v-model="payload.amount"
-                      type="number"
+                      inputmode="decimal"
                       class="mr-2 w-full rounded-sm text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
@@ -93,7 +93,7 @@
                     <input
                       v-else
                       v-model="payload.amount"
-                      type="number"
+                      inputmode="decimal"
                       class="w-full rounded-md border-[0.5px] px-2 py-1 text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
@@ -158,7 +158,7 @@
                     </button>
                     <input
                       v-model="sellerReceived"
-                      type="number"
+                      inputmode="decimal"
                       class="mr-2 w-full text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcReceiveAmount"
                     />
