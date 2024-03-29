@@ -51,21 +51,9 @@
         @reject="onRejectOrder"
         @reply="onReply(c.id)"
         @header-reply="onHeaderReplyClick"
-        @resale-order="() => onOrderClick(c)"
-        @evaluate-order="
-          (d) => {
-            prevDetail = d;
-            showConfirmationPopup = true;
-          }
-        "
-        @touchstart="
-          () => {
-            if (c.type === ChatType.Text) {
-              handleTouchStart(c.message);
-            }
-          }
-        "
-        @touchend="onTouchend"
+        @resale-order="onOrderClick(c)"
+        @evaluate-order="(d) => onEvalOrder(d)"
+        @click="onTouchStart(c)"
       />
 
       <UiCircularLoading
@@ -206,7 +194,6 @@ const lowerCursor = ref<number>();
 const isLowerChatHasNext = ref<boolean>();
 
 const unReadMsgCount = ref<number>(0);
-let touchTimer: string | number | NodeJS.Timeout | undefined;
 
 const showConfirmOrder = computed(() => {
   return (
@@ -237,30 +224,25 @@ function increaseUnreadMsg(shouldUpdate: boolean = true) {
   }
 }
 
-function handleTouchStart(msg: string) {
-  touchTimer = setTimeout(() => {
-    onCopyText(msg);
-  }, 500);
+function onEvalOrder(detail: ChatDetail) {
+  prevDetail.value = detail;
+  showConfirmationPopup.value = true;
 }
 
-function onTouchend() {
-  clearTimeout(touchTimer);
-}
+const debounceCopy = useDebounceFn((c: Chat) => {
+  try {
+    navigator.clipboard.writeText(c.message);
+    showToast({
+      message: t("copied"),
+      type: "success",
+    });
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}, 500);
 
-function onCopyText(msg: string) {
-  const input = document.createElement("input");
-  input.setAttribute("value", msg);
-  document.body.appendChild(input);
-  input.select();
-  input.setSelectionRange(0, 99999);
-
-  navigator.clipboard.writeText(input.value);
-  document.body.removeChild(input);
-
-  showToast({
-    message: t("copied"),
-    position: "bottom",
-  });
+function onTouchStart(c: Chat) {
+  if (c.type === ChatType.Text) debounceCopy(c);
 }
 
 const isShowGroupDate = (currentDate: string, index: number): boolean => {
