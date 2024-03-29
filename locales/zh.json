@@ -99,5 +99,8 @@
   "minimum": "最低限度",
   "order_removed": "订单已删除",
   "chat_room": "聊天室",
-  "message": "消息"
+  "message": "消息",
+  "order_cancelled": "订单已取消",
+  "buyer_cancelled_order": "买家取消订单",
+  "seller_cancelled_order": "卖家取消订单"
 }
