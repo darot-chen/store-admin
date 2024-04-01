@@ -22,6 +22,7 @@ export type User = {
   profile_key: string;
   business_name?: string;
   business_profile_key?: string;
+  last_viewed_page?: string;
 };
 
 export type LoginPayload = {

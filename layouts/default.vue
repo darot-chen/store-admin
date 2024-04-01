@@ -28,22 +28,28 @@
 <script setup lang="ts">
 const authStore = useAuthStore();
 const pageStore = usePageStore();
-const route = useRoute();
+const route = useNuxtApp().$router.currentRoute;
+
+onMounted(() => {
+  changeRoute();
+});
 
 watch(
   () => pageStore.title,
-  () => {
-    if (route.path === "/room" || route.path === "/") {
-      useHead({
-        title: authStore.user?.name,
-      });
-    } else {
-      useHead({
-        title: pageStore.title,
-      });
-    }
-  }
+  () => changeRoute()
 );
+
+function changeRoute() {
+  if (route.value.path === "/room" || route.value.path === "/") {
+    useHead({
+      title: authStore.user?.name,
+    });
+  } else {
+    useHead({
+      title: pageStore.title,
+    });
+  }
+}
 </script>
 
 <style scoped lang="css">

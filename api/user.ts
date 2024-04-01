@@ -33,6 +33,18 @@ export const updateBusinessName = async (name: string) => {
   return false;
 };
 
+export const saveLastSession = async (path: string) => {
+  const { status } = await useAxiosInstance().post(`${url}/last-viewed-page`, {
+    path,
+  });
+
+  if (status === 200) {
+    return true;
+  }
+
+  return false;
+};
+
 export const uploadBusinessProfileImage = async (
   file: File
 ): Promise<string | undefined> => {
