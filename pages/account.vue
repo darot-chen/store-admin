@@ -6,6 +6,7 @@
       :is-user="selectedTab.value === 'quickSelection'"
     />
     <UiSwitch
+      v-show="user?.type === 'merchant'"
       v-model="selectedTab"
       :options="PROFILE_TAB_OPTIONS"
       @update:model-value="
