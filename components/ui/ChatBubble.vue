@@ -57,7 +57,7 @@
                     name +
                     ` ${
                       chat?.user_id === detail?.owner_id
-                        ? " [" + $t("owner") + "]"
+                        ? " (" + $t("owner") + ")"
                         : ""
                     }`
                   }}
