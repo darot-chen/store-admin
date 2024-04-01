@@ -227,7 +227,7 @@ const emit = defineEmits<{
 const getGroupDate = () => {
   const today = formatDate(new Date().toDateString(), "DD MMM");
   const _groupDate = formatDate(props.groupDate, "DD MMM");
-  if (today === _groupDate) return "Today";
+  if (today === _groupDate) return "今天";
   return _groupDate;
 };
 
