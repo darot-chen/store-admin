@@ -22,9 +22,9 @@
           </span>
         </div>
 
-        <div class="flex w-7/12 flex-col">
+        <div class="flex w-7/12 flex-col overflow-clip">
           <div>
-            <h1 class="font-medium">
+            <h1 class="line-clamp-1 font-medium">
               {{ message?.chat_room.business.title }}
               <span v-if="message?.chat_room.lobby_no">
                 {{ $t("lobby_no") }} {{ message.chat_room.lobby_no }}
@@ -32,7 +32,7 @@
             </h1>
             <ChatEvent
               v-if="message?.type === ChatType.Action"
-              class="line-clamp-3 text-sm text-[#8E8E93]"
+              class="line-clamp-1 text-sm text-[#8E8E93]"
               :text="message.message"
             />
             <p v-else class="line-clamp-2 text-ellipsis text-sm text-[#8E8E93]">
