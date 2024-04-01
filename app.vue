@@ -78,6 +78,10 @@ onMounted(async () => {
       await sleep(10);
       if (res?.start_action?.type === "join_room") {
         router.replace(`/room/chat/${res.start_action.data.room_id}`);
+      } else if (res?.start_action?.type === "chatrooms") {
+        router.replace(`/room`);
+      } else if (res?.start_action?.type === "mine") {
+        router.replace(`/account`);
       } else {
         router.replace(route.path);
       }
