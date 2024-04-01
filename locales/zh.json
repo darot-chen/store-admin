@@ -103,5 +103,6 @@
   "order_cancelled": "订单已取消",
   "buyer_cancelled_order": "买家取消订单",
   "seller_cancelled_order": "卖家取消订单",
-  "copy_failed": "复制失败"
+  "copy_failed": "复制失败",
+  "owner": "所有者"
 }

@@ -103,5 +103,6 @@
   "order_cancelled": "Order Cancelled",
   "buyer_cancelled_order": "Buyer Cancelled",
   "seller_cancelled_order": "Seller Cancelled",
-  "copy_failed": "Copy Failed"
+  "copy_failed": "Copy Failed",
+  "owner": "owner"
 }

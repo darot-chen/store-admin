@@ -48,13 +48,21 @@
                 :chat="chat"
                 @header-click="(id) => emit('header-reply', id)"
               />
-              <p
-                v-if="chatType === 'incoming'"
-                class="incoming-name"
-                :style="{ color: generateColorForName(name) }"
-              >
-                {{ name }}
-              </p>
+              <div v-if="chatType === 'incoming'">
+                <p
+                  class="incoming-name"
+                  :style="{ color: generateColorForName(name) }"
+                >
+                  {{
+                    name +
+                    ` ${
+                      chat?.user_id === detail?.owner_id
+                        ? " [" + $t("owner") + "]"
+                        : ""
+                    }`
+                  }}
+                </p>
+              </div>
               <div
                 :class="[
                   chatType === 'incoming'
