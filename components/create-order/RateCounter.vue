@@ -10,7 +10,7 @@
   <div class="w-[43px] bg-[#FAFAFA] text-center">
     <input
       v-model="modelValue.price"
-      class="w-[27px] bg-[#FAFAFA] px-[1px] text-center text-[14px] text-[#787A8D]"
+      class="w-[32px] bg-[#FAFAFA] px-[1px] text-center text-[14px] text-[#787A8D]"
     />
   </div>
 

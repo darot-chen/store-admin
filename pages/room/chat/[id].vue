@@ -11,7 +11,6 @@
         @confirm-order-payment="onConfirmPayment"
         @confirm-order="onConfirmOrder"
         @request-support="onRequestSupport"
-        @payment-mgs-click="(id) => onHeaderReplyClick(id)"
       />
     </div>
     <div
@@ -54,6 +53,7 @@
         @resale-order="onOrderClick(c)"
         @evaluate-order="(d) => onEvalOrder(d)"
         @touch-start-message="(c) => onTouchStart(c)"
+        @date-click="(date) => debounceDateClick(date)"
       />
 
       <UiCircularLoading
@@ -134,8 +134,10 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "dayjs";
 import { showDialog, showFailToast, showSuccessToast, showToast } from "vant";
 import {
+  getFirstChatMessagesByDate,
   addChat,
   getChat,
   getChatDetail,
@@ -158,6 +160,7 @@ import { ChatRoomType } from "~/types/chatRoom";
 import { OrderStatus, type OrderDetail } from "~/types/order";
 
 const { $evOn, $evOff } = useNuxtApp();
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -186,14 +189,12 @@ const newOrderDetail = ref<OrderDetail>();
 const rateScore = ref<number>(0);
 const rateComment = ref<string>("");
 const orderID = ref<number | undefined>();
-const { t } = useI18n();
-
 const upperCursor = ref<number>();
 const isUpperChatHasNext = ref<boolean>();
 const lowerCursor = ref<number>();
 const isLowerChatHasNext = ref<boolean>();
-
 const unReadMsgCount = ref<number>(0);
+const currentGroupDate = ref<string | undefined>();
 
 const showConfirmOrder = computed(() => {
   return (
@@ -440,6 +441,30 @@ function onCancelReply() {
   replyMsgId.value = undefined;
 }
 
+async function onDateClick(date: string | undefined) {
+  if (!date || currentGroupDate.value === date) return;
+  const formattedDate = dayjs(date).format("YYYY-MM-DD");
+  try {
+    const msg = await getFirstChatMessagesByDate({
+      room_id: roomID,
+      date: formattedDate,
+    });
+
+    currentGroupDate.value = date;
+
+    if (msg) {
+      msgId = msg.id.toString();
+      getChatWithId(msg.id.toString());
+    }
+  } catch (error: any) {
+    showFailToast(error?.message);
+  }
+}
+
+const debounceDateClick = useDebounceFn((date: string | undefined) => {
+  onDateClick(date);
+}, 500);
+
 function onOrderClick(chat?: Chat) {
   const isRevisable =
     chatDetail.value?.order?.status === OrderStatus.REJECTED ||
@@ -518,9 +543,7 @@ async function getChatWithId(id: string) {
 
   await sleep(100);
 
-  const chatElement = document.getElementById(
-    `chat_${msgId}`
-  ) as HTMLElement | null;
+  const chatElement = document.getElementById(`chat_${msgId}`);
 
   if (chatElement) {
     window.requestAnimationFrame(() => {

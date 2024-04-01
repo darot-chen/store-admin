@@ -46,6 +46,20 @@ export const getChat = async (roomId: number, params: Cursor) => {
   return data;
 };
 
+export const getFirstChatMessagesByDate = async (params: {
+  room_id: number;
+  date: string;
+}) => {
+  const { data } = await useAxiosInstance().get<ChatMessage>(
+    `chat-messages/get-first`,
+    {
+      params,
+    }
+  );
+
+  return data;
+};
+
 export const getChatMessageById = async (roomId: string) => {
   try {
     const { data } = await useAxiosInstance().get<Chat>(

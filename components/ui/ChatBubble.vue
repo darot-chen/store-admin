@@ -3,7 +3,8 @@
     v-if="showGroupDate"
     :title="getGroupDate()"
     bg-color="rgba(114, 131, 145, 1)"
-    class="sticky top-0 mb-[1rem]"
+    class="sticky top-0 z-10 mb-[1rem]"
+    @click="onDateClick(props.groupDate)"
   />
   <div v-bind="$attrs" class="relative inline-flex flex-col justify-end">
     <div v-if="type !== ChatType.Action">
@@ -212,6 +213,7 @@ const emit = defineEmits<{
   (e: "evaluate-order", detail: ChatDetail): void;
   (e: "resale-order"): void;
   (e: "touch-start-message", value: string): void;
+  (e: "date-click", date?: string): void;
 }>();
 
 const getGroupDate = () => {
@@ -258,6 +260,12 @@ function onPreview(v: string) {
 
 function onTouch(text: string) {
   emit("touch-start-message", text);
+}
+
+function onDateClick(date: string | undefined) {
+  if (props.showGroupDate) {
+    emit("date-click", date);
+  }
 }
 </script>
 
@@ -335,27 +343,28 @@ function onTouch(text: string) {
 
 @keyframes flashBackground {
   0% {
-    background-color: black;
+    background-color: #d8eeff;
   }
   50% {
-    background-color: black;
+    background-color: #d8eeff;
   }
   100% {
     background-color: #50a7ea;
   }
 }
+
 @keyframes flashBackgroundIncoming {
   0% {
-    background-color: black;
+    background-color: #d8eeff;
     color: white;
   }
   50% {
-    background-color: black;
+    background-color: #d8eeff;
     color: white;
   }
   100% {
     background-color: white;
-    color: black;
+    color: #d8eeff;
   }
 }
 
