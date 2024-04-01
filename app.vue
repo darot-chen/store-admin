@@ -59,7 +59,7 @@ function onNotificationClick() {
 setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
-onMounted(async () => {
+onBeforeMount(async () => {
   const tg = (window as any).Telegram;
   const at = route.query.at?.toString();
 
@@ -100,6 +100,10 @@ onMounted(async () => {
 
   if (token) {
     await authStore.getUser();
+
+    if (authStore.user?.last_viewed_page) {
+      router.push(authStore.user?.last_viewed_page);
+    }
   }
 
   open(getWebSocketUrl());
