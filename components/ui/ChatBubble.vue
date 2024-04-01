@@ -238,6 +238,8 @@ function onConfirm() {
     showConfirmDialog({
       title: t("confirm"),
       message: t("confirm_sending"),
+      showCancelButton: true,
+      cancelButtonText: t("cancel"),
     })
       .then(() => {
         emit("confirm");
@@ -251,6 +253,8 @@ function onReject() {
     showDialog({
       title: t("reject"),
       message: t("reject_sending"),
+      showCancelButton: true,
+      cancelButtonText: t("cancel"),
     })
       .then(() => {
         emit("reject");
