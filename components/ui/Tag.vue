@@ -1,5 +1,9 @@
 <template>
-  <div v-show="title" class="my-[0.1rem] inline-block w-full text-center">
+  <div
+    v-show="title"
+    class="my-[0.1rem] inline-block w-full text-center"
+    @click="$emit('click')"
+  >
     <div
       class="bg-tag"
       :style="[`background-color:  ${bgColor || 'rgba(114, 131, 145, 0.4)'}; `]"
@@ -15,6 +19,10 @@
 defineProps<{
   title?: string;
   bgColor?: string;
+}>();
+
+defineEmits<{
+  (e: "click"): void;
 }>();
 </script>
 
