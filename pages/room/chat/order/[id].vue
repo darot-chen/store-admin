@@ -612,11 +612,8 @@ function onToggleExchangeRate(v: boolean) {
 
 async function onCancelOrderClick() {
   try {
-    const result = await sellerCancelOrder(fee.value.order_id);
-
-    if (result.code === 200) {
-      navigateTo(`/room/chat/${roomId}`);
-    }
+    await sellerCancelOrder(fee.value.order_id);
+    navigateTo(`/room/chat/${roomId}`);
   } catch (error: any) {
     showFailToast(error?.message ?? "");
   }
