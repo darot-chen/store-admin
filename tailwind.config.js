@@ -14,16 +14,7 @@ module.exports = {
     "./app.vue",
   ],
   plugins: [],
-  daisyui: {
-    themes: [],
-  },
   theme: {
-    screens: {
-      sm: "640px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px",
-    },
     fontSize: {
       "2xs": "0.6rem",
       ...defaultTheme.fontSize,
