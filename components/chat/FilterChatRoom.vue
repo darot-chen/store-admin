@@ -18,14 +18,43 @@
         <VanGridItem
           v-for="(option, _, index) in businessFilterOptions"
           :key="index"
-          :text="option.title"
-          @click="() => onItemClicked(option.id)"
-        />
+          class="text-center"
+          @click="onItemClicked(option.id)"
+        >
+          <Icon
+            v-if="option.id === selectedOptionId"
+            name="lets-icons:check-fill"
+            color="#50a7ea"
+            size="16px"
+          />
+          <p class="text-[12px]">{{ option.title }}</p>
+        </VanGridItem>
       </VanGrid>
+      <div v-show="!isLoading" class="m-3 flex justify-center">
+        <button
+          class="rounded-sm bg-[#50a7ea] px-4 py-1 text-white"
+          @click="onReset"
+        >
+          Reset
+        </button>
+      </div>
+
       <template #reference>
-        <div class="flex flex-row items-center" @click="() => {}">
-          <VanIcon name="filter-o" color="#50a7ea" size="16px" />
-          <p class="text-[14px] text-[#50a7ea]">Filter</p>
+        <div class="relative flex flex-row items-center">
+          <Icon
+            :name="
+              selectedOptionId != undefined
+                ? 'clarity:filter-solid'
+                : 'clarity:filter-line'
+            "
+            color="#50a7ea"
+            size="16px"
+          />
+          <p class="mr-2 text-[14px] text-[#50a7ea]">Filter</p>
+          <div
+            v-if="selectedOptionId != undefined"
+            class="absolute right-0 top-0 h-2 w-2 rounded-full bg-red-500"
+          ></div>
         </div>
       </template>
     </VanPopover>
@@ -40,8 +69,10 @@ const isPopoverVisible = ref(false);
 const businessFilterOptions = ref<BusinessFilter[]>();
 const isLoading = ref(true);
 
+const selectedOptionId = ref<number>();
+
 const emit = defineEmits<{
-  onClicked: [id: number];
+  click: [id?: number];
 }>();
 
 watch(isPopoverVisible, async (newVisible) => {
@@ -59,7 +90,14 @@ watch(isPopoverVisible, async (newVisible) => {
 
 const onItemClicked = (id: number) => {
   isPopoverVisible.value = false;
-  emit("onClicked", id);
+  selectedOptionId.value = id;
+  emit("click", id);
+};
+
+const onReset = () => {
+  isPopoverVisible.value = false;
+  selectedOptionId.value = undefined;
+  if (selectedOptionId !== undefined) emit("click", undefined);
 };
 
 const fetchBusinessFilter = async () => {
