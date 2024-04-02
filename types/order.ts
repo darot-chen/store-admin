@@ -56,6 +56,7 @@ export type Order = {
   buyer_currency_id: number;
   status: OrderStatus;
   title: string;
+  order_type: "exchange" | "trading";
   duration: string | null;
   commission_paid_by: CommissionType;
   note: string | null;
@@ -65,6 +66,7 @@ export type Order = {
   amount_paid: number;
   amount_to_be_paid_usdt: number;
   quantity_to_be_given: number;
+  quantity_to_be_given_usdt: number;
   quantity_given: number;
   base_currency: string;
   quote_currency: string;

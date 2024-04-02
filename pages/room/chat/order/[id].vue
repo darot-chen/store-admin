@@ -151,7 +151,7 @@
                   >
                     <button class="flex items-center gap-[5px]">
                       <Icon name="Info" color="#EDEDED" />
-                      <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
+                      <p class="text-[10px] text-[#0000004d]">应入款的币种</p>
                     </button>
                     <input
                       v-model="sellerReceived"
@@ -251,7 +251,7 @@
         class="fixed bottom-0 flex w-full max-w-lg items-center justify-between bg-white px-2 py-[15px]"
       >
         <div class="inline-flex w-full gap-[5px] py-[11px] pr-[16px]">
-          <p class="total-title">需方应付总额:</p>
+          <p class="total-title">交易总额：</p>
           <p class="total-amount">
             {{
               `${payload.amount} ${Number(fee.selected_rate?.price) === 1 ? "U" : ""}`
@@ -614,7 +614,7 @@ async function onCancelOrderClick() {
   try {
     const result = await sellerCancelOrder(fee.value.order_id);
 
-    if (result.message === "Success") {
+    if (result.code === 200) {
       navigateTo(`/room/chat/${roomId}`);
     }
   } catch (error: any) {

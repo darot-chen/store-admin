@@ -12,12 +12,21 @@
             :color="'#000'"
             size="41"
           />
-          <div>
+          <div v-if="order?.order_type == 'exchange'">
             <p class="text-amount !text-[24px] font-bold leading-7">
               {{ order?.amount.toFixed(2) }}
             </p>
             <p class="text-amount !text-[10px] font-bold leading-3">
               ≈ {{ order?.amount_to_be_paid_usdt.toFixed(2) }}
+              USDT
+            </p>
+          </div>
+          <div v-else>
+            <p class="text-amount !text-[24px] font-bold leading-7">
+              {{ order?.quantity_to_be_given.toFixed(2) }}
+            </p>
+            <p class="text-amount !text-[10px] font-bold leading-3">
+              ≈ {{ order?.quantity_to_be_given_usdt.toFixed(2) }}
               USDT
             </p>
           </div>
@@ -65,14 +74,14 @@
           <span class="text-amount">{{ order?.total_commission }}</span>
         </p>
       </div>
-      <div class="flex w-full justify-between gap-x-3">
-        <p>
+      <div class="flex w-full justify-end gap-x-3">
+        <!-- <p>
           <span class="text-label">平台佣金</span>
           <span class="text-label din-alternate-text">
             ({{ order?.base_currency }})
           </span>
           <span class="text-amount">51.88</span>
-        </p>
+        </p> -->
         <p>
           <span class="text-label"> 佣金支付方</span>
           <span class="pl-2 text-[12px] !text-[#2F4A84]">

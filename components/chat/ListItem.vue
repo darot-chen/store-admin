@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white">
+  <VanSwipeCell>
     <NuxtLink
       class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
       :to="`/room/chat/${room.id}`"
@@ -53,7 +53,16 @@
         </div>
       </div>
     </NuxtLink>
-  </div>
+    <template #right>
+      <VanButton
+        icon="delete"
+        square
+        :text="$t('delete')"
+        type="danger"
+        @click="emit('delete', room.id)"
+      />
+    </template>
+  </VanSwipeCell>
 </template>
 <script setup lang="ts">
 import { ChatType } from "~/types/chat";
@@ -62,4 +71,14 @@ import type { ChatRoom } from "~/types/chatRoom";
 defineProps<{
   room: ChatRoom;
 }>();
+
+const emit = defineEmits<{
+  delete: [id: number];
+}>();
 </script>
+
+<style>
+:root:root {
+  --van-button-default-height: 100%;
+}
+</style>
