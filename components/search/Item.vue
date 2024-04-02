@@ -33,7 +33,7 @@
             <ChatEvent
               v-if="message?.type === ChatType.Action"
               class="line-clamp-1 text-sm text-[#8E8E93]"
-              :text="message.message + 'adsfadsfasdffdasfasadfdsafsdfsad'"
+              :text="message.message"
             />
             <p v-else class="line-clamp-1 text-ellipsis text-sm text-[#8E8E93]">
               {{ message?.message || "" }}
