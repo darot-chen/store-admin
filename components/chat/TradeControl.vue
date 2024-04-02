@@ -14,8 +14,14 @@
             }
           "
         >
-          <p class="din-alternate-text">
+          <p
+            v-if="detail?.order?.type == 'exchange'"
+            class="din-alternate-text"
+          >
             {{ detail?.order?.amount_to_be_paid || 0 }}
+          </p>
+          <p v-else class="din-alternate-text">
+            {{ detail?.order?.quantity_to_be_given || 0 }}
           </p>
           <Icon name="Clock" class="ml-2" />
         </button>
@@ -69,6 +75,7 @@
     <Transition name="drop">
       <div v-show="showMore" class="show-more">
         <ChatTradeControlItem
+          v-if="detail?.order?.type == 'exchange'"
           :id="props.detail?.order?.id || 0"
           :exchange-rate="detail?.order?.exchange_rate || 0"
           party="seller"

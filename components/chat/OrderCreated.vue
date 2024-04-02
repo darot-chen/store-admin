@@ -36,7 +36,7 @@
         })
       }}
     </p>
-    <p>
+    <p v-if="order?.type == 'exchange' && order?.amount_to_be_paid">
       {{
         $t("order_message.total_amount_payable_by_supplier", {
           value: order?.amount_to_be_paid || 0,
