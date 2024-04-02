@@ -111,9 +111,10 @@ onMounted(async () => {
     await authStore.getUser();
     if (
       authStore.user?.last_viewed_page &&
-      authStore.user?.last_viewed_page !== "/"
+      authStore.user?.last_viewed_page !== "/" &&
+      route.fullPath !== authStore.user?.last_viewed_page
     ) {
-      router.replace(authStore.user?.last_viewed_page);
+      await router.replace(authStore.user?.last_viewed_page);
     }
   }
 
@@ -123,8 +124,10 @@ onMounted(async () => {
     if (
       d.data.chat_room_id === +route.params.id ||
       authStore.user?.id === d.data.user_id
-    )
+    ) {
       return;
+    }
+
     renderNotification(d.data);
   });
 
