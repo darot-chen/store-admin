@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { IsValidSocketEvent, SOCKET_EVENT } from "~/constants/socket";
 import type { SocketMessageData } from "./types/base";
-import { loginViaMiniApp } from "~/api/user";
+import { loginViaMiniApp, saveLastSession } from "~/api/user";
 import "./utils/extension";
 
 const { setLocale, getLocaleCookie, setLocaleCookie } = useI18n();
@@ -58,6 +58,15 @@ function onNotificationClick() {
 
 setLocaleCookie(local || "zh");
 setLocale(local || "zh");
+
+watch(
+  () => route.fullPath,
+  (v) => {
+    if (storage.getAccessToken()) {
+      saveLastSession(v);
+    }
+  }
+);
 
 onMounted(async () => {
   const tg = (window as any).Telegram;
@@ -100,9 +109,11 @@ onMounted(async () => {
 
   if (token) {
     await authStore.getUser();
-
-    if (authStore.user?.last_viewed_page) {
-      router.push(authStore.user?.last_viewed_page);
+    if (
+      authStore.user?.last_viewed_page &&
+      authStore.user?.last_viewed_page !== "/"
+    ) {
+      router.replace(authStore.user?.last_viewed_page);
     }
   }
 
