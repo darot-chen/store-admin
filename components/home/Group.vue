@@ -9,93 +9,72 @@
       </div>
     </div>
     <div class="flex gap-[5px] overflow-scroll">
-      <div v-for="(group, i) in groups" :key="i">
-        <div class="inline-flex flex-col items-center">
-          <UiImg class="image" width="97" height="97" :src="group.img" />
-          <div class="card">
+      <NuxtLink
+        v-for="(group, i) in groups"
+        :key="i"
+        class="cursor-pointer"
+        target="_blank"
+        :to="group.href"
+      >
+        <div class="relative inline-flex w-[150px] flex-col items-center">
+          <UiImg class="image h-[150px] w-full" :src="group.img" />
+          <HomeBsBadge class="absolute left-0" rounded />
+          <div class="card w-full">
+            <HomeTag
+              :type="isTelegramUrl(group.href) ? 'telegram' : 'website'"
+              :label="isTelegramUrl(group.href) ? '百顺TG群' : 'Website'"
+            />
             <div class="inline-flex items-center justify-center gap-[2px]">
-              <div
-                class="flex justify-center rounded-sm border border-[#FF6102] px-[3px]"
-              >
-                <p class="text-[8px] text-[#FF6102]">新</p>
-              </div>
-              <p class="line-clamp-1 text-[12px] font-semibold text-[#525252]">
+              <p class="line-clamp-1 text-[13px] font-semibold text-[#2E2E2E]">
                 {{ group.title }}
               </p>
             </div>
-            <p class="line-clamp-1 text-[10px]">{{ group.description }}</p>
-            <NuxtLink
-              target="_blank"
-              :to="group.href"
-              class="button mt-[5px] w-full"
-            >
-              <p class="text-[10px] text-white">立即联系</p>
-            </NuxtLink>
+            <p class="line-clamp-2 text-[10px] text-[#A3A3A3]">
+              {{ group.description }}
+            </p>
           </div>
         </div>
-      </div>
+      </NuxtLink>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// import { isTelegramUrl } from "~/utils/regex";
-
-// function onLinkClick(url: string) {
-//   const tg = (window as any).Telegram;
-
-//   if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
-//     navigateTo(url);
-//   } else {
-//     navigateTo(url, {
-//       open: {
-//         target: "_blank",
-//       },
-//     });
-//   }
-// }
-
 const groups = [
   {
-    img: "group-1.png",
-    title: "官方网站",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
-    href: "https://bsdb168.com/",
-  },
-  {
-    img: "group-2.png",
+    img: "bs-website.png",
     title: "百顺担保公告群",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
-    href: "https://t.me/bsdbq/1",
+    description: "及时获取与业务、安全设置和骗子曝光的相关公告。",
+    href: "https://bsdb168.com/",
   },
   {
     img: "group-3.png",
     title: "百顺担保公群",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
-    href: "https://t.me/bsdbq/8",
+    description: "专为您而打造的免费公群资源收索和招商频道。",
+    href: "https://t.me/bsdbq/1",
   },
   {
     img: "group-1.png",
-    title: "百顺供需信息频道",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
-    href: "https://t.me/bsgxu",
+    title: "百顺公群流程",
+    description: "了解公群交易注意事项，降低风险交易风险",
+    href: "https://t.me/bsdbq/8",
   },
   {
     img: "group-2.png",
-    title: "百顺公群流程",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    title: "百顺担保公告群",
+    description: "及时获取与业务、安全设置和骗子曝光的相关公告。",
+    href: "https://t.me/bsgxu",
+  },
+  {
+    img: "group-1.png",
+    title: "百顺担保公群",
+    description: "专为您而打造的免费公群资源收索和招商频道。",
     href: "https://t.me/bsdbq/12",
   },
   {
     img: "group-3.png",
-    title: "百顺专群流程",
-    description:
-      "假如这是百顺担保供需群的小信息，让用户一看就知道供需群是什么。",
+    title: "百顺公群流程",
+    description: "了解公群交易注意事项，降低风险交易风险",
     href: "https://t.me/bsdbq/112",
   },
 ];
@@ -103,17 +82,16 @@ const groups = [
 
 <style scoped>
 .image {
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 6px 6px 0px 0px;
 }
 
 .card {
   display: flex;
-  width: 97px;
-  padding: 5px;
+  padding: 8px;
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
-  border-radius: 0px 0px 7px 7px;
+  border-radius: 0px 0px 6px 6px;
   background: #efeef4;
 }
 

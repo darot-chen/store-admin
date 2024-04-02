@@ -1,7 +1,6 @@
 <template>
-  <NuxtErrorBoundary @error="() => {}">
+  <div class="w-full gap-4 rounded-[10px] drop-shadow-lg">
     <Swiper
-      class="w-full gap-4 rounded-[10px] drop-shadow-lg"
       :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperPagination]"
       :slides-per-view="1"
       :loop="true"
@@ -20,15 +19,15 @@
         },
       }"
     >
-      <SwiperSlide class="cursor-pointer rounded-lg object-cover">
+      <SwiperSlide class="cursor-pointer rounded-lg">
         <UiImg
-          class="w-full rounded-lg"
-          src="banners/banner-1.png"
-          height="343"
+          class="max-h-[200px] min-h-[136px] w-full rounded-lg object-cover"
+          src="banners/banner-1.jpg"
+          alt="banner-1"
         />
       </SwiperSlide>
     </Swiper>
-  </NuxtErrorBoundary>
+  </div>
 </template>
 
 <script setup lang="ts">
