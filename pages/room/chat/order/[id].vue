@@ -42,19 +42,51 @@
             class="relative w-full rounded-[10px] border-[0.5px] border-[#0000001a] py-[7px]"
           >
             <div
-              :class="[
-                'relative grid',
-                Number(fee.selected_rate?.price) !== 1
-                  ? 'grid-cols-2'
-                  : 'grid-cols-1',
-              ]"
+              v-if="Number(fee.selected_rate?.price) === 1"
+              class="relative grid grid-cols-1"
             >
-              <div
-                :class="[
-                  'border-r-[0.5px] border-[#0000001a]',
-                  Number(fee.selected_rate?.price) === 1 ? '' : 'pr-[8px]',
-                ]"
-              >
+              <div class="border-[#0000001a] pr-[8px]">
+                <div class="p-[5px]">
+                  <CreateOrderCurrency
+                    class="mx-[4px]"
+                    :model-value="payload.buyer_currency_id"
+                    :option="currencyStore.options"
+                    @update:model-value="
+                      ({ value }) => {
+                        payload.buyer_currency_id = +value;
+                        getExchangeRate();
+                      }
+                    "
+                  />
+                  <VanDivider class="my-[5px]" />
+                  <div
+                    class="flex w-full flex-col items-start gap-[10px] px-[4px] py-[5px]"
+                  >
+                    <input
+                      v-model="payload.amount"
+                      inputmode="decimal"
+                      class="w-full rounded-md border-[0.5px] px-2 py-1 font-['DIN_ALTERNATE'] text-[24px] font-bold"
+                      @input="debounceCalcAmount"
+                    />
+
+                    <div class="flex items-center gap-[5px]">
+                      <Icon name="Info" color="#EDEDED" />
+                      <p class="text-[10px] text-[#0000004d]">
+                        {{ t("minimum") }}
+                      </p>
+                      <p
+                        class="font-['DIN_ALTERNATE'] text-[10px] text-[#F57F7F]"
+                      >
+                        {{ "0.5" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else :class="['relative grid grid-cols-2']">
+              <div :class="['border-r-[0.5px] border-[#0000001a]  pr-[8px]']">
                 <div class="p-[5px]">
                   <CreateOrderCurrency
                     class="mx-[4px]"
@@ -71,49 +103,18 @@
                   <div
                     class="flex w-full flex-col items-start gap-[10px] px-[4px] py-[5px]"
                   >
-                    <button
-                      :class="[
-                        'flex items-center gap-[5px]',
-                        Number(fee.selected_rate?.price) !== 1
-                          ? ''
-                          : 'flex-row-reverse',
-                      ]"
-                    >
+                    <button :class="['flex items-center gap-[5px]']">
                       <Icon name="Info" color="#EDEDED" />
                       <p class="text-[10px] text-[#0000004d]">应下发的币种</p>
                     </button>
                     <input
-                      v-if="Number(fee.selected_rate?.price) !== 1"
                       v-model="payload.amount"
                       inputmode="decimal"
                       class="mr-2 w-full rounded-sm text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
                       @input="debounceCalcAmount"
                     />
 
-                    <input
-                      v-else
-                      v-model="payload.amount"
-                      inputmode="decimal"
-                      class="w-full rounded-md border-[0.5px] px-2 py-1 text-right font-['DIN_ALTERNATE'] text-[24px] font-bold"
-                      @input="debounceCalcAmount"
-                    />
-
-                    <div
-                      v-if="Number(fee.selected_rate?.price) === 1"
-                      class="flex items-center gap-[5px]"
-                    >
-                      <Icon name="Info" color="#EDEDED" />
-                      <p class="text-[10px] text-[#0000004d]">
-                        {{ t("minimum") }}
-                      </p>
-                      <p
-                        class="font-['DIN_ALTERNATE'] text-[10px] text-[#F57F7F]"
-                      >
-                        {{ "0.5" }}
-                      </p>
-                    </div>
-
-                    <div v-else class="hidden items-center gap-[5px]">
+                    <div class="hidden items-center gap-[5px]">
                       <p class="text-[10px] text-[#F57F7F]">Error Message</p>
                       <button>
                         <Icon name="Info" color="#EDEDED" />
@@ -123,7 +124,6 @@
                 </div>
               </div>
               <div
-                v-if="Number(fee.selected_rate?.price) !== 1"
                 class="absolute left-1/2 top-1/2 mt-[1rem] -translate-x-1/2 -translate-y-1/2"
               >
                 <button
@@ -133,10 +133,7 @@
                   <Icon name="Swap" color="#0000004D" size="16" />
                 </button>
               </div>
-              <div
-                v-if="Number(fee.selected_rate?.price) !== 1"
-                class="pl-[8px]"
-              >
+              <div class="pl-[8px]">
                 <div class="p-[5px]">
                   <CreateOrderCurrency
                     :model-value="payload.buyer_currency_id"
@@ -255,7 +252,11 @@
       >
         <div class="inline-flex w-full gap-[5px] py-[11px] pr-[16px]">
           <p class="total-title">交易总额：</p>
-          <p class="total-amount">{{ payload.amount }}</p>
+          <p class="total-amount">
+            {{
+              `${payload.amount} ${Number(fee.selected_rate?.price) === 1 ? "U" : ""}`
+            }}
+          </p>
         </div>
         <UiButton
           v-show="fee.status === OrderStatus.CONFIRMING"
@@ -625,6 +626,10 @@ async function onCreateOrder() {
   try {
     const preparedPayload: CreateOrder = {
       ...payload.value,
+      seller_currency_id:
+        Number(fee.value.selected_rate?.price) === 1
+          ? payload.value.buyer_currency_id
+          : payload.value.seller_currency_id,
       amount: Number(payload.value.amount),
       exchange_rate: Number(fee.value.selected_rate?.price || 1),
       handling_fee_percentage: fee.value.handlingFeePercentage,
