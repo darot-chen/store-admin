@@ -44,7 +44,7 @@ function onLinkClick(url: string) {
   const tg = (window as any).Telegram;
 
   if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
-    tg.Webapp.openTelegramLink(url);
+    navigateTo(url);
   } else {
     navigateTo(url, {
       open: {
