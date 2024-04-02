@@ -155,3 +155,15 @@ export const getBusinessFilter = async (params?: Cursor) => {
 
   return data;
 };
+
+export const leaveRoom = async (roomId: number) => {
+  try {
+    const { data } = await useAxiosInstance().post<ChatRoom>(
+      `${url}/${roomId}/leave`
+    );
+
+    return data;
+  } catch (error) {
+    return undefined;
+  }
+};
