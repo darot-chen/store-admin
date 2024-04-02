@@ -3,9 +3,11 @@
     <div class="flex flex-row justify-between">
       <div class="flex flex-col">
         <p class="font-400 text-base text-[#818086]">
-          {{ $t("total_transaction_volume_this_week") }}
+          {{ $t("total_transaction_volume", { period: periodText }) }}
         </p>
-        <h2 class="font-500 text-2xl">15,320,500 U</h2>
+        <h2 class="font-500 text-2xl">
+          {{ Number(report.summary.total_amount).toFixed(2) }} U
+        </h2>
       </div>
       <div class="flex flex-col">
         <div class="flex flex-row gap-[5px]">
@@ -78,6 +80,21 @@ const props = defineProps<{
   report: ReportTransaction;
   selectedCheckBoxIndex: number;
 }>();
+
+const periodText = computed(() => {
+  switch (props.selectedCheckBoxIndex) {
+    case 0:
+      return "全部的";
+    case 1:
+      return "本星期";
+    case 2:
+      return "这个月";
+    case 3:
+      return "今年";
+    default:
+      return "这一时期";
+  }
+});
 
 const dataLabel = () => {
   const currentDate = new Date();
