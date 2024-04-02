@@ -91,6 +91,7 @@
   "one_more_order": "再来一单",
   "current_total": "当前总额",
   "total_transaction_volume_this_week": "本周交易总额",
+  "total_transaction_volume_this_period": "总交易量这个时期",
   "past_total": "往时总额",
   "total_transaction_amount": "交易总额",
   "in_transaction": "交易中",
