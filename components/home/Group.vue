@@ -40,15 +40,17 @@
 <script setup lang="ts">
 import { isTelegramUrl } from "~/utils/regex";
 
-const router = useRouter();
-
 function onLinkClick(url: string) {
   const tg = (window as any).Telegram;
 
-  if (isTelegramUrl(url)) {
-    if (tg) {
-      tg.Webapp.openChat(url);
-    }
+  if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
+    tg.Webapp.openChat(url);
+  } else {
+    navigateTo(url, {
+      open: {
+        target: "_blank",
+      },
+    });
   }
 }
 
