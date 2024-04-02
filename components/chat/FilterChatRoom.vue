@@ -22,9 +22,22 @@
           @click="() => onItemClicked(option.id)"
         />
       </VanGrid>
+      <div v-show="!isLoading" class="m-3 flex justify-center">
+        <button
+          class="rounded-sm bg-[#50a7ea] px-4 py-1 text-white"
+          @click="onReset"
+        >
+          Reset
+        </button>
+      </div>
+
       <template #reference>
         <div class="flex flex-row items-center" @click="() => {}">
-          <VanIcon name="filter-o" color="#50a7ea" size="16px" />
+          <icon
+            :name="hasFilter ? 'clarity:filter-solid' : 'clarity:filter-line'"
+            color="#50a7ea"
+            size="16px"
+          />
           <p class="text-[14px] text-[#50a7ea]">Filter</p>
         </div>
       </template>
@@ -40,8 +53,10 @@ const isPopoverVisible = ref(false);
 const businessFilterOptions = ref<BusinessFilter[]>();
 const isLoading = ref(true);
 
+const props = defineProps<{ hasFilter: boolean }>();
+
 const emit = defineEmits<{
-  onClicked: [id: number];
+  onClicked: [id: number | undefined];
 }>();
 
 watch(isPopoverVisible, async (newVisible) => {
@@ -60,6 +75,11 @@ watch(isPopoverVisible, async (newVisible) => {
 const onItemClicked = (id: number) => {
   isPopoverVisible.value = false;
   emit("onClicked", id);
+};
+
+const onReset = () => {
+  isPopoverVisible.value = false;
+  if (props.hasFilter) emit("onClicked", undefined);
 };
 
 const fetchBusinessFilter = async () => {
