@@ -4,7 +4,9 @@
       v-for="(item, index) in cells"
       :key="index"
       :class="[
-        'relative inline-flex w-full items-center  px-[16px] py-[12px] transition-colors hover:bg-gray-200 active:bg-gray-300',
+        'relative inline-flex w-full items-center px-[16px] py-[12px] transition-colors active:bg-gray-200',
+        index === cells.length - 1 && 'active:rounded-b-xl',
+        index === 0 && 'active:rounded-t-xl',
       ]"
       :title="item.title"
       @click="item.onClick && item.onClick()"
