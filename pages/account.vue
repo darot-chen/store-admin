@@ -34,7 +34,6 @@
         />
       </div>
       <UiCell inset :cells="profileMerchantTop" />
-      <UiCell inset :cells="profileMerchantBottom" />
     </div>
 
     <div
@@ -56,7 +55,6 @@
         />
       </div>
       <UiCell inset :cells="profileMerchantTop" />
-      <UiCell inset :cells="profileMerchantBottom" />
     </div>
   </div>
 </template>
@@ -81,14 +79,6 @@ const profileMerchantTop: Cell[] = [
     backgroundColor: "#FF453A",
     onClick: () => navigateTo("/report"),
   },
-  {
-    title: "账户管理",
-    icon: "StackPerson",
-    backgroundColor: "#8321FF",
-  },
-];
-
-const profileMerchantBottom: Cell[] = [
   {
     title: "我的订单",
     icon: "GroupPeople",
