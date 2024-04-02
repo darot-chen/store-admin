@@ -59,7 +59,7 @@ function onNotificationClick() {
 setLocaleCookie(local || "zh");
 setLocale(local || "zh");
 
-onBeforeMount(async () => {
+onMounted(async () => {
   const tg = (window as any).Telegram;
   const at = route.query.at?.toString();
 
