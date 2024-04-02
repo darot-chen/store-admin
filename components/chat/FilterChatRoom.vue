@@ -18,9 +18,17 @@
         <VanGridItem
           v-for="(option, _, index) in businessFilterOptions"
           :key="index"
-          :text="option.title"
+          class="text-center"
           @click="() => onItemClicked(option.id)"
-        />
+        >
+          <icon
+            v-if="option.id === selectedOptionId"
+            name="lets-icons:check-fill"
+            color="#50a7ea"
+            size="16px"
+          />
+          <p class="text-[12px]">{{ option.title }}</p>
+        </VanGridItem>
       </VanGrid>
       <div v-show="!isLoading" class="m-3 flex justify-center">
         <button
@@ -32,13 +40,16 @@
       </div>
 
       <template #reference>
-        <div class="flex flex-row items-center" @click="() => {}">
+        <div class="relative flex flex-row items-center" @click="() => {}">
           <icon
             :name="hasFilter ? 'clarity:filter-solid' : 'clarity:filter-line'"
             color="#50a7ea"
             size="16px"
           />
-          <p class="text-[14px] text-[#50a7ea]">Filter</p>
+          <p class="mr-2 text-[14px] text-[#50a7ea]">Filter</p>
+          <div
+            class="absolute right-0 top-0 h-2 w-2 rounded-full bg-red-500"
+          ></div>
         </div>
       </template>
     </VanPopover>
@@ -54,6 +65,7 @@ const businessFilterOptions = ref<BusinessFilter[]>();
 const isLoading = ref(true);
 
 const props = defineProps<{ hasFilter: boolean }>();
+const selectedOptionId = ref<number>();
 
 const emit = defineEmits<{
   onClicked: [id: number | undefined];
@@ -74,6 +86,7 @@ watch(isPopoverVisible, async (newVisible) => {
 
 const onItemClicked = (id: number) => {
   isPopoverVisible.value = false;
+  selectedOptionId.value = id;
   emit("onClicked", id);
 };
 
