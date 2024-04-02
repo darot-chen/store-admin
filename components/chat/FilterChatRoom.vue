@@ -19,7 +19,7 @@
           v-for="(option, _, index) in businessFilterOptions"
           :key="index"
           class="text-center"
-          @click="() => onItemClicked(option.id)"
+          @click="onItemClicked(option.id)"
         >
           <Icon
             v-if="option.id === selectedOptionId"
