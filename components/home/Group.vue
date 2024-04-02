@@ -24,12 +24,13 @@
               </p>
             </div>
             <p class="line-clamp-1 text-[10px]">{{ group.description }}</p>
-            <div
+            <NuxtLink
+              target="_blank"
+              :to="group.href"
               class="button mt-[5px] w-full"
-              @click="onLinkClick(group.href)"
             >
               <p class="text-[10px] text-white">立即联系</p>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -38,21 +39,21 @@
 </template>
 
 <script setup lang="ts">
-import { isTelegramUrl } from "~/utils/regex";
+// import { isTelegramUrl } from "~/utils/regex";
 
-function onLinkClick(url: string) {
-  const tg = (window as any).Telegram;
+// function onLinkClick(url: string) {
+//   const tg = (window as any).Telegram;
 
-  if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
-    navigateTo(url);
-  } else {
-    navigateTo(url, {
-      open: {
-        target: "_blank",
-      },
-    });
-  }
-}
+//   if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
+//     navigateTo(url);
+//   } else {
+//     navigateTo(url, {
+//       open: {
+//         target: "_blank",
+//       },
+//     });
+//   }
+// }
 
 const groups = [
   {
