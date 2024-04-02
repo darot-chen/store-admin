@@ -6,6 +6,7 @@
   <div v-else class="flex flex-col">
     <div class="flex flex-col gap-[24px] bg-white px-[12px] py-[15px]">
       <UiSwitch
+        v-show="store.user?.type === 'merchant'"
         v-model="selectedTab"
         :options="REPORT_TAB_OPTION"
         style="height: 35px"
@@ -87,6 +88,8 @@ import {
 import type { Option } from "~/types/common";
 import type { ReportTransaction } from "~/types/report";
 
+const store = useAuthStore();
+
 definePageMeta({
   layout: "report",
 });
@@ -103,7 +106,21 @@ const report = ref<ReportTransaction>();
 
 onMounted(() => {
   getReport();
+  if (store.selectedReportTab) {
+    selectedTab.value = store.selectedReportTab;
+  } else if (store.user?.type === "merchant") {
+    selectedTab.value = REPORT_TAB_OPTION[1];
+  } else {
+    selectedTab.value = REPORT_TAB_OPTION[0];
+  }
 });
+
+watch(
+  () => selectedTab.value,
+  () => {
+    store.selectedReportTab = selectedTab.value;
+  }
+);
 
 function onOpenDatePicker() {
   isShowDatePicker.value = !isShowDatePicker.value;
