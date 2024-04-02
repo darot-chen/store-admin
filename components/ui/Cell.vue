@@ -1,18 +1,20 @@
 <template>
-  <div :class="['relative w-full bg-white', inset && 'rounded-xl']">
+  <div :class="['relative w-full rounded-xl bg-white', inset && 'rounded-xl']">
     <button
       v-for="(item, index) in cells"
       :key="index"
       :class="[
-        'relative inline-flex w-full items-center px-[16px] py-[12px] transition-colors hover:bg-gray-200 active:bg-gray-300',
-        index === 0 && 'text-border rounded-t-xl',
-        index === cells.length - 1 && 'rounded-b-xl',
-        index !== 0 && index !== cells.length - 1 && 'text-border',
+        'relative inline-flex w-full items-center  px-[16px] py-[12px] transition-colors hover:bg-gray-200 active:bg-gray-300',
       ]"
       :title="item.title"
       @click="item.onClick && item.onClick()"
     >
-      <div class="inline-flex flex-1 items-center gap-[16px]">
+      <div
+        :class="[
+          'inline-flex flex-1 items-center gap-[16px]',
+          index !== cells.length - 1 && 'text-border',
+        ]"
+      >
         <div
           v-if="item?.icon"
           class="flex h-6 w-6 items-center justify-center rounded-md"
