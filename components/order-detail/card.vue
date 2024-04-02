@@ -12,7 +12,7 @@
             :color="'#000'"
             size="41"
           />
-          <div v-if="order?.type == 'exchange'">
+          <div v-if="order?.order_type == 'exchange'">
             <p class="text-amount !text-[24px] font-bold leading-7">
               {{ order?.amount.toFixed(2) }}
             </p>

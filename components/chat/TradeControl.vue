@@ -15,7 +15,7 @@
           "
         >
           <p
-            v-if="detail?.order?.type == 'exchange'"
+            v-if="detail?.order?.order_type == 'exchange'"
             class="din-alternate-text"
           >
             {{ detail?.order?.amount_to_be_paid || 0 }}
@@ -75,7 +75,7 @@
     <Transition name="drop">
       <div v-show="showMore" class="show-more">
         <ChatTradeControlItem
-          v-if="detail?.order?.type == 'exchange'"
+          v-if="detail?.order?.order_type == 'exchange' || !detail?.order"
           :id="props.detail?.order?.id || 0"
           :exchange-rate="detail?.order?.exchange_rate || 0"
           party="seller"
