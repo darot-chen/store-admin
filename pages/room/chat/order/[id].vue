@@ -613,7 +613,7 @@ async function onCancelOrderClick() {
   try {
     const result = await sellerCancelOrder(fee.value.order_id);
 
-    if (result.message === "Success") {
+    if (result.code === 200) {
       navigateTo(`/room/chat/${roomId}`);
     }
   } catch (error: any) {

@@ -9,13 +9,19 @@
     />
     <div v-else class="flex flex-1 flex-col">
       <p v-if="chatRooms.length === 0" class="flex justify-center">No room</p>
-      <ChatListItem v-for="room in chatRooms" :key="room.id" :room="room" />
+      <ChatListItem
+        v-for="room in chatRooms"
+        :key="room.id"
+        :room="room"
+        @delete="onDelete"
+      >
+      </ChatListItem>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getPublicChatRoom } from "~/api/chat";
+import { getPublicChatRoom, leaveRoom } from "~/api/chat";
 import { SOCKET_EVENT } from "~/constants/socket";
 import type { ChatRoom } from "~/types/chatRoom";
 
@@ -34,6 +40,18 @@ function onFilterItemClicked(id: number) {
   firstLoad.value = true;
   businessId.value = id;
   fetchChatRooms(true);
+}
+
+async function onDelete(id: number) {
+  const result = await leaveRoom(id);
+
+  if (!result) {
+    return;
+  }
+
+  chatRooms.value = chatRooms?.value.filter(
+    (chat) => chat.id !== result.chat_room_id
+  );
 }
 
 async function fetchChatRooms(isChangeType?: boolean) {
