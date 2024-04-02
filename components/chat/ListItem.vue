@@ -57,7 +57,7 @@
       <VanButton
         icon="delete"
         square
-        text="Delete"
+        :text="$t('delete')"
         type="danger"
         @click="emit('delete', room.id)"
       />
