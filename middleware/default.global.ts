@@ -1,8 +1,8 @@
 import { saveLastSession } from "~/api/user";
 
 export default defineNuxtRouteMiddleware((to) => {
-  const authStore = useAuthStore();
-  if (storage.getAccessToken() && authStore.user?.last_viewed_page) {
+  if (to.path === "/") return;
+  if (storage.getAccessToken()) {
     saveLastSession(to.fullPath);
   }
 });
