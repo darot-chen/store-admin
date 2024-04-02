@@ -106,5 +106,6 @@
   "seller_cancelled_order": "Seller Cancelled",
   "copy_failed": "Copy Failed",
   "owner": "owner",
-  "delete": "Delete"
+  "delete": "Delete",
+  "seller_remove_order": "Seller removed order"
 }

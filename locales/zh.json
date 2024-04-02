@@ -106,5 +106,6 @@
   "seller_cancelled_order": "卖家取消订单",
   "copy_failed": "复制失败",
   "owner": "所有者",
-  "delete": "删除"
+  "delete": "删除",
+  "seller_remove_order": "卖方删除订单"
 }
