@@ -1,10 +1,7 @@
 <template>
   <div class="flex h-full flex-col gap-2 bg-[#FFFFFFBF]" @scroll="handleScroll">
     <ChatSearch class="px-3" />
-    <ChatFilterChatRoom
-      :has-filter="businessId != undefined"
-      @on-clicked="onFilterItemClicked"
-    />
+    <ChatFilterChatRoom @click="onFilterItemClicked" />
     <UiCircularLoading
       v-if="loading"
       size="40"
@@ -39,7 +36,7 @@ const loading = ref<boolean>(false);
 const firstLoad = ref<boolean>(true);
 const businessId = ref<number>();
 
-function onFilterItemClicked(id: number | undefined) {
+function onFilterItemClicked(id?: number) {
   firstLoad.value = true;
   businessId.value = id;
   fetchChatRooms(true);
