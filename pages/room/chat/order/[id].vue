@@ -254,7 +254,7 @@
           <p class="total-title">交易总额：</p>
           <p class="total-amount">
             {{
-              `${payload.amount} ${Number(fee.selected_rate?.price) === 1 ? "U" : ""}`
+              `${sellerReceived ?? 0} ${Number(fee.selected_rate?.price) === 1 ? "U" : ""}`
             }}
           </p>
         </div>
