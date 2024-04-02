@@ -46,7 +46,11 @@ function onLinkClick(url: string) {
   if (isTelegramUrl(url) && tg?.WebApp && tg?.WebApp?.initData) {
     tg.Webapp.openTelegramLink(url);
   } else {
-    navigateTo(url);
+    navigateTo(url, {
+      open: {
+        target: "_blank",
+      },
+    });
   }
 }
 
