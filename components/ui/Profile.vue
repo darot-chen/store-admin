@@ -25,6 +25,11 @@
       </button>
       -->
     </div>
+    <div class="text-[#818086]">
+      <p>
+        {{ `ID : ${refUser.id}` }}
+      </p>
+    </div>
   </div>
 
   <VanDialog
