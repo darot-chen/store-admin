@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-[#EFEEF4]">
-    <div class="bg-[#f4f4f4] p-2">
+  <div class="flex flex-col bg-[#EFEEF4]">
+    <div class="!sticky top-0 z-40 bg-[#f4f4f4] p-2">
       <VanField
         v-model="params.keyword"
         clearable
         input-align="center"
         placeholder="搜索订单"
-        class="search z-20 w-full rounded-lg p-2 placeholder:text-center"
+        class="search w-full rounded-lg p-2 placeholder:text-center"
         @update:model-value="onKeywordChange"
       >
         <template #left-icon>
@@ -51,6 +51,10 @@ const params = ref<HistoryOrderParams>({
 });
 
 const debounceSearch = useDebounceFn(fetchHistoryOrders, 500);
+
+definePageMeta({
+  layout: "report",
+});
 
 onMounted(() => {
   pageStore.setTitle("我的订单");

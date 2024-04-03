@@ -1,44 +1,48 @@
 <template>
   <div>
-    <VanTabs
-      :active="props.mainTabActive"
-      title-active-color="#409EFF"
-      title-inactive-color="#B4BCCD"
-      line-width="20"
-      background="#f5f5f5"
-      class="p-0"
-      shrink
-      animated
-      :before-change="(index) => emits('update:mainTabActive', index)"
-    >
-      <VanTab :title="$t('undisputed')" />
-      <VanTab :title="$t('disputed')" />
-    </VanTabs>
-    <VanDivider class="divider" />
-    <VanTabs
-      :active="props.subTabActive"
-      background="#f5f5f5"
-      title-active-color="#409EFF"
-      title-inactive-color="#B4BCCD"
-      line-height="0"
-      shrink
-      :before-change="(index) => emits('update:subTabActive', index)"
-    >
-      <VanTab
-        v-for="tab in Object.values(OrderStatusEnum)"
-        :key="tab"
-        :title="$t('order_status.' + tab)"
+    <div class="sticky top-[56px] z-20 bg-[#EFEEF4]">
+      <VanTabs
+        :active="props.mainTabActive"
+        title-active-color="#409EFF"
+        title-inactive-color="#B4BCCD"
+        line-width="20"
+        background="#f5f5f5"
+        class="p-0"
+        shrink
+        animated
+        :before-change="(index) => emits('update:mainTabActive', index)"
       >
-        <div v-if="!props.loading" class="p-4">
-          <OrdersItems :orders="props.orders" />
-        </div>
-        <UiCircularLoading
-          v-else
-          class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
-          size="40"
+        <VanTab :title="$t('undisputed')" />
+        <VanTab :title="$t('disputed')" />
+      </VanTabs>
+      <VanDivider class="divider" />
+      <VanTabs
+        :active="props.subTabActive"
+        background="#f5f5f5"
+        title-active-color="#409EFF"
+        title-inactive-color="#B4BCCD"
+        line-height="0"
+        shrink
+        :before-change="(index) => emits('update:subTabActive', index)"
+      >
+        <VanTab
+          v-for="tab in Object.values(OrderStatusEnum)"
+          :key="tab"
+          :title="$t('order_status.' + tab)"
         />
-      </VanTab>
-    </VanTabs>
+      </VanTabs>
+    </div>
+
+    <div>
+      <div v-if="!props.loading" class="p-4">
+        <OrdersItems :orders="props.orders" />
+      </div>
+      <UiCircularLoading
+        v-else
+        class="fixed left-0 top-0 flex h-full w-full items-center justify-center"
+        size="40"
+      />
+    </div>
   </div>
 </template>
 
