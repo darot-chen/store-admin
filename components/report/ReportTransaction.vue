@@ -124,7 +124,6 @@ const dataLabel = () => {
       for (let i = 1; i <= daysInMonth; i++) {
         labels.push(`${currentDate.getMonth() + 1}月${i}日`);
       }
-      console.log(labels);
 
       return labels;
     }
