@@ -200,6 +200,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from "dayjs";
 import { showConfirmDialog, showDialog, showImagePreview } from "vant";
 import { CHAT_ACTIONS } from "~/constants/chat-actions";
 import { ChatType, type ChatDetail, type Chat } from "~/types/chat";
@@ -289,7 +290,7 @@ function onTouch(text: string) {
 
 function onDateClick(date: string | undefined) {
   showCalendar.value = false;
-  const d = date ? new Date(date).toISOString().split("T")[0] : "";
+  const d = date ? dayjs(date).format("YYYY-MM-DD") : "";
   emit("date-click", d);
 }
 </script>
