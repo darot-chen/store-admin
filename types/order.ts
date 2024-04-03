@@ -112,3 +112,8 @@ export type RateSeller = {
   score: number;
   comment: string;
 };
+
+export type UserOrderSummary = {
+  successful_order: number;
+  total_transaction_volume: number;
+};

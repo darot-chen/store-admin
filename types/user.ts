@@ -94,3 +94,8 @@ export type VerifyCodeRepsone = {
   phoneNumber: string;
   sessionId: string;
 };
+
+export enum UserMode {
+  USER = "user",
+  MERCHANT = "merchant",
+}

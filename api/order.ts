@@ -1,5 +1,6 @@
 import type { APIMeta } from "~/types/base";
 import type {
+  UserOrderSummary,
   CreateOrder,
   GetOrderParams,
   Order,
@@ -7,6 +8,7 @@ import type {
   RateSeller,
 } from "~/types/order";
 import type { CursorResponse } from "~/types/pagination";
+import type { UserMode } from "~/types/user";
 
 const url = "orders";
 
@@ -101,6 +103,19 @@ export const getOrderDetail = async (
   const { data } = await useAxiosInstance().get<Order>(`${url}/${orderId}`, {
     params,
   });
+
+  return data;
+};
+
+export const getUserOrderSummary = async (mode: UserMode) => {
+  const { data } = await useAxiosInstance().get<UserOrderSummary>(
+    `${url}/summary`,
+    {
+      params: {
+        mode,
+      },
+    }
+  );
 
   return data;
 };
