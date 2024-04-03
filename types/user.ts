@@ -20,6 +20,7 @@ export type User = {
   rating_score: number;
   rating_count: number;
   profile_key: string;
+  mode: string;
   business_name?: string;
   business_profile_key?: string;
   last_viewed_page?: string;
