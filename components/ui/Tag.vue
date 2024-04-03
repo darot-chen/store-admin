@@ -1,12 +1,9 @@
 <template>
-  <div
-    v-show="title"
-    class="my-[0.1rem] inline-block w-full text-center"
-    @click="$emit('click')"
-  >
+  <div v-show="title" class="my-[0.1rem] inline-block w-full text-center">
     <div
       class="bg-tag"
       :style="[`background-color:  ${bgColor || 'rgba(114, 131, 145, 0.4)'}; `]"
+      @click="$emit('click')"
     >
       <p class="px-[0.44rem] py-[0.19rem]">
         {{ title }}
