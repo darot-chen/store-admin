@@ -107,5 +107,7 @@
   "copy_failed": "复制失败",
   "owner": "所有者",
   "delete": "删除",
-  "seller_remove_order": "卖方删除订单"
+  "seller_remove_order": "卖方删除订单",
+  "pin": "别针",
+  "unpin": "取消别针"
 }

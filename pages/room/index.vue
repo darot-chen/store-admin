@@ -14,6 +14,7 @@
         :key="room.id"
         :room="room"
         @delete="onDelete"
+        @toggle-pin="onTogglePin"
       >
       </ChatListItem>
     </div>
@@ -21,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { getPublicChatRoom, leaveRoom } from "~/api/chat";
+import { getPublicChatRoom, leaveRoom, pinChat, unpinChat } from "~/api/chat";
 import { SOCKET_EVENT } from "~/constants/socket";
 import type { ChatRoom } from "~/types/chatRoom";
 
@@ -71,7 +72,26 @@ async function fetchChatRooms(isChangeType?: boolean) {
     business_id: businessId.value,
   });
 
-  chatRooms.value.push(...res.results);
+  chatRooms.value = [
+    ...chatRooms.value,
+    ...res.results.sort((a, b) => {
+      if (a.pin_at && b.pin_at) {
+        return new Date(b.pin_at).getTime() - new Date(a.pin_at).getTime();
+      }
+
+      if (a.pin_at) {
+        return -1;
+      }
+
+      if (b.pin_at) {
+        return 1;
+      }
+
+      return (
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+      );
+    }),
+  ];
   lastItemId.value = res.results[res.results.length - 1]?.id;
   loadMore.value = res.meta.has_next;
 
@@ -89,6 +109,22 @@ function handleScroll(event: Event) {
       }
     }
   }, 300);
+}
+
+function onTogglePin(id: number) {
+  const index = chatRooms.value.findIndex((room) => room.id === id);
+
+  if (index >= 0) {
+    if (chatRooms.value[index].pin_at) {
+      chatRooms.value[index].pin_at = null;
+      unpinChat(id);
+      chatRooms.value.push(chatRooms.value.splice(index, 1)[0]);
+    } else {
+      chatRooms.value[index].pin_at = new Date().toISOString();
+      pinChat(id);
+      chatRooms.value.unshift(chatRooms.value.splice(index, 1)[0]);
+    }
+  }
 }
 
 onMounted(async () => {

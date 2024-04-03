@@ -23,6 +23,7 @@ export type ChatRoom = {
   owner: User;
   total_unread: number;
   chat_room_id: number;
+  pin_at: string | null;
 };
 
 export type CursorChatRoomPayload = {

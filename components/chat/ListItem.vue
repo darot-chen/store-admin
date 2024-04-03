@@ -1,7 +1,10 @@
 <template>
   <VanSwipeCell>
     <NuxtLink
-      class="flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2"
+      :class="[
+        'flex max-h-[75px] cursor-pointer flex-col justify-between rounded-md border-b p-2',
+        room.pin_at ? 'bg-[#F5F5F5]' : 'bg-white',
+      ]"
       :to="`/room/chat/${room.id}`"
     >
       <div class="flex gap-2">
@@ -17,6 +20,7 @@
               {{ $t("lobby_no") }} {{ room.lobby_no }}
             </span>
           </h1>
+
           <ChatEvent
             v-if="room.latest_message?.type === ChatType.Action"
             class="line-clamp-1 text-sm text-[#8E8E93]"
@@ -62,19 +66,40 @@
         @click="emit('delete', room.id)"
       />
     </template>
+    <template #left>
+      <VanButton
+        square
+        :type="room.pin_at ? 'danger' : 'success'"
+        @click="onTogglePin"
+      >
+        <template #icon>
+          <Icon
+            :name="room.pin_at ? 'tabler:pinned-off' : 'tabler:pin'"
+            color="currentColor"
+            size="20px"
+          />
+        </template>
+      </VanButton>
+    </template>
   </VanSwipeCell>
 </template>
+
 <script setup lang="ts">
 import { ChatType } from "~/types/chat";
 import type { ChatRoom } from "~/types/chatRoom";
 
-defineProps<{
+const props = defineProps<{
   room: ChatRoom;
 }>();
 
 const emit = defineEmits<{
-  delete: [id: number];
+  (e: "delete", id: number): void;
+  (e: "toggle-pin", id: number): void;
 }>();
+
+function onTogglePin() {
+  emit("toggle-pin", props.room.id);
+}
 </script>
 
 <style>
