@@ -41,6 +41,8 @@
 </template>
 
 <script setup lang="ts">
+import { showFailToast } from "vant";
+import { updateUserMode } from "~/api/user";
 import { PROFILE_TAB_OPTIONS } from "~/constants/options/profile";
 import { userUserOrderSummaryStore } from "~/stores/user-order-summary";
 import type { Cell, Option } from "~/types/common";
@@ -50,6 +52,7 @@ const user = ref<User>();
 const selectedTab = ref<Option>(PROFILE_TAB_OPTIONS[0]);
 const router = useRouter();
 const useUserSummary = userUserOrderSummaryStore();
+const userStore = useAuthStore();
 
 definePageMeta({
   layout: "default",
@@ -71,15 +74,29 @@ const profileMerchantTop: Cell[] = [
   },
 ];
 
-function onModeSwitch(v: UserMode) {
-  if (v === UserMode.USER || v === UserMode.MERCHANT) {
-    router.replace({ query: { tab: v } });
-    useUserSummary.fetchUserOrderSummary(v);
+onMounted(() => {
+  user.value = userStore.user;
+  userUserOrderSummaryStore().getAllUserOrderSummary();
+  router.replace({ query: { mode: userStore.user?.mode } });
+
+  if (userStore.user) {
+    const mode = userStore.user.mode;
+    const defaultOption = PROFILE_TAB_OPTIONS.find((v) => v.value === mode);
+    selectedTab.value = defaultOption || PROFILE_TAB_OPTIONS[0];
+  }
+});
+
+async function onModeSwitch(v: UserMode) {
+  try {
+    const res = await updateUserMode(v);
+    if (res) {
+      if (v === UserMode.USER || v === UserMode.MERCHANT) {
+        router.replace({ query: { mode: v } });
+        useUserSummary.fetchUserOrderSummary(v);
+      }
+    }
+  } catch (e: any) {
+    showFailToast(e?.message);
   }
 }
-
-onMounted(() => {
-  user.value = useAuthStore().user;
-  userUserOrderSummaryStore().getAllUserOrderSummary();
-});
 </script>

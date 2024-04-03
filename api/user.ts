@@ -1,4 +1,4 @@
-import type { LoginViaMiniAppResponse, User } from "~/types/user";
+import type { LoginViaMiniAppResponse, User, UserMode } from "~/types/user";
 
 const url = "/users";
 
@@ -93,6 +93,20 @@ export const loginViaMiniApp = async (
   try {
     const { data } = await useAxiosInstance().post(`/auth/login-via-miniapp`, {
       init_data: initData,
+    });
+
+    return data;
+  } catch (error) {
+    return undefined;
+  }
+};
+
+export const updateUserMode = async (
+  mode: UserMode
+): Promise<LoginViaMiniAppResponse | undefined> => {
+  try {
+    const { data } = await useAxiosInstance().post(`/users/mode`, {
+      mode,
     });
 
     return data;
