@@ -3,20 +3,16 @@
     <UiProfile
       v-if="user"
       :user="user"
-      :is-user="selectedTab.value === 'quickSelection'"
+      :is-user="selectedTab.value === UserMode.USER"
     />
     <UiSwitch
       v-show="user?.type === 'merchant'"
       v-model="selectedTab"
       :options="PROFILE_TAB_OPTIONS"
-      @update:model-value="
-        (v) => {
-          $router.replace({ query: { tab: v.value } });
-        }
-      "
+      @update:model-value="(v) => onModeSwitch(v)"
     />
     <div
-      v-if="selectedTab.value === 'quickSelection'"
+      v-if="selectedTab.value === UserMode.USER"
       class="flex flex-col gap-[24px]"
     >
       <div class="inline-flex justify-between gap-[6px]">
@@ -35,9 +31,8 @@
       </div>
       <UiCell inset :cells="profileMerchantTop" />
     </div>
-
     <div
-      v-else-if="selectedTab.value === 'fixedDate'"
+      v-else-if="selectedTab.value === UserMode.MERCHANT"
       class="flex flex-col gap-[24px]"
     >
       <div class="inline-flex justify-between gap-[6px]">
@@ -62,10 +57,13 @@
 <script setup lang="ts">
 import { PROFILE_TAB_OPTIONS } from "~/constants/options/profile";
 import type { Cell, Option } from "~/types/common";
-import type { User } from "~/types/user";
+import type { UserOrderSummary } from "~/types/order";
+import { UserMode, type User } from "~/types/user";
 
 const user = ref<User>();
 const selectedTab = ref<Option>(PROFILE_TAB_OPTIONS[0]);
+const router = useRouter();
+const userSummary = ref<UserOrderSummary[]>([]);
 
 definePageMeta({
   layout: "default",
@@ -86,9 +84,12 @@ const profileMerchantTop: Cell[] = [
   },
 ];
 
+function onModeSwitch(v: Option) {
+  router.replace({ query: { tab: v.value } });
+  
+}
+
 onMounted(() => {
   user.value = useAuthStore().user;
 });
 </script>
-
-<style scoped lang="css"></style>
