@@ -88,7 +88,8 @@ async function fetchChatRooms(isChangeType?: boolean) {
       }
 
       return (
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        new Date(b.latest_message.created_at).getTime() -
+        new Date(a.latest_message.created_at).getTime()
       );
     }),
   ];
