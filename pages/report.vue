@@ -46,6 +46,8 @@
       :key="report.keys.length"
       :selected-check-box-index="selectedCheckboxIndex"
       class="mb-[10px]"
+      :start-date="startDate"
+      :end-date="endDate"
       :report="report"
     />
     <div class="mt-[20px] flex flex-col gap-[24px] bg-white py-[15px]">
@@ -151,7 +153,7 @@ async function getReport(stateDateParam?: Date, endDateParam?: Date) {
 
 function onFilterDate(startDate: Date, endDate: Date) {
   isLoading.value = true;
-  selectedCheckboxIndex.value = -1;
+  selectedCheckboxIndex.value = 4;
   getReport(startDate, endDate);
   isShowDatePicker.value = false;
 }

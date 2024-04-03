@@ -41,10 +41,6 @@
       </div>
     </div>
     <div class="flex flex-col justify-between">
-      <UiDivider class="mb-[5px] h-0 w-full border-t border-[#CCC]" />
-      <p class="font-500 place-self-center text-xs text-black">
-        Jan,2 2024 at 6:00 in the morning
-      </p>
       <div class="text-left">
         <Line :data="data" :options="options" />
       </div>
@@ -79,6 +75,8 @@ import type { ReportTransaction } from "~/types/report";
 const props = defineProps<{
   report: ReportTransaction;
   selectedCheckBoxIndex: number;
+  startDate: Date;
+  endDate: Date;
 }>();
 
 const periodText = computed(() => {
@@ -98,6 +96,10 @@ const periodText = computed(() => {
 
 const dataLabel = () => {
   const currentDate = new Date();
+  const differenceInDays = Math.abs(
+    (props.endDate.getTime() - props.startDate.getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
 
   switch (props.selectedCheckBoxIndex) {
     case 0:
@@ -132,6 +134,29 @@ const dataLabel = () => {
       }
       return labelsYear;
     }
+    case 4: {
+      if (differenceInDays <= 1) {
+        return ["晨", "午", "晚"];
+      }
+
+      const startMonth = props.startDate.getFullYear();
+      const endMonth = props.endDate.getFullYear();
+
+      const isTheSameYear = startMonth === endMonth;
+
+      const labels = [];
+      const tempCurrentDate = new Date(props.startDate);
+      while (tempCurrentDate <= props.endDate) {
+        const formattedDate =
+          `${tempCurrentDate.getMonth() + 1}月${tempCurrentDate.getDate()}日` +
+          (isTheSameYear ? "" : `${tempCurrentDate.getFullYear()}年`);
+
+        labels.push(formattedDate);
+        tempCurrentDate.setDate(tempCurrentDate.getDate() + 1);
+      }
+      return labels;
+    }
+
     default:
       break;
   }
@@ -173,8 +198,6 @@ const options = ref<ChartOptions<"line">>({
   line: {
     datasets: {
       backgroundColor: "#000",
-
-      // borderColor: "#000",
     },
   },
   plugins: {
