@@ -88,8 +88,8 @@ async function fetchChatRooms(isChangeType?: boolean) {
       }
 
       return (
-        new Date(b.latest_message.created_at).getTime() -
-        new Date(a.latest_message.created_at).getTime()
+        new Date(b.latest_message?.created_at).getTime() -
+        new Date(a.latest_message?.created_at).getTime()
       );
     }),
   ];
@@ -140,7 +140,24 @@ onMounted(async () => {
       chatRooms.value[index].latest_message = d?.data;
       chatRooms.value[index].total_unread += 1;
 
-      chatRooms.value.unshift(chatRooms.value.splice(index, 1)[0]);
+      chatRooms.value.sort((a, b) => {
+        if (a.pin_at && b.pin_at) {
+          return new Date(b.pin_at).getTime() - new Date(a.pin_at).getTime();
+        }
+
+        if (a.pin_at) {
+          return -1;
+        }
+
+        if (b.pin_at) {
+          return 1;
+        }
+
+        return (
+          new Date(b.latest_message?.created_at).getTime() -
+          new Date(a.latest_message?.created_at).getTime()
+        );
+      });
       chatRooms.value[index].updated_at = new Date().toISOString();
     } else {
       await fetchChatRooms(true);
