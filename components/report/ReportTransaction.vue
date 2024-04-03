@@ -135,7 +135,7 @@ const dataLabel = () => {
       }
       return labelsYear;
     }
-    case 4: {
+    case -1: {
       if (differenceInDays <= 1) {
         return ["晨", "午", "晚"];
       }

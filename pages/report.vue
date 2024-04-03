@@ -166,7 +166,7 @@ async function getReport(stateDateParam?: Date, endDateParam?: Date) {
 
 function onFilterDate(startDate: Date, endDate: Date) {
   isLoading.value = true;
-  selectedCheckboxIndex.value = 4;
+  selectedCheckboxIndex.value = -1;
   getReport(startDate, endDate);
   isShowDatePicker.value = false;
 }
