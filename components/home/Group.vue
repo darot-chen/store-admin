@@ -41,12 +41,12 @@
 
 <script setup lang="ts">
 const groups = [
-  {
-    img: "bs-website.png",
-    title: "百顺担保公告群",
-    description: "及时获取与业务、安全设置和骗子曝光的相关公告。",
-    href: "https://bsdb168.com/",
-  },
+  // {
+  //   img: "bs-website.png",
+  //   title: "百顺担保公告群",
+  //   description: "及时获取与业务、安全设置和骗子曝光的相关公告。",
+  //   href: "https://bsdb168.com/",
+  // },
   {
     img: "group-3.png",
     title: "百顺担保公群",
