@@ -59,13 +59,13 @@
         <p class="flex-1 text-end text-[14px]">交易总量</p>
       </div>
       <div
-        v-for="(item, key, index) in report?.data"
+        v-for="(item, key, index) in displayReport"
         :key="key"
         class="flex flex-col gap-[10px] px-[12px]"
       >
         <div class="flex flex-row">
           <p class="w-1/4 text-[14px]">
-            {{ report?.keys[index] }}
+            {{ displayDateReport[index] }}
           </p>
           <p class="w-1/4 text-start text-[14px]">
             {{ item.total_payment }}
@@ -88,7 +88,7 @@ import {
   REPORT_CHECKBOX_OPTION,
 } from "~/constants/options/report";
 import type { Option } from "~/types/common";
-import type { ReportTransaction } from "~/types/report";
+import type { ReportTransaction, Summary } from "~/types/report";
 
 const store = useAuthStore();
 
@@ -105,6 +105,9 @@ const endDate = ref(new Date());
 const selectedTab = ref<Option>(REPORT_TAB_OPTION[0]);
 const selectedCheckboxIndex = ref<number>(0);
 const report = ref<ReportTransaction>();
+
+const displayReport = ref<{ [key: string]: Summary }>();
+const displayDateReport = ref<Date[]>([]);
 
 onMounted(() => {
   getReport();
@@ -144,6 +147,16 @@ async function getReport(stateDateParam?: Date, endDateParam?: Date) {
       end_date: endDate,
     });
     report.value = response;
+    displayDateReport.value = response.keys.reverse();
+
+    const keys = Object.keys(response.data).reverse();
+
+    const reversedData: { [key: string]: Summary } = {};
+
+    keys.forEach((key) => {
+      reversedData[key] = response.data[key];
+    });
+    displayReport.value = reversedData;
   } catch (error: any) {
     showFailToast(error);
   } finally {
