@@ -5,7 +5,7 @@
         name="Star"
         :color="props.score >= i ? '#FFD700' : '#cccccc'"
         size="20"
-        @click="() => $emit('update:score', i)"
+        @click="$emit('update:score', i)"
       />
     </div>
   </div>

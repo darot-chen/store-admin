@@ -4,7 +4,18 @@
     :title="getGroupDate()"
     bg-color="rgba(114, 131, 145, 1)"
     class="sticky top-0 z-10 mb-[1rem]"
-    @click="onDateClick(props.groupDate)"
+    @click="() => (showCalendar = !showCalendar)"
+  />
+  <VanCalendar
+    v-model:show="showCalendar"
+    :value="date"
+    :max-date="new Date()"
+    :min-date="new Date(2024, 0, 1)"
+    :style="{
+      position: 'absolute',
+    }"
+    :show-confirm="false"
+    @select="(d) => onDateClick(d)"
   />
   <div v-bind="$attrs" class="relative inline-flex flex-col justify-end">
     <div v-if="type !== ChatType.Action">
@@ -232,6 +243,8 @@ const getGroupDate = () => {
 };
 
 const { t } = useI18n();
+const showCalendar = ref(false);
+const date = ref("");
 
 function onConfirm() {
   if (props.showButton) {
@@ -275,9 +288,9 @@ function onTouch(text: string) {
 }
 
 function onDateClick(date: string | undefined) {
-  if (props.showGroupDate) {
-    emit("date-click", date);
-  }
+  showCalendar.value = false;
+  const d = date ? new Date(date).toISOString().split("T")[0] : "";
+  emit("date-click", d);
 }
 </script>
 
