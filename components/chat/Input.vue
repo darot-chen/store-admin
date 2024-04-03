@@ -2,10 +2,11 @@
   <div ref="emojiInput" class="bg-white">
     <form class="input-container" @submit.prevent="debounceSubmit">
       <div class="inline-flex items-center gap-[0.5rem]">
-        <button class="menu-btn" @click.prevent="() => {}">
+        <!-- Disable for now -->
+        <!-- <button class="menu-btn" @click.prevent="() => {}">
           <Icon name="Burger" color="#ffffff" size="20" />
           <p>{{ $t("menu") }}</p>
-        </button>
+        </button> -->
         <button type="button" @click="onToggleEmoji">
           <Icon name="Smiley" color="#8E959B" size="27" />
         </button>
@@ -30,20 +31,19 @@
           <button type="button" @click="debounceAttachFile">
             <Icon name="PaperClip" color="#868686" size="27" />
           </button>
-          <transition name="pop">
+          <!-- Disable for now -->
+          <!-- <transition name="pop">
             <button v-show="!isInputFocused">
               <Icon name="Mic" color="#868686" size="27" />
             </button>
-          </transition>
+          </transition> -->
         </div>
         <div v-else class="flex items-center justify-center">
           <UiCircularLoading />
         </div>
-        <transition name="pop">
-          <button v-show="isInputFocused" type="submit">
-            <Icon name="Send" color="#50a7ea" size="27" />
-          </button>
-        </transition>
+        <button type="submit">
+          <Icon name="Send" color="#50a7ea" size="27" />
+        </button>
       </div>
     </form>
     <UiEmojiKeyboard v-if="isShowEmoji" @select="onSelectEmoji" />
