@@ -94,7 +94,7 @@ async function onModeSwitch(v: UserMode) {
         router.replace({ query: { mode: v } });
         useUserSummary.fetchUserOrderSummary(v);
         if (userStore.user) {
-          userStore.user.mode = v.toString();
+          userStore.user.mode = v;
         }
       }
     }
