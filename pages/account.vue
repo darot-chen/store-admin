@@ -9,43 +9,29 @@
       v-show="user?.type === 'merchant'"
       v-model="selectedTab"
       :options="PROFILE_TAB_OPTIONS"
-      @update:model-value="(v) => onModeSwitch(v)"
+      @update:model-value="(v) => onModeSwitch(v.value as UserMode)"
     />
-    <div
-      v-if="selectedTab.value === UserMode.USER"
-      class="flex flex-col gap-[24px]"
-    >
+
+    <div class="flex flex-col gap-[24px]">
       <div class="inline-flex justify-between gap-[6px]">
         <UiCard
           title="成功交易数次"
           icon="Check2"
-          value="367"
+          :value="
+            useUserSummary
+              .getUserOrderSummary(selectedTab.value as UserMode)
+              ?.successful_order.toString() ?? '0'
+          "
           color="#007AFF"
         />
         <UiCard
           title="总交易额"
           icon="List"
-          value="5,845,000"
-          color="#007AFF"
-        />
-      </div>
-      <UiCell inset :cells="profileMerchantTop" />
-    </div>
-    <div
-      v-else-if="selectedTab.value === UserMode.MERCHANT"
-      class="flex flex-col gap-[24px]"
-    >
-      <div class="inline-flex justify-between gap-[6px]">
-        <UiCard
-          title="成功交易数次"
-          icon="Check2"
-          value="367"
-          color="#007AFF"
-        />
-        <UiCard
-          title="总交易额"
-          icon="List"
-          value="5,845,000"
+          :value="
+            useUserSummary
+              .getUserOrderSummary(selectedTab.value as UserMode)
+              ?.total_transaction_volume.toString() ?? '0'
+          "
           color="#007AFF"
         />
       </div>
@@ -56,14 +42,14 @@
 
 <script setup lang="ts">
 import { PROFILE_TAB_OPTIONS } from "~/constants/options/profile";
+import { userUserOrderSummaryStore } from "~/stores/user-order-summary";
 import type { Cell, Option } from "~/types/common";
-import type { UserOrderSummary } from "~/types/order";
 import { UserMode, type User } from "~/types/user";
 
 const user = ref<User>();
 const selectedTab = ref<Option>(PROFILE_TAB_OPTIONS[0]);
 const router = useRouter();
-const userSummary = ref<UserOrderSummary[]>([]);
+const useUserSummary = userUserOrderSummaryStore();
 
 definePageMeta({
   layout: "default",
@@ -84,12 +70,15 @@ const profileMerchantTop: Cell[] = [
   },
 ];
 
-function onModeSwitch(v: Option) {
-  router.replace({ query: { tab: v.value } });
-  
+function onModeSwitch(v: UserMode) {
+  if (v === UserMode.USER || v === UserMode.MERCHANT) {
+    router.replace({ query: { tab: v } });
+    useUserSummary.fetchUserOrderSummary(v);
+  }
 }
 
 onMounted(() => {
   user.value = useAuthStore().user;
+  userUserOrderSummaryStore().getAllUserOrderSummary();
 });
 </script>

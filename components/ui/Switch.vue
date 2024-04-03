@@ -20,14 +20,14 @@
 <script setup lang="ts">
 import type { Option } from "~/types/common";
 
-defineProps<{
+const props = defineProps<{
   options: Option[];
   modelValue: Option;
   buttonHeight?: string;
 }>();
 
 defineEmits<{
-  (e: "update:modelValue", value: Option): void;
+  (e: "update:modelValue", value: typeof props.modelValue): void;
 }>();
 </script>
 

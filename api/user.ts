@@ -1,5 +1,4 @@
-import type { UserOrderSummary } from "~/types/order";
-import type { LoginViaMiniAppResponse, User, UserMode } from "~/types/user";
+import type { LoginViaMiniAppResponse, User } from "~/types/user";
 
 const url = "/users";
 
@@ -100,17 +99,4 @@ export const loginViaMiniApp = async (
   } catch (error) {
     return undefined;
   }
-};
-
-export const getUserOrderSummary = async (mode: UserMode) => {
-  const { data } = await useAxiosInstance().get<UserOrderSummary>(
-    `${url}/summary`,
-    {
-      params: {
-        mode,
-      },
-    }
-  );
-
-  return data;
 };
