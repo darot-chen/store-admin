@@ -27,6 +27,7 @@ const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 const notificationStore = useNotificationStore();
+const isRedirect = ref<boolean>(true);
 
 const loading = ref<boolean>(true);
 const socketUrl = getWebSocketUrl();
@@ -87,10 +88,13 @@ onMounted(async () => {
       await sleep(10);
       if (res?.start_action?.type === "join_room") {
         router.replace(`/room/chat/${res.start_action.data.room_id}`);
+        isRedirect.value = false;
       } else if (res?.start_action?.type === "chatrooms") {
         router.replace(`/room`);
+        isRedirect.value = false;
       } else if (res?.start_action?.type === "mine") {
         router.replace(`/account`);
+        isRedirect.value = false;
       } else {
         router.replace(route.path);
       }
@@ -112,7 +116,8 @@ onMounted(async () => {
     if (
       authStore.user?.last_viewed_page &&
       authStore.user?.last_viewed_page !== "/" &&
-      route.fullPath !== authStore.user?.last_viewed_page
+      route.fullPath !== authStore.user?.last_viewed_page &&
+      isRedirect.value
     ) {
       await router.replace(authStore.user?.last_viewed_page);
     }
