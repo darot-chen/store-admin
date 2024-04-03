@@ -20,11 +20,13 @@
       }"
     >
       <SwiperSlide class="cursor-pointer rounded-lg">
-        <UiImg
-          class="max-h-[200px] min-h-[136px] w-full rounded-lg object-cover"
-          src="banners/banner-1.jpg"
-          alt="banner-1"
-        />
+        <NuxtLink to="https://bsdb168.com/" target="_blank">
+          <UiImg
+            class="max-h-[200px] min-h-[136px] w-full rounded-lg object-cover"
+            src="banners/banner-1.jpg"
+            alt="banner-1"
+          />
+        </NuxtLink>
       </SwiperSlide>
     </Swiper>
   </div>
