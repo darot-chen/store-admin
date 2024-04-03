@@ -25,6 +25,15 @@
               room.latest_message.user?.name || room.latest_message.admin?.name
             "
           />
+          <p
+            v-else-if="
+              room.latest_message?.type === ChatType.Image ||
+              room.latest_message?.type === ChatType.Video
+            "
+            class="line-clamp-1 text-sm text-[#8E8E93]"
+          >
+            {{ $t("send_an_attachment") }}
+          </p>
           <p v-else class="line-clamp-1 text-sm text-[#8E8E93]">
             {{ room?.latest_message?.message || "" }}
           </p>
