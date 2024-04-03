@@ -158,7 +158,6 @@ onMounted(async () => {
           new Date(a.latest_message?.created_at).getTime()
         );
       });
-      chatRooms.value[index].updated_at = new Date().toISOString();
     } else {
       await fetchChatRooms(true);
     }
