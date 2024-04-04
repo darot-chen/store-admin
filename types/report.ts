@@ -1,6 +1,7 @@
 export type ReportParam = {
   start_date: string;
   end_date: string;
+  mode?: string;
 };
 
 export type Summary = {
