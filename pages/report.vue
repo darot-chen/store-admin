@@ -89,9 +89,8 @@ import {
   REPORT_CHECKBOX_OPTION,
 } from "~/constants/options/report";
 import type { Option } from "~/types/common";
-import type { ReportTransaction } from "~/types/report";
+import type { ReportTransaction, Summary } from "~/types/report";
 import { UserMode } from "~/types/user";
-
 
 const store = useAuthStore();
 
