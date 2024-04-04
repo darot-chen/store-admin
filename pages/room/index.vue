@@ -129,6 +129,10 @@ function onTogglePin(id: number) {
 }
 
 onMounted(async () => {
+  onMainButtonClick("About Us", () => {
+    navigateTo("/");
+  });
+
   await fetchChatRooms();
 
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d) => {

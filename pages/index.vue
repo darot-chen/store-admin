@@ -30,6 +30,9 @@ definePageMeta({
 
 onMounted(() => {
   user.value = useAuthStore().user;
+  onMainButtonClick("Chat", () => {
+    navigateTo("/room");
+  });
 });
 </script>
 
