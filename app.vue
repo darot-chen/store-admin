@@ -80,6 +80,12 @@ onMounted(async () => {
     tg.WebApp?.expand();
     tg.WebApp?.MainButton?.show();
     tg.WebApp?.BackButton?.show();
+    tg.WebApp?.BackButton?.onClick(() => {
+      router.back();
+      if (window.history.length <= 0) {
+        tg.WebApp?.BackButton?.hide();
+      }
+    });
 
     const res = await loginViaMiniApp(tg.WebApp?.initData);
     if (res) {
