@@ -274,6 +274,10 @@ const getProfileImage = (c: Chat): string => {
 onMounted(() => {
   init();
 
+  onMainButtonClick("Send", () => {
+    onSubmit();
+  });
+
   // TODO: refactor type any
   $evOn(SOCKET_EVENT.NEW_CHAT_RECEIVED, async (d: any) => {
     if (d.data.chat_room_id !== roomID) return;

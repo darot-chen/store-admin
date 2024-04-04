@@ -79,12 +79,12 @@ onMounted(async () => {
     tg.WebApp?.enableClosingConfirmation();
     tg.WebApp?.expand();
     tg.WebApp?.MainButton?.show();
-    tg.WebApp?.BackButton?.show();
+
     tg.WebApp?.BackButton?.onClick(() => {
-      router.back();
-      if (window.history.length <= 0) {
+      if (window.history.length <= 1) {
         tg.WebApp?.BackButton?.hide();
       }
+      router.back();
     });
 
     const res = await loginViaMiniApp(tg.WebApp?.initData);
