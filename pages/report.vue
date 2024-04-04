@@ -51,31 +51,31 @@
       :end-date="endDate"
       :report="report"
     />
-    <div class="mt-[20px] flex flex-col gap-[24px] bg-white py-[15px]">
-      <h3 class="px-[12px] text-[16px] text-[#818086]">总交易成功次数</h3>
-      <UiDivider type="horizontal" />
-      <div class="flex flex-row px-[12px]">
-        <p class="w-1/4 text-[14px]">日期</p>
-        <p class="w-1/4 text-start text-[14px]">交易人数</p>
-        <p class="flex-1 text-end text-[14px]">交易总量</p>
-      </div>
-      <div
-        v-for="(item, key, index) in displayReport"
-        :key="key"
-        class="flex flex-col gap-[10px] px-[12px]"
-      >
-        <div class="flex flex-row">
-          <p class="w-1/4 text-[14px]">
-            {{ displayDateReport[index] }}
-          </p>
-          <p class="w-1/4 text-start text-[14px]">
-            {{ item.total_payment }}
-          </p>
-          <p class="flex-1 text-end text-[14px]">
-            {{ item.total_amount.toVFixed(2) }}
-          </p>
-        </div>
-        <UiDivider type="horizontal" color="#000" />
+    <div class="mt-[20px] flex flex-col bg-white pt-4">
+      <h3 class="border-b px-3 pb-4 text-[16px] text-[#818086]">
+        {{ $t("totalNumberOfSuccessfulTransaction") }}
+      </h3>
+      <div class="w-full px-3">
+        <table class="w-full table-auto">
+          <tr class="gap-2">
+            <td class="max-w-fit py-3 text-start">{{ $t("date") }}</td>
+            <td class="py-3 text-start">{{ $t("numberOfTransaction") }}</td>
+            <td class="py-3 text-end">{{ $t("totalTransactionVolume") }}</td>
+          </tr>
+          <tr
+            v-for="(item, key, index) in displayReport"
+            :key="key"
+            class="border-b-[0.5px] border-[#EFEEF4]"
+          >
+            <td class="max-w-fit py-2 text-start">
+              {{
+                formatDate(displayDateReport[index].toString(), "YYYY/MM/DD")
+              }}
+            </td>
+            <td class="py-2 text-start">{{ item.total_payment }}</td>
+            <td class="py-2 text-end">{{ item.total_amount.toVFixed(2) }}</td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -223,12 +223,12 @@ function calculateDateRange(
   endDate.value = tempEndDate;
 
   return {
-    startDate: formatDate(tempStartDate),
-    endDate: formatDate(tempEndDate, true),
+    startDate: convertDate(tempStartDate),
+    endDate: convertDate(tempEndDate, true),
   };
 }
 
-function formatDate(date: Date, isEndDate: boolean = false): string {
+function convertDate(date: Date, isEndDate: boolean = false): string {
   return (
     date.toISOString().split("T")[0] + (isEndDate ? "T23:59:59" : "T00:00:00")
   );
