@@ -109,5 +109,9 @@
   "delete": "Delete",
   "seller_remove_order": "Seller removed order",
   "pin": "Pin",
-  "unpin": "Unpin"
+  "unpin": "Unpin",
+  "totalNumberOfSuccessfulTransaction": "Total number of successful transaction",
+  "date": "Date",
+  "numberOfTransaction": "Number of transactions",
+  "totalTransactionVolume": "Total Transaction Volume"
 }

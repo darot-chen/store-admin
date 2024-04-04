@@ -53,14 +53,14 @@
     />
     <div class="mt-[20px] flex flex-col bg-white pt-4">
       <h3 class="border-b px-3 pb-4 text-[16px] text-[#818086]">
-        总交易成功次数
+        {{ $t("totalNumberOfSuccessfulTransaction") }}
       </h3>
       <div class="w-full px-3">
         <table class="w-full table-auto">
           <tr class="gap-2">
-            <td class="max-w-fit py-3 text-start">日期</td>
-            <td class="py-3 text-start">交易人数</td>
-            <td class="py-3 text-end">交易总量</td>
+            <td class="max-w-fit py-3 text-start">{{ $t("date") }}</td>
+            <td class="py-3 text-start">{{ $t("numberOfTransaction") }}</td>
+            <td class="py-3 text-end">{{ $t("totalTransactionVolume") }}</td>
           </tr>
           <tr
             v-for="(item, key, index) in displayReport"
