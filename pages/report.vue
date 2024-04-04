@@ -12,6 +12,7 @@
         style="height: 35px"
         class="bg-white"
         :button-height="'30px'"
+        @update:model-value="(v) => onModeSwitch(v.value as UserMode)"
       />
       <div class="flex flex-row items-center justify-between">
         <UiCheckbox
@@ -87,6 +88,7 @@ import {
 } from "~/constants/options/report";
 import type { Option } from "~/types/common";
 import type { ReportTransaction } from "~/types/report";
+import { UserMode } from "~/types/user";
 
 const store = useAuthStore();
 
@@ -122,6 +124,12 @@ watch(
   }
 );
 
+function onModeSwitch(v: UserMode) {
+  if (v === UserMode.USER || v === UserMode.MERCHANT) {
+    getReport();
+  }
+}
+
 function onOpenDatePicker() {
   isShowDatePicker.value = !isShowDatePicker.value;
 }
@@ -140,6 +148,7 @@ async function getReport(stateDateParam?: Date, endDateParam?: Date) {
     const response = await getReportTransaction({
       start_date: startDate,
       end_date: endDate,
+      mode: selectedTab.value.value,
     });
     report.value = response;
   } catch (error: any) {
