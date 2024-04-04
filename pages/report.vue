@@ -4,7 +4,7 @@
   </div>
 
   <div v-else class="flex flex-col">
-    <div class="flex flex-col gap-[24px] bg-white px-[12px] py-[15px]">
+    <div class="flex flex-col gap-6 bg-white px-[12px] py-[15px]">
       <UiSwitch
         v-show="store.user?.type === 'merchant'"
         v-model="selectedTab"
@@ -20,7 +20,7 @@
           :options="REPORT_CHECKBOX_OPTION"
           @click="onSelectCheckBox"
         />
-        <div class="ml-[30px] flex flex-row items-center">
+        <div class="ml-4 flex flex-row items-center">
           <VanPopup
             :key="isShowDatePicker.toString()"
             v-model:show="isShowDatePicker"

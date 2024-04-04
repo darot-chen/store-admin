@@ -1,16 +1,16 @@
 <template>
-  <div class="flex justify-between">
+  <div class="flex justify-start gap-x-2">
     <label
       v-for="(option, index) in options"
       :key="index"
-      class="checkbox gap-2 rounded-[9px]"
+      class="checkbox grow gap-2 rounded-[9px]"
       :class="{
         'bg-[#F3F3F3] text-[#8E8E93]': modelValue !== index,
         'bg-[#0A7AFF] text-[#FFF]': modelValue === index,
       }"
       @click="$emit('click', index)"
     >
-      <div class="px-[20px] py-[6px] text-center" :style="{}">
+      <div class="w-full py-[6px] text-center" :style="{}">
         <p class="text-[14px]">{{ option.label }}</p>
       </div>
     </label>

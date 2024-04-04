@@ -90,6 +90,7 @@
   "evaluate": "评价",
   "one_more_order": "再来一单",
   "current_total": "当前总额",
+  "total_transaction_volume": "总交易{period}",
   "total_transaction_volume_this_week": "本周交易总额",
   "total_transaction_volume_this_period": "总交易量这个时期",
   "past_total": "往时总额",
