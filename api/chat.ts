@@ -167,3 +167,15 @@ export const leaveRoom = async (roomId: number) => {
     return undefined;
   }
 };
+
+export const pinChat = async (id: number) => {
+  const { data } = await useAxiosInstance().post(`${url}/${id}/pin`);
+
+  return data;
+};
+
+export const unpinChat = async (id: number) => {
+  const { data } = await useAxiosInstance().post(`${url}/${id}/unpin`);
+
+  return data;
+};

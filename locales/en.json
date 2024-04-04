@@ -107,5 +107,7 @@
   "copy_failed": "Copy Failed",
   "owner": "owner",
   "delete": "Delete",
-  "seller_remove_order": "Seller removed order"
+  "seller_remove_order": "Seller removed order",
+  "pin": "Pin",
+  "unpin": "Unpin"
 }
