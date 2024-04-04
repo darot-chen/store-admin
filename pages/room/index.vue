@@ -1,5 +1,8 @@
 <template>
-  <div class="flex h-full flex-col gap-2 bg-[#FFFFFFBF]" @scroll="handleScroll">
+  <div
+    class="flex h-full flex-col gap-2 overflow-scroll bg-[#FFFFFFBF]"
+    @scroll="handleScroll"
+  >
     <ChatSearch class="px-3" />
     <ChatFilterChatRoom @click="onFilterItemClicked" />
     <UiCircularLoading
