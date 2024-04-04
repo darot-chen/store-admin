@@ -4,25 +4,22 @@
   >
     <div name="header">
       <div class="sticky top-0 z-10 w-full max-w-lg bg-white py-[1.06rem]">
-        <div
-          class="flex w-full flex-row items-center justify-between gap-2 px-2"
+        <button
+          class="absolute flex items-center gap-2 px-2 text-[#007AFF]"
+          @click="navigateTo('/account')"
         >
-          <button
-            class="flex items-center gap-2 text-[#007AFF]"
-            @click="navigateTo('/account')"
-          >
-            <Icon name="Caret" color="#007AFF" size="15" class="rotate-90" />
-            <p>{{ $t("back") }}</p>
-          </button>
+          <Icon name="Caret" color="#007AFF" size="15" class="rotate-90" />
+          <p>{{ $t("back") }}</p>
+        </button>
 
+        <div
+          class="flex w-full flex-row items-center justify-center gap-2 px-2"
+        >
           <p
             class="line-clamp-1 max-w-[50%] basis-2/4 text-center font-semibold"
           >
             我的报表
           </p>
-          <div>
-            <Icon name="Phone" color="#007AFF" size="24" />
-          </div>
         </div>
       </div>
     </div>

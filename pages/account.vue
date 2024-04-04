@@ -93,6 +93,9 @@ async function onModeSwitch(v: UserMode) {
       if (v === UserMode.USER || v === UserMode.MERCHANT) {
         router.replace({ query: { mode: v } });
         useUserSummary.fetchUserOrderSummary(v);
+        if (userStore.user) {
+          userStore.user.mode = v;
+        }
       }
     }
   } catch (e: any) {
