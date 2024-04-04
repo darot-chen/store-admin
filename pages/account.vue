@@ -69,7 +69,7 @@ const profileMerchantTop: Cell[] = [
   {
     title: "我的订单",
     icon: "GroupPeople",
-    backgroundColor: "#FF453A",
+    backgroundColor: "#007AFF",
     onClick: () => navigateTo("/orders-history"),
   },
 ];
