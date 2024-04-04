@@ -12,10 +12,10 @@ export const getTelegramWebApp = () => {
 
   return null;
 };
+
 export const onMainButtonClick = (text: string, callback: () => void) => {
   const tg = getTelegramWebApp();
   if (tg && tg?.MainButton) {
-    tg.MainButton.hide();
     tg.MainButton.offClick(() => {});
 
     tg.MainButton.setText(text);
