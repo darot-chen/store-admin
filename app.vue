@@ -78,7 +78,8 @@ onMounted(async () => {
   if (tg?.WebApp && tg?.WebApp?.initData) {
     tg.WebApp?.enableClosingConfirmation();
     tg.WebApp?.expand();
-    tg.WebApp?.MainButton?.hide();
+    tg.WebApp?.MainButton?.show();
+    tg.WebApp?.BackButton?.show();
 
     const res = await loginViaMiniApp(tg.WebApp?.initData);
     if (res) {
